@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using mobileAppClient.Models.CustomObjects;
 using mobileAppClient.odmsAPI;
 
 namespace mobileAppClient.Models
@@ -12,7 +13,7 @@ namespace mobileAppClient.Models
     {
         // Unique conversation ID
         public int id { get; set; }
-        public List<Message> messages { get; set; }
+        public CustomObservableCollection<Message> messages { get; set; }
         public List<int> members { get; set; }
 
         public string localName { get; set; }

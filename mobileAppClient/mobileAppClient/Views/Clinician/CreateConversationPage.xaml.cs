@@ -225,7 +225,6 @@ namespace mobileAppClient
                     if (newlyCreatedConversation != null)
                     {
                         newlyCreatedConversation.getParticipantNames(loggedInClinician.staffID);
-                        
                         await Navigation.PushAsync(new ConversationPage(newlyCreatedConversation, localClincianId));
                         
                     }

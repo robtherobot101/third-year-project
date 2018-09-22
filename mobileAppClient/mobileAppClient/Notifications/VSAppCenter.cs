@@ -29,6 +29,10 @@ namespace mobileAppClient.Notifications
                         message.conversationId = int.Parse(e.CustomData["conversationId"]);
                         message.text = e.CustomData["text"];
                         message.timestamp = new CustomDateTime(DateTime.Parse(e.CustomData["timestamp"]));
+                        if (ConversationPage.currentConversation != null && ConversationPage.currentConversation.id == message.conversationId)
+                        {
+                            ConversationPage.currentConversation.messages.Add(message);
+                        }
                     }
                 };
             }

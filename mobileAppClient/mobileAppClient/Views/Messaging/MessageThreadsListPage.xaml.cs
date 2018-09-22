@@ -92,6 +92,7 @@ namespace mobileAppClient
         async void Handle_Conversation_Tapped(object sender, ItemTappedEventArgs e)
         {
             var localId = localUser?.id ?? localClinician.staffID;
+            ConversationPage.currentConversation = (Conversation)e.Item;
             await Navigation.PushAsync(new ConversationPage((Conversation)e.Item, localId));
         }
 

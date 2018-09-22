@@ -23,6 +23,10 @@ namespace mobileAppClient
         private bool isClinicianAccessing { get; set; }
 
 	    private Conversation conversation;
+
+        // The current conversation being displayed
+        public static Conversation currentConversation = null;
+
         private CustomObservableCollection<Message> conversationMessages;
 
 	    private Timer t;
@@ -37,38 +41,13 @@ namespace mobileAppClient
 
 		    Title = conversation.externalName;
 
-            conversationMessages = new CustomObservableCollection<Message>();
+            conversationMessages = conversation.messages;
 
             MessagesListView.ItemsSource = conversationMessages;
 		    MessagesListView.ItemTapped += OnMessageTapped;
 
             populateMessages();
-
-            StartTimer(4000);
         }
-
-	    private void StartTimer(int interval)
-	    {
-            t = new Timer(timerTick, null, 100, interval);
-	    }
-
-	    public async void timerTick(object o)
-	    {
-	        Tuple<HttpStatusCode, Conversation> refreshedConversation = await new MessagingAPI().GetConversation(localId, conversation.id, isClinicianAccessing);
-	        if (refreshedConversation.Item1 == HttpStatusCode.OK)
-	        {
-	            List<Message> newConversationMessages = refreshedConversation.Item2.messages;
-                List<Message> mergedConversations = new List<Message>(conversationMessages.Union(newConversationMessages));
-                if (mergedConversations.Count > conversation.messages.Count)
-                {
-                    conversationMessages.AddRange(newConversationMessages.Except(conversationMessages));
-                    if (conversationMessages.Count > 0)
-                    {
-                        MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
-                    }
-                }
-	        }
-	    }
 
 	    protected async override void OnDisappearing()
 	    {
@@ -112,12 +91,6 @@ namespace mobileAppClient
             {
                 MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
             }
-        }
-
-        public void messageReceived(Message message)
-        {
-            message.SetType(localId);
-            conversationMessages.Add(message);
         }
 
         /// <summary>
