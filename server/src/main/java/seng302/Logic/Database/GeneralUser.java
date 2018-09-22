@@ -426,7 +426,6 @@ public class GeneralUser extends DatabaseMethods {
                     resultSet.getString("profile_image_type"));
             user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
             user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
-            user.setPassword(resultSet.getString("password"));
             user.setUsername(resultSet.getString("username"));
 
             int userId = (int) user.getId();
