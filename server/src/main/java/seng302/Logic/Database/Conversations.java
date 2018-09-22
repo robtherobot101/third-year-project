@@ -73,13 +73,40 @@ public class Conversations {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
 
-                statement = connection.prepareStatement("SELECT user_id FROM CONVERSATION_MEMBER WHERE conversation_id = ?;");
+                statement = connection.prepareStatement("SELECT user_id, USER.preferred_name, USER.preferred_last_name FROM CONVERSATION_MEMBER JOIN USER ON CONVERSATION_MEMBER.user_id = USER.id WHERE conversation_id = ?;");
                 statement.setInt(1, conversationId);
                 resultSet = statement.executeQuery();
 
-                List<Integer> participants = new ArrayList<>();
+                Map<Integer, String> participants = new HashMap<>();
                 while (resultSet.next()) {
-                    participants.add(resultSet.getInt(1));
+                    String name = resultSet.getString(2);
+                    String lName = resultSet.getString(3);
+                    if (lName != null && !lName.isEmpty()) {
+                        name += " " + lName;
+                    }
+                    participants.put(resultSet.getInt(1), name);
+                }
+
+                DbUtils.closeQuietly(resultSet);
+                DbUtils.closeQuietly(statement);
+
+                statement = connection.prepareStatement("SELECT user_id, CLINICIAN.name FROM CONVERSATION_MEMBER JOIN CLINICIAN ON CONVERSATION_MEMBER.user_id = CLINICIAN.staff_id WHERE conversation_id = ?;");
+                statement.setInt(1, conversationId);
+                resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    participants.put(resultSet.getInt(1), resultSet.getString(2));
+                }
+
+                DbUtils.closeQuietly(resultSet);
+                DbUtils.closeQuietly(statement);
+
+                statement = connection.prepareStatement("SELECT user_id, ADMIN.name FROM CONVERSATION_MEMBER JOIN ADMIN ON CONVERSATION_MEMBER.user_id = ADMIN.staff_id WHERE conversation_id = ?;");
+                statement.setInt(1, conversationId);
+                resultSet = statement.executeQuery();
+
+                while (resultSet.next()) {
+                    participants.put(resultSet.getInt(1), resultSet.getString(2));
                 }
                 conversation = new Conversation(conversationId, messages, participants);
             } catch (SQLException ignored) {
