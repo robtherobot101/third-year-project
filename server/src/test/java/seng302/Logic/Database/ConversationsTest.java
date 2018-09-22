@@ -94,7 +94,7 @@ public class ConversationsTest extends GenericTest {
         participants.add((int)converser.getStaffID());
 
         conversations.addConversation(participants);
-        List<Conversation> databaseConversations = conversations.getAllConversations((int)converser.getStaffID());
+        List<Conversation> databaseConversations = conversations.getAllConversations((int)converser.getStaffID(), ProfileType.CLINICIAN);
         for (Conversation conversation: databaseConversations) {
             conversations.removeConversation(conversation.getId());
         }
