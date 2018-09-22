@@ -150,8 +150,8 @@ public class ConversationsController {
                 int accessLevel = profileType.getAccessLevel();
                 Message messageToSend = new Message(request.body(), userId);
                 model.addMessage(conversationId, messageToSend);
+                sendMessageNotification(conversationId, userId, messageToSend);
                 response.status(201);
-                PushAPI.getInstance().sendMessage(messageToSend, 0);
                 return "Success";
             } catch (SQLException e) {
                 Server.getInstance().log.error(e.getMessage());
@@ -159,6 +159,25 @@ public class ConversationsController {
                 return "Internal Server Error";
             }
         }
+    }
+
+    /**
+     * Sends message
+     */
+    private void sendMessageNotification(int conversationId, int localId, Message messageToSend) {
+        Conversation queriedConversation;
+        try {
+            queriedConversation = model.getSingleConversation(conversationId);
+        } catch (SQLException ignored) {
+            return;
+        }
+
+        List<Integer> participants = queriedConversation.getMembers();
+        participants.remove(localId);
+        assert(participants.size() == 1);
+
+        int externalId = participants.get(0);
+        PushAPI.getInstance().sendMessage(messageToSend, externalId);
     }
 
     /**

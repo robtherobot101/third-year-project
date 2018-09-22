@@ -71,13 +71,13 @@ public class PushAPI {
     /**
      * Sends a message to all memmbers of a conversation
      * @param message A message object simply holding the message text
-     * @param conversationId The id of the conversation
+     * @param userAccountId The id of the user to receive the notification
      */
-    public void sendMessage(Message message, int conversationId) {
+    public void sendMessage(Message message, int userAccountId) {
         // Get the ids of users in the given conversation and assign the message to their devices
         Notification n = new Notification("New Message", "You have unread messages");
         n.addCustomData("message", message.getText());
-        sendNotification(n, "1", "2", "3");
+        sendNotification(n, String.valueOf(userAccountId));
     }
 
     /**
