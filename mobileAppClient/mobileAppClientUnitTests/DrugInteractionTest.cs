@@ -31,7 +31,7 @@ namespace mobileAppClientUnitTests
             await loginAPI.LoginUser("buzz", "drowssap");
 
             DrugInteractionResult result = await drugAPI.RetrieveDrugInteractions("Ibuprofen", "Asacol");
-            Assert.AreEqual(52, result.ageInteractions.Count);
+            Assert.AreEqual(69, result.ageInteractions.Count);
         }
     }
 }

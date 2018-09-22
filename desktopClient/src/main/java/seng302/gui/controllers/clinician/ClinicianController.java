@@ -98,17 +98,24 @@ public class ClinicianController implements Initializable {
     @FXML
     private AnchorPane organsPane;
     @FXML
+    private AnchorPane transfersPane;
+    @FXML
     private StatusBar statusBar;
     @FXML
     private ClinicianWaitingListController waitingListController;
     @FXML
     private ClinicianAvailableOrgansController availableOrgansController;
     @FXML
+    private ClinicianTransferOrgansController transferOrgansController;
+    @FXML
     private ComboBox countryComboBox;
     @FXML
     private ComboBox<String> regionComboBox;
     @FXML
     private TextField clinicianRegionField;
+
+    @FXML
+    private Button transferListButton;
 
 
     private FadeTransition fadeIn = new FadeTransition(
@@ -259,6 +266,7 @@ public class ClinicianController implements Initializable {
         this.token = token;
         waitingListController.setToken(token);
         availableOrgansController.setToken(token);
+        transferOrgansController.setToken(token);
 
         if (clinician.getRegion() == null) {
             clinician.setRegion("");
@@ -873,9 +881,11 @@ public class ClinicianController implements Initializable {
         setButtonSelected(homeButton, false);
         setButtonSelected(transplantListButton, false);
         setButtonSelected(organListButton, false);
+        setButtonSelected(transferListButton, false);
 
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
+        transfersPane.setVisible(false);
         organsPane.setVisible(false);
     }
 
@@ -916,4 +926,21 @@ public class ClinicianController implements Initializable {
         WindowManager.updateAvailableOrgans();
         titleBar.setTitle(clinician.getName(), clinicianString, "Available Organs");
     }
+
+    /**
+     * Calls the available organs controller and displays it.
+     * also refreshes the table data
+     */
+    public void organsTransfer() {
+        hideAllTabs();
+        setButtonSelected(transferListButton, true);
+        transfersPane.setVisible(true);
+
+        transferOrgansController.startTimer();
+        transferOrgansController.setup();
+
+        WindowManager.updateTransferOrgans();
+        titleBar.setTitle(clinician.getName(), clinicianString, "Organs in Transfer");
+    }
+
 }

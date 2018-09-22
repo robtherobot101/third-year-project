@@ -263,4 +263,21 @@ public class GeneralDB implements GeneralDAO {
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         }
     }
+
+    @Override
+    public List<OrganTransfer> getAllOrganTransfers(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "transfer");
+        if (response == null) {
+            return new ArrayList<>();
+        }
+        if (response.getStatusCode() != 200){
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+        if (response.isValidJson()) {
+            List<OrganTransfer> transfers = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<OrganTransfer>>(){}.getType());
+            return transfers;
+        } else {
+            return new ArrayList<>();
+        }
+    }
 }

@@ -202,4 +202,9 @@ public class GeneralM implements GeneralDAO {
     public void insertTransfer(OrganTransfer transfer, String token) throws HttpResponseException {
 
     }
+
+    @Override
+    public List<OrganTransfer> getAllOrganTransfers(String token) throws HttpResponseException {
+        return new ArrayList<>();
+    }
 }

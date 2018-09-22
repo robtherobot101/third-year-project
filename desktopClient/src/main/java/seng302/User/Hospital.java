@@ -1,7 +1,6 @@
 package seng302.User;
 
 public class Hospital {
-
     private String name;
     private String address;
     private String region;
@@ -31,4 +30,6 @@ public class Hospital {
     public double getLongitude() {
         return longitude;
     }
+
+    public String getName() {return name; }
 }

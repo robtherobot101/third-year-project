@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using mobileAppClient.Models;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -69,6 +70,49 @@ namespace mobileAppClient.odmsAPI
                 Console.WriteLine(ex);
                 return HttpStatusCode.ServiceUnavailable;
             }
+        }
+
+        /// <summary>
+        /// Returns a list of all hospitals from the GET /hospitals endpoint and the HTTP status code
+        /// </summary>
+        /// <returns></returns>
+        public async Task<Tuple<HttpStatusCode, List<Hospital>>> GetHospitals()
+        {
+            List<Hospital> resultHospitals = new List<Hospital>();
+
+            // Check connection
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, List<Hospital>>(HttpStatusCode.ServiceUnavailable, null);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/hospitals");
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, List<Hospital>>(HttpStatusCode.ServiceUnavailable, resultHospitals);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, List<Hospital>>(response.StatusCode, resultHospitals);
+            }
+            
+            // Process found hospitals
+            string responseContent = await response.Content.ReadAsStringAsync();
+            resultHospitals = JsonConvert.DeserializeObject<List<Hospital>>(responseContent);
+
+            return new Tuple<HttpStatusCode, List<Hospital>>(HttpStatusCode.OK, resultHospitals);
         }
     }
 }

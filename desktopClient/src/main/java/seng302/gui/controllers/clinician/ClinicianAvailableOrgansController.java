@@ -385,9 +385,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     }
             );
 
-
-
-
             organsTreeTable.setRoot(root);
             updated = true;
         } catch (HttpResponseException e) {
@@ -485,6 +482,8 @@ public class ClinicianAvailableOrgansController implements Initializable{
                         organ.getId(),
                         receiver.getId(),
                         organ.getOrganType()), token);
+
+        updateOrgans();
     }
 
     public double distance(double lat1, double lat2, double lon1,
