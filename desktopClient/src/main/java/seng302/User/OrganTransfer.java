@@ -34,13 +34,13 @@ public class OrganTransfer {
     private Duration timeLeft;
     private String destinationRegion;
 
-    public OrganTransfer(double startLat, double startLon, double endLat, double endLon, LocalDateTime arrivalTime, int organId, long receiverId, Organ organType){
+    public OrganTransfer(double startLat, double startLon, double endLat, double endLon, LocalDateTime arrivalTime, int id, long receiverId, Organ organType){
         this.startLat = startLat;
         this.startLon = startLon;
         this.endLat = endLat;
         this.endLon = endLon;
         this.arrivalTime = arrivalTime;
-        this.OrganId = organId;
+        this.id = id;
         this.receiverId = receiverId;
         this.organType = organType;
     }

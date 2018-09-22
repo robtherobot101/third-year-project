@@ -457,7 +457,7 @@ namespace mobileAppClient.Views.Clinician
                         customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
 
                         HelicopterFinished(singleHelicopterPin.HelicopterDetails.receiverId, singleHelicopterPin.HelicopterDetails.waitingListItemId, singleHelicopterPin.HelicopterDetails.organId);
-                        
+
                         return;
                     }
                 }
@@ -487,7 +487,7 @@ namespace mobileAppClient.Views.Clinician
                     (int) transfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds,
                     transfer.receiverId,
                     waitingListId,
-                    transfer.organId);
+                    transfer.id);
             }
         }
 
@@ -578,5 +578,15 @@ namespace mobileAppClient.Views.Clinician
 
             return Math.Sqrt(interDistance);
         }
+
+        private void HelicopterFinished(long userId, int waitingListItemId, int organId)
+        {
+            TransplantListAPI transplantListAPI = new TransplantListAPI();
+            transplantListAPI.DeleteTransfer(organId);
+            transplantListAPI.DeleteWaitingListItem(userId, waitingListItemId);
+            transplantListAPI.SetInTransfer(organId);
+
+        }
+
     }
 }
