@@ -22,19 +22,32 @@ public class GeneralDB implements GeneralDAO {
         this.server = server;
     }
 
+    public Boolean checkPassword(String password, long id) throws HttpResponseException {
+        Debugger.log("Checking password with server.");
+        Map<String, String> queryParameters = new HashMap<>();
+        queryParameters.put("password", password);
+        queryParameters.put("id", String.valueOf(id));
+        APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "password");
+        if(response == null) return false;
+        if (response.getStatusCode() == 200) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * login the user into the program
-     * @param usernameEmail the username/email of the user
+     * @param identifier the username/email of the user
      * @param password the users password
      * @return returns the response from the server
      */
-    public Map<Object, String> loginUser(String usernameEmail, String password) {
+    public Map<Object, String> loginUser(String identifier, String password) {
         String accountType = "accountType";
         Map<Object, String> responseMap = new HashMap<>();
 
         Debugger.log("Logging in with server.");
         Map<String, String> queryParameters = new HashMap<>();
-        queryParameters.put("usernameEmail", usernameEmail);
+        queryParameters.put("usernameEmail", identifier);
         queryParameters.put("password", password);
         APIResponse response = server.postRequest(new JsonObject(), queryParameters, "", "login");
         if(response == null) return responseMap;
@@ -50,11 +63,11 @@ public class GeneralDB implements GeneralDAO {
                 responseMap.put(new Gson().fromJson(serverResponse, Admin.class), response.getToken());
                 return responseMap;
             } else {
-                responseMap.put(null, "Username/email and password combination not recognized.");
+                responseMap.put(null, "Username/email/NHI and password combination not recognized.");
                 return responseMap;
             }
         } else {
-            responseMap.put(null, "Username/email and password combination not recognized.");
+            responseMap.put(null, "Username/email/NHI and password combination not recognized.");
             return responseMap;
         }
     }

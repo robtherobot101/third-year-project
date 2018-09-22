@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.control.PasswordField?>
 <AnchorPane fx:id="background" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onMouseClicked="#requestFocus" prefHeight="280.0" prefWidth="270.0" stylesheets="@../../css/darkblue.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.gui.controllers.clinician.ClinicianSettingsController">
    <children>
       <Button fx:id="updateButton" layoutX="72.0" layoutY="252.0" mnemonicParsing="false" onAction="#updateAccountDetails" text="Update" AnchorPane.topAnchor="202.0" />
@@ -16,7 +17,7 @@
          </font>
       </Label>
       <TextField fx:id="usernameField" layoutX="38.0" layoutY="98.0" prefHeight="27.0" prefWidth="186.0" AnchorPane.leftAnchor="38.0" AnchorPane.rightAnchor="38.0" AnchorPane.topAnchor="95.0" />
-      <TextField fx:id="passwordField" layoutX="38.0" layoutY="192.0" prefHeight="27.0" prefWidth="186.0" AnchorPane.leftAnchor="38.0" AnchorPane.rightAnchor="38.0" AnchorPane.topAnchor="143.0" />
+      <PasswordField fx:id="passwordField" layoutX="38.0" layoutY="192.0" prefHeight="27.0" prefWidth="186.0" AnchorPane.leftAnchor="38.0" AnchorPane.rightAnchor="38.0" AnchorPane.topAnchor="143.0" />
       <Label fx:id="errorLabel" alignment="CENTER" layoutY="228.0" prefHeight="17.0" prefWidth="196.0" text="errormessage" visible="false" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="178.0" />
       <Label layoutX="38.0" layoutY="81.0" text="Username" AnchorPane.topAnchor="81.0">
          <font>

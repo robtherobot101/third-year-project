@@ -16,10 +16,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Set;
 
-public class MapObjectModel {
+public class MapObjectModel extends DatabaseMethods {
 
     public ArrayList<MapObject> getAllMapObjects() throws SQLException {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<MapObject> allMapObjects = new ArrayList<>();
             String query =
@@ -28,13 +31,15 @@ public class MapObjectModel {
                             "FROM USER " +
                             "WHERE date_of_death IS NOT NULL";
 
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet resultSet = statement.executeQuery();
+            statement = connection.prepareStatement(query);
+            resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 allMapObjects.add(getMapObjectFromResultSet(resultSet));
             }
 
             return allMapObjects;
+        } finally {
+            close(resultSet, statement);
         }
     }
 

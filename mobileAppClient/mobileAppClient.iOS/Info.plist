@@ -22,18 +22,10 @@
 	</array>
 	<key>MinimumOSVersion</key>
 	<string>11.4</string>
-	<key>CFBundleDisplayName</key>
-	<string>mobileAppClient</string>
-	<key>CFBundleIdentifier</key>
-	<string>team300.mobileAppClient</string>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>1.0.12</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
-	<key>CFBundleName</key>
-	<string>mobileAppClient</string>
-	<key>XSAppIconAssets</key>
-	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>UIStatusBarStyle</key>
 	<string>UIStatusBarStyleLightContent</string>
 	<key>NSCameraUsageDescription</key>
@@ -46,5 +38,21 @@
 	<string>Can we use your location at all times?</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Can we use your location at all times?</string>
+	<key>CFBundleName</key>
+	<string>Transcend Donation</string>
+	<key>XSAppIconAssets</key>
+	<string>Assets.xcassets/AppIcon.appiconset</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.uc.uctd</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0.12</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>remote-notification</string>
+	</array>
+	<key>CFBundleDisplayName</key>
+	<string>Transcend Donation</string>
+	<key>AppCenterAppDelegateForwarderEnabled</key>
+	<string>0</string>
 </dict>
 </plist>

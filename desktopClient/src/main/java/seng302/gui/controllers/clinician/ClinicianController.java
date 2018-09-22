@@ -168,6 +168,7 @@ public class ClinicianController implements Initializable {
      * Sets the current value of the given regionComboBox and regionField to the given value.
      *
      * @param value The value which the ComboBox and TextField will be set to
+     * @param countryComboBox The combobox of the countries
      * @param regionComboBox The ComboBox of New Zealand regions
      * @param regionField The TextField for regions outside of New Zealand
      */
@@ -347,7 +348,7 @@ public class ClinicianController implements Initializable {
                 "Refreshing will update your clinician attributes to the latest version from the server, as well as updating the search table and the waiting list item table.");
         result = alert.showAndWait();
 
-        if (result != null && result.isPresent() && result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
                 Clinician latest = WindowManager.getDataManager().getClinicians().getClinician((int) clinician.getStaffID(), token);
                 setClinician(latest, token);
@@ -392,35 +393,68 @@ public class ClinicianController implements Initializable {
      * and creates a new account settings window to do so. Then does a prompt for the password as well.
      */
     public void updateAccountSettings() {
-        TextInputDialog dialog = new TextInputDialog("");
+        Dialog<ButtonType> dialog = new Dialog();
         WindowManager.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
-        dialog.setContentText("Please enter your password:");
-        Optional<String> password = dialog.showAndWait();
-        if (password.isPresent()) { //Ok was pressed, Else cancel
-            if (password.get().equals(clinician.getPassword())) {
+
+        // Set the button types.
+        ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        PasswordField passwordfield = new PasswordField();
+        passwordfield.setPromptText("Password");
+        grid.add(new Label("Enter your password:"), 0, 1);
+        grid.add(passwordfield, 1, 1);
+
+        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        loginButton.setDisable(true);
+
+        passwordfield.textProperty().addListener((observable, oldValue, newValue) -> {
+            loginButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        result.ifPresent(option -> {
+            if (result.get() == loginButtonType) { //Ok was pressed, Else cancel
+                String password = passwordfield.getText();
+                Boolean flag = false;
                 try {
-                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinician/clinicianSettings.fxml"));
-                    Stage stage = new Stage();
-                    stage.getIcons().add(WindowManager.getIcon());
-                    stage.setResizable(false);
-                    stage.setTitle("Account Settings");
-                    stage.setScene(new Scene(root, 290, 280));
-                    stage.initModality(Modality.APPLICATION_MODAL);
-
-                    WindowManager.setCurrentClinicianForAccountSettings(clinician, token);
-                    WindowManager.setClinicianAccountSettingsEnterEvent();
-
-                    stage.showAndWait();
-                } catch (Exception e) {
-                    Debugger.error(e.getLocalizedMessage());
+                    flag = WindowManager.getDataManager().getGeneral().checkPassword(password, clinician.getStaffID());
+                } catch (HttpResponseException e) {
+                    e.printStackTrace();
                 }
-            } else { // Password incorrect
-                WindowManager.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
-                        "Incorrect password. ", "Please enter the correct password to view account settings").show();
+                if (flag) {
+                    try {
+                        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinician/clinicianSettings.fxml"));
+                        Stage stage = new Stage();
+                        stage.getIcons().add(WindowManager.getIcon());
+                        stage.setResizable(false);
+                        stage.setTitle("Account Settings");
+                        stage.setScene(new Scene(root, 290, 280));
+                        stage.initModality(Modality.APPLICATION_MODAL);
+
+                        WindowManager.setCurrentClinicianForAccountSettings(clinician, token);
+                        WindowManager.setClinicianAccountSettingsEnterEvent();
+
+                        stage.showAndWait();
+                    } catch (Exception e) {
+                        Debugger.error(e.getLocalizedMessage());
+                    }
+                } else { // Password incorrect
+                    WindowManager.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
+                            "Incorrect password. ", "Please enter the correct password to view account settings").show();
+                }
             }
-        }
+        });
     }
 
     /**

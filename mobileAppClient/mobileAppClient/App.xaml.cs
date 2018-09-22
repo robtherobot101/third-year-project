@@ -6,6 +6,7 @@ using System.IO;
 using mobileAppClient.Google;
 using Newtonsoft.Json;
 using mobileAppClient.odmsAPI;
+using mobileAppClient.Notifications;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 namespace mobileAppClient
@@ -30,7 +31,10 @@ namespace mobileAppClient
             // Ensure config is set
             ServerConfig serverConfig = ServerConfig.Instance;
             UserController userController = UserController.Instance;
-            MainPage = new MainPage(false);
+
+            MainPage = new LoginPage();
+
+            //MainPage = new MainPage(false);
         }
 
         public static async void ProcessGoogleLogin(string code)
@@ -41,6 +45,9 @@ namespace mobileAppClient
         protected override void OnStart()
         {
             // Handle when your app starts
+
+            // Visual Studio App Center initialisation 
+            VSAppCenter.Setup();
         }
 
         async protected override void OnSleep()

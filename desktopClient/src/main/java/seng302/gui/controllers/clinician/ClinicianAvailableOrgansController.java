@@ -163,6 +163,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * Sets the current value of the given regionComboBox and regionField to the given value.
      *
      * @param value The value which the ComboBox and TextField will be set to
+     * @param countryComboBox The combobox of countries
      * @param regionComboBox The ComboBox of New Zealand regions
      * @param regionField The TextField for regions outside of New Zealand
      */
@@ -270,7 +271,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
         try {
             HashMap filterParams = new HashMap();
 
-            if(!countryComboBox.getValue().toString().equals("All Countries")) {
+            if(countryComboBox.getValue() != null && !countryComboBox.getValue().toString().equals("All Countries")) {
                 filterParams.put("country", countryComboBox.getValue().toString());
             }
 
@@ -297,7 +298,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
                         lastUser = addUserInfo(organ);
                     }
                     //if multiple organs from the same user no need to do multiple API calls
-                    if (organ.getDonorId() == lastUser.getId()){
+                    if (lastUser != null && organ.getDonorId() == lastUser.getId()){
                         organ.setReceiverName(lastUser.getName());
                         organ.setReceiverDeathRegion(lastUser.getRegionOfDeath());
                     } else {
@@ -457,21 +458,13 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
 
 
-        regionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
-            filterChanged();
-        });
+        regionComboBox.valueProperty().addListener((observable, oldValue, newValue) -> filterChanged());
 
-        regionTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filterChanged();
-        });
+        regionTextField.textProperty().addListener((observable, oldValue, newValue) -> filterChanged());
 
-        organFilter.valueProperty().addListener((observable, oldValue, newValue) -> {
-            filterChanged();
-        });
+        organFilter.valueProperty().addListener((observable, oldValue, newValue) -> filterChanged());
 
-        receiverNameTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filterChanged();
-        });
+        receiverNameTextField.textProperty().addListener((observable, oldValue, newValue) -> filterChanged());
 
 
 
@@ -587,13 +580,11 @@ public class ClinicianAvailableOrgansController implements Initializable{
     public void refreshTable(){
         updated = false;
         WindowManager.updateAvailableOrgans();
-        if (updated){
-            updateResultsLabel.setVisible(false);
-            refreshSuccessText.setText("Updated successfully.");
-            refreshSuccessText.setVisible(true);
-            fade.playFromStart();
-            filterApplied();
-        }
+        updateResultsLabel.setVisible(false);
+        refreshSuccessText.setText("Updated successfully.");
+        refreshSuccessText.setVisible(true);
+        fade.playFromStart();
+        filterApplied();
     }
 
     /**

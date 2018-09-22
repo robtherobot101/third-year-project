@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Class="mobileAppClient.MedicationsPage"
+             xmlns:local="clr-namespace:mobileAppClient"
+             Title="Medications" NavigationPage.HasNavigationBar="True"
+             xmlns:controls="clr-namespace:SegmentedControl.FormsPlugin.Abstractions;assembly=SegmentedControl.FormsPlugin.Abstractions"
+             >
+    <ContentPage.Content>
+         <StackLayout Orientation="Vertical">
+
+            <controls:SegmentedControl x:Name="SegControl" 
+                                       SelectedSegment="0"
+                                       ValueChanged="Handle_MedicationChanged"
+                                       HeightRequest="40">
+              <controls:SegmentedControl.Children>
+                <controls:SegmentedControlOption Text="Current" />
+                <controls:SegmentedControlOption Text="Historic" />
+              </controls:SegmentedControl.Children>
+            </controls:SegmentedControl>
+
+            <ListView x:Name="MedicationsList"
+                      ItemTapped="Handle_MedicationTapped">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                             <ViewCell.ContextActions>
+                                    <MenuItem Clicked="Handle_MoveToClicked" CommandParameter="{Binding .}"
+                                       Text="Move" />
+                                    <MenuItem Clicked="Handle_DeleteClicked" CommandParameter="{Binding .}"
+                                       Text="Delete" IsDestructive="true" />
+                             </ViewCell.ContextActions>
+                            <StackLayout Orientation="Vertical" Padding="15, 0, 0, 0">
+                                <Label Text="{Binding name}"
+                                TextColor="Blue"
+                                FontSize="Default"
+                                       />
+                                
+                                <Label Text="{Binding DetailString}"
+                                HorizontalOptions="StartAndExpand"
+                                TextColor="Gray"
+                                FontSize="Micro"/>
+                            </StackLayout>
+                            
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Label Text="There is no data to display here" IsVisible="false" HorizontalOptions="Center" x:Name="NoDataLabel"/>
+
+            <StackLayout VerticalOptions="EndAndExpand">
+                <Button x:Name="AddMedicationButton" Text="Add Medication" Clicked="AddMedicationButton_OnClicked" IsVisible="False"/>
+            </StackLayout>
+
+            <Button x:Name="CompareButton"
+            Text="COMPARE"
+            Pressed="Handle_CompareButtonPressed"
+            />
+            
+        </StackLayout>
+    </ContentPage.Content>
+    
+</ContentPage>

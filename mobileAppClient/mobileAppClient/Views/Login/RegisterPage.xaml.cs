@@ -38,6 +38,7 @@ namespace mobileAppClient
             string givenPassword = InputValidation.Trim(passwordInput.Text);
             string givenEmail = InputValidation.Trim(emailInput.Text);
             string givenUsername = InputValidation.Trim(usernameInput.Text);
+            string givenNhi = InputValidation.Trim(nhiInput.Text);
 
             // Check for valid inputs
             if (!InputValidation.IsValidTextInput(givenFirstName, false, false))
@@ -72,6 +73,14 @@ namespace mobileAppClient
                 return;
             }
 
+            else if (!InputValidation.IsValidNhiInput(givenNhi))
+            {
+                await DisplayAlert("",
+                    "Please enter a valid NHI number",
+                    "OK");
+                return;
+            }
+
             else if (!InputValidation.IsValidTextInput(givenPassword, true, false))
             {
                 await DisplayAlert("",
@@ -82,14 +91,14 @@ namespace mobileAppClient
             // DOB validation is through constraints on the DatePicker in the XAML
 
             // Check uniqueness
-            Tuple<bool, bool, bool> uniquenessResult = await isUsernameEmailUnique();
+            Tuple<bool, bool, bool, bool> uniquenessResult = await isUsernameEmailUnique();
 
-            if (!uniquenessResult.Item1 || !uniquenessResult.Item2)
+            if (!uniquenessResult.Item1 || !uniquenessResult.Item2 || !uniquenessResult.Item3)
             {
                 // Username + email taken
                 await DisplayAlert(
                         "",
-                        "Email/username is taken",
+                        "Email/username/NHI is taken",
                         "OK");
             }
 
@@ -98,6 +107,7 @@ namespace mobileAppClient
             inputUser.name = new List<string>{ givenFirstName, "", givenLastName };
             inputUser.preferredName = new List<string> { givenFirstName, "", givenLastName };
             inputUser.email = givenEmail;
+            inputUser.nhi = givenNhi;
             inputUser.username = givenUsername;
             inputUser.password = givenPassword;
             inputUser.dateOfBirth = new CustomDate(dobInput.Date);
@@ -159,7 +169,7 @@ namespace mobileAppClient
                     await Navigation.PopModalAsync();
 
                     // Dismiss the login modal dialog
-                    await parentLoginPage.Navigation.PopModalAsync();
+                    await parentLoginPage.OpenMainPageFromSignUp();
                     break;
 
                 case HttpStatusCode.Unauthorized:
@@ -185,7 +195,7 @@ namespace mobileAppClient
         /*
          * <bool, bool, bool> = <isUsernameUnique, isEmailUnique, wasApiCallSuccessful?>
          */
-        async Task<Tuple<bool, bool, bool>> isUsernameEmailUnique()
+        async Task<Tuple<bool, bool, bool, bool>> isUsernameEmailUnique()
         {
             UserAPI userAPI = new UserAPI();
 
@@ -197,7 +207,7 @@ namespace mobileAppClient
                         "Server Failed",
                         "Failed to check username",
                         "OK");
-                return new Tuple<bool, bool, bool>(false, false, false);
+                return new Tuple<bool, bool, bool, bool>(false, false, false, false);
             }
 
             // Get validity of email
@@ -208,10 +218,21 @@ namespace mobileAppClient
                         "Server Failed",
                         "Failed to check email",
                         "OK");
-                return new Tuple<bool, bool, bool>(false, false, false);
+                return new Tuple<bool, bool, bool, bool>(false, false, false, false);
             }
 
-            return new Tuple<bool, bool, bool>(isUniqueUsernameResult.Item2, isUniqueEmailResult.Item2, true);
+            // Get validity of nhi
+            Tuple<HttpStatusCode, bool> isUniqueNhiResult = await userAPI.isUniqueUsernameEmail(nhiInput.Text);
+            if (isUniqueNhiResult.Item1 != HttpStatusCode.OK)
+            {
+                await DisplayAlert(
+                        "Server Failed",
+                        "Failed to check NHI",
+                        "OK");
+                return new Tuple<bool, bool, bool, bool>(false, false, false, false);
+            }
+
+            return new Tuple<bool, bool, bool, bool>(isUniqueUsernameResult.Item2, isUniqueEmailResult.Item2, isUniqueNhiResult.Item2, true);
         }
 
         async void CheckCredentials(object sender, EventArgs e)
@@ -236,17 +257,17 @@ namespace mobileAppClient
                 return;
             }
 
-            Tuple<bool, bool, bool> uniquenessResult = await isUsernameEmailUnique();
-            if (!uniquenessResult.Item3)
+            Tuple<bool, bool, bool, bool> uniquenessResult = await isUsernameEmailUnique();
+            if (!uniquenessResult.Item4)
             {
                 return;
             }
-            if (!uniquenessResult.Item1 || !uniquenessResult.Item2)
+            if (!uniquenessResult.Item1 || !uniquenessResult.Item2 || !uniquenessResult.Item3)
             {
                 // Username + email taken
                 await DisplayAlert(
                         "",
-                        "Email/username is taken",
+                        "Email/username/NHI is taken",
                         "OK");
             } 
             else

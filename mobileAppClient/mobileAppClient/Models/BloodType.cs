@@ -80,7 +80,9 @@ namespace mobileAppClient
             }
         }
 
-         /* Converts a given string into a BloodType Enum used for when the user object is recieved from the server.
+
+        /*
+         * Converts a given string into a BloodType Enum used for when the user object is recieved from the server.
          */
         public static BloodType ToBloodTypeJSON(this string value)
         {
@@ -107,6 +109,5 @@ namespace mobileAppClient
                     return BloodType.O_POS;
             }
         }
-
     }
 }

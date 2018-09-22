@@ -22,7 +22,9 @@ import java.util.ResourceBundle;
 public class UserSettingsController implements Initializable {
 
     @FXML
-    private TextField usernameField, emailField, passwordField;
+    private TextField usernameField, emailField;
+    @FXML
+    private PasswordField passwordField;
     @FXML
     private Button updateButton, cancelButton;
     @FXML
@@ -59,7 +61,6 @@ public class UserSettingsController implements Initializable {
         userNameLabel.setText("user: " + currentUser.getName());
         usernameField.setText(currentUser.getUsername() != null ? currentUser.getUsername() : "");
         emailField.setText(currentUser.getEmail() != null ? currentUser.getEmail() : "");
-        passwordField.setText(currentUser.getPassword());
     }
 
     /**
@@ -68,12 +69,20 @@ public class UserSettingsController implements Initializable {
      */
     public void updateAccountDetails() {
         try {
-            if (!oldUsername.equals(usernameField.getText()) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText())) {
-                errorLabel.setText("That username is already taken.");
+            if ((oldUsername != null && !oldUsername.equals(usernameField.getText())) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameField.getText())) {
+                if (usernameField.getText().isEmpty()) {
+                    errorLabel.setText("Cannot remove username.");
+                } else {
+                    errorLabel.setText("That username is already taken.");
+                }
                 errorLabel.setVisible(true);
                 return;
-            } else if (!oldEmail.equals(emailField.getText()) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText())) {
-                errorLabel.setText("There is already a user account with that email.");
+            } else if ((oldEmail != null && !oldEmail.equals(emailField.getText())) && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailField.getText())) {
+                if (emailField.getText().isEmpty()) {
+                    errorLabel.setText("Cannot remove email.");
+                } else {
+                    errorLabel.setText("There is already a user account with that email.");
+                }
                 errorLabel.setVisible(true);
                 return;
             }
@@ -84,7 +93,7 @@ public class UserSettingsController implements Initializable {
         Alert alert = WindowManager.createAlert(AlertType.CONFIRMATION, "Are you sure?", "Are you sure would like to update account settings ? ",
                 "The changes made will not be saved to the server until you save.");
         Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             currentUser.setUsername(usernameField.getText());
             currentUser.setEmail(emailField.getText());
             currentUser.setPassword(passwordField.getText());

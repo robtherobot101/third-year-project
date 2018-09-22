@@ -16,6 +16,7 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.regex.Pattern;
 
 /**
  * A controller class for the create account screen.
@@ -26,6 +27,8 @@ public class CreateUserController implements Initializable {
     private TextField usernameInput;
     @FXML
     private TextField emailInput;
+    @FXML
+    private TextField nhiInput;
     @FXML
     private TextField passwordConfirmInput;
     @FXML
@@ -82,12 +85,16 @@ public class CreateUserController implements Initializable {
      */
     public User createAccount() {
         try {
-            if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameInput.getText())) {
+            if (!usernameInput.getText().isEmpty() && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(usernameInput.getText())) {
                 errorText.setText("That username is already taken.");
                 errorText.setVisible(true);
                 return null;
-            } else if(!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailInput.getText())) {
+            } else if (!emailInput.getText().isEmpty() && !WindowManager.getDataManager().getGeneral().isUniqueIdentifier(emailInput.getText())) {
                 errorText.setText("There is already a user account with that email.");
+                errorText.setVisible(true);
+                return null;
+            } else if (!WindowManager.getDataManager().getGeneral().isUniqueIdentifier(nhiInput.getText())) {
+                errorText.setText("There is already a user account with that NHII.");
                 errorText.setVisible(true);
                 return null;
             }
@@ -102,13 +109,18 @@ public class CreateUserController implements Initializable {
             errorText.setText("Date of birth is in the future");
             errorText.setVisible(true);
             return null;
+        } else if (!User.checkNhi(nhiInput.getText())) {
+            errorText.setText("NHI is not valid");
+            errorText.setVisible(true);
+            return null;
         } else {
             errorText.setVisible(false);
             String username = usernameInput.getText().isEmpty() ? null : usernameInput.getText();
             String email = emailInput.getText().isEmpty() ? null : emailInput.getText();
+            String nhi = nhiInput.getText().isEmpty() ? null : nhiInput.getText();
             String[] middleNames = middleNamesInput.getText().isEmpty() ? new String[]{} : middleNamesInput.getText().split(",");
             user = new User(firstNameInput.getText(), middleNames, lastNameInput.getText(),
-                    dateOfBirthInput.getValue(), username, email, passwordInput.getText());
+                    dateOfBirthInput.getValue(), username, email, nhi, passwordInput.getText());
             user.addHistoryEntry("Created", "This profile was created.");
             user.addHistoryEntry("Logged in", "This profile was logged in to.");
 
@@ -116,7 +128,7 @@ public class CreateUserController implements Initializable {
             if (background.getScene().getWindow() == WindowManager.getStage()) {
                 try {
                     WindowManager.getDataManager().getUsers().insertUser(user);
-                    Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(user.getUsername(), user.getPassword());
+                    Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(user.getNhi(), user.getPassword());
                     User fromResponse = (User)response.keySet().iterator().next();
                     String token = response.values().iterator().next();
 
@@ -137,8 +149,8 @@ public class CreateUserController implements Initializable {
      * Enable/disable the create account button based on whether the required information is present or not.
      */
     private void checkRequiredFields() {
-        createAccountButton.setDisable((usernameInput.getText().isEmpty() || emailInput.getText().isEmpty()) || firstNameInput.getText().isEmpty() ||
-                passwordInput.getText().isEmpty() || passwordConfirmInput.getText().isEmpty() || dateOfBirthInput.getValue() == null);
+        createAccountButton.setDisable((usernameInput.getText().isEmpty() && emailInput.getText().isEmpty() && nhiInput.getText().isEmpty()) || firstNameInput.getText().isEmpty() ||
+                passwordInput.getText().isEmpty() || passwordConfirmInput.getText().isEmpty() || dateOfBirthInput.getValue() == null || nhiInput.getText().isEmpty());
     }
 
     /**
@@ -167,5 +179,6 @@ public class CreateUserController implements Initializable {
         passwordConfirmInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
         firstNameInput.textProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
         dateOfBirthInput.valueProperty().addListener((observable, oldValue, newValue) -> checkRequiredFields());
+        nhiInput.textProperty().addListener(((observable, oldValue, newValue) -> checkRequiredFields()));
     }
 }
