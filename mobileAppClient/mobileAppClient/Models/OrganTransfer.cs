@@ -6,7 +6,7 @@ namespace mobileAppClient.Models
     class OrganTransfer
     {
 
-        public int organId { get; set; }
+        public int id { get; set; }
         public double startLat { get; set; }
         public double startLon { get; set; }
         public double endLat { get; set; }

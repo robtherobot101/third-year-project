@@ -108,7 +108,8 @@ CREATE TABLE IF NOT EXISTS `DONATION_LIST_ITEM` (
   `id` int(11) NOT NULL,
   `user_id` bigint(11) NOT NULL,
   `timeOfDeath` bigint(20) DEFAULT NULL,
-  `expired` int(11) NOT NULL DEFAULT '0'
+  `expired` int(11) NOT NULL DEFAULT '0',
+  `inTransfer` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------

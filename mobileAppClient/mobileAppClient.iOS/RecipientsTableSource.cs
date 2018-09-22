@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Foundation;
 using mobileAppClient.odmsAPI;
+using mobileAppClient.Views.Clinician;
 using UIKit;
 
 namespace mobileAppClient.iOS
@@ -17,15 +18,21 @@ namespace mobileAppClient.iOS
         List<User> recipients;
         Dictionary<int, UIImage> UserPhotos;
         DonatableOrgan currentOrgan;
+        CustomMap formsMap;
+        User selectedRecipient;
+        CustomPin customPin;
 
 
         public RecipientsTableSource(PotentialMatchesBottomSheetViewController owner 
-                                     , DonatableOrgan currentOrgan)
+                                     , DonatableOrgan currentOrgan, CustomMap map, CustomPin customPin)
         {
             this.owner = owner;
             this.UserPhotos = new Dictionary<int, UIImage>();
             this.recipients = currentOrgan.topReceivers;
             this.currentOrgan = currentOrgan;
+            this.formsMap = map;
+            this.customPin = customPin;
+
         }
 
         public RecipientsTableSource() {
@@ -101,8 +108,9 @@ namespace mobileAppClient.iOS
 
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
+            selectedRecipient = recipients[indexPath.Row];
             UIAlertController okAlertController = UIAlertController.Create("Begin transfer process?", 
-                                                                           "Would you like to transfer " + currentOrgan.organType + " to " + recipients[indexPath.Row].FullName + "?", 
+                                                                           "Would you like to transfer " + currentOrgan.organType + " to " + selectedRecipient.FullName + "?", 
                                                                            UIAlertControllerStyle.Alert);
             okAlertController.AddAction(UIAlertAction.Create("Yes", UIAlertActionStyle.Default, BeginTransferProcess));
             okAlertController.AddAction(UIAlertAction.Create("No", UIAlertActionStyle.Cancel, null));
@@ -114,6 +122,8 @@ namespace mobileAppClient.iOS
         void BeginTransferProcess(UIAlertAction obj)
         {
             Console.WriteLine("LET US BEGIN.");
+            ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
+            parent.NewTransfer(currentOrgan, selectedRecipient, customPin.Position);
         }
 
     }

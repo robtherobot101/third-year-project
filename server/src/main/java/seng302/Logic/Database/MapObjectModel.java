@@ -66,11 +66,17 @@ public class MapObjectModel extends DatabaseMethods {
                     expired = false;
                 }
 
+                boolean inTransfer = true;
+                if (organsResultSet.getInt("inTransfer") == 0){
+                    inTransfer = false;
+                }
+
                 DonatableOrgan organ = new DonatableOrgan(
                         LocalDateTime.ofEpochSecond(organsResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
                         Organ.parse(organsResultSet.getString("name")),
                         mapObjectResultSet.getInt("id"),
-                        expired
+                        expired,
+                        inTransfer
 
                 );
 
