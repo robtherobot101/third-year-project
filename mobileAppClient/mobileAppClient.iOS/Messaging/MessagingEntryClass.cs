@@ -6,7 +6,7 @@ using Xamarin.Forms;
 [assembly: Dependency(typeof(mobileAppClient.iOS.MessagingEntryClass))]
 namespace mobileAppClient.iOS
 {
-    public class MessagingEntryClass : CustomMessagingInterface
+    public class MessagingEntryClass
     {
         public MessagingEntryClass()
         {
