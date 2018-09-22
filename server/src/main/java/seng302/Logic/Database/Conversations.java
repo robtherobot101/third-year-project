@@ -146,6 +146,41 @@ public class Conversations {
     }
 
     /**
+     * Gets all of the users that are participating a conversation.
+     *
+     * @param conversationId The id of the conversation to check
+     * @return A list of the id numbers of users in the conversation
+     * @throws SQLException If database communication fails
+     */
+    public List<Integer> getConversationUsers(int conversationId) throws SQLException {
+        List<Integer> userIds = null;
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        SQLException error = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            statement = connection.prepareStatement("SELECT user_id FROM CONVERSATION_MEMBER WHERE conversation_id = ?;");
+            statement.setInt(1, conversationId);
+            resultSet = statement.executeQuery();
+            userIds = new ArrayList<>();
+            while (resultSet.next()) {
+                userIds.add(resultSet.getInt(1));
+            }
+        } catch (SQLException e) {
+            error = e;
+        } finally {
+            DbUtils.closeQuietly(resultSet);
+            DbUtils.closeQuietly(statement);
+        }
+
+        if (userIds == null) {
+            throw error;
+        } else {
+            return userIds;
+        }
+    }
+
+
+    /**
      * Adds a message to a conversation.
      *
      * @param conversationId The id of the conversation to add to

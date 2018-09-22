@@ -6,8 +6,10 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.http.json.JsonHttpContent;
 import com.google.api.client.json.jackson.JacksonFactory;
 import com.google.gson.Gson;
+import seng302.Logic.Database.Conversations;
 import seng302.Logic.Database.Notifications;
 import seng302.Model.Message;
+import seng302.Model.WaitingListItem;
 import seng302.Server;
 
 
@@ -15,6 +17,7 @@ import javax.swing.text.StringContent;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class PushAPI {
     /**
@@ -78,6 +81,20 @@ public class PushAPI {
         Notification n = new Notification("New Message", "You have unread messages");
         n.addCustomData("message", message.getText());
         sendNotification(n, String.valueOf(userAccountId));
+    }
+
+
+    /**
+     * Sends a waiting list item update to the user it concerns.
+     *
+     * @param userId The id of the affected user
+     * @param title The type of change that triggered the notification
+     * @param message A short description of the change
+     */
+    public void sendTextNotification(int userId, String title, String message) {
+        Notification n = new Notification(title, message);
+        n.addCustomData("waitingListItem", null);
+        sendNotification(n, Integer.toString(userId));
     }
 
     /**

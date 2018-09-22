@@ -3,6 +3,7 @@ package seng302.Logic.Database;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
 import seng302.Model.WaitingListItem;
+import seng302.NotificationManager.PushAPI;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -250,6 +251,8 @@ public class UserWaitingList extends DatabaseMethods {
         //Upload all new waiting list items
         for (WaitingListItem waitingListItem : newWaitingListItems) {
             insertWaitingListItem(waitingListItem, userId);
+            PushAPI.getInstance().sendTextNotification(userId, "Organ added to waiting list.",
+                    Organ.capitalise(waitingListItem.getOrganType().toString()) + " was added to your organ waiting list.");
         }
     }
 }
