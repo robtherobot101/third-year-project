@@ -32,6 +32,10 @@ namespace mobileAppClient.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
+        UIKit.UILabel potentialRecipientsLabel { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
         UIKit.UITableView potentialRecipientsTableView { get; set; }
 
         [Outlet]
@@ -58,6 +62,11 @@ namespace mobileAppClient.iOS
             if (organNameLabel != null) {
                 organNameLabel.Dispose ();
                 organNameLabel = null;
+            }
+
+            if (potentialRecipientsLabel != null) {
+                potentialRecipientsLabel.Dispose ();
+                potentialRecipientsLabel = null;
             }
 
             if (potentialRecipientsTableView != null) {
