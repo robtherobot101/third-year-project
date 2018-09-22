@@ -11,6 +11,7 @@ namespace mobileAppClient
         public CustomDateTime timestamp { get; set; }
         // Senders account ID
         public int userId { get; set; }
+        public int conversationId { get; set; }
 
         [JsonIgnore]
         public MessageType messageType { get; set; }
