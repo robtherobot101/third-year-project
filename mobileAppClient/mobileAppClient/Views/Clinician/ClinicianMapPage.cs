@@ -507,7 +507,7 @@ namespace mobileAppClient.Views.Clinician
 
         public async void NewTransfer(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition) {
             OrganTransfer newOrganTransfer = new OrganTransfer();
-            newOrganTransfer.organId = currentOrgan.id;
+            newOrganTransfer.id = currentOrgan.id;
             newOrganTransfer.receiverId = selectedRecipient.id;
 
             //Find the position of the donor

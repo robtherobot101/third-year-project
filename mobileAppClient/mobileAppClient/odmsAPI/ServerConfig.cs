@@ -27,8 +27,8 @@ namespace mobileAppClient.odmsAPI
             client = new HttpClient();
 
             // Sets default address
-            serverAddress = "https://csse-s302g3.canterbury.ac.nz/api/v1";
-            //serverAddress = "http://localhost:7015/api/v1";
+            //serverAddress = "https://csse-s302g3.canterbury.ac.nz/api/v1";
+            serverAddress = "http://localhost:7015/api/v1";
             //serverAddress = "http://10.0.2.2:7015/api/v1";
         }
 
