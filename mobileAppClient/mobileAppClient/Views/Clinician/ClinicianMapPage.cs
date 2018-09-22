@@ -133,6 +133,8 @@ namespace mobileAppClient.Views.Clinician
 
             await InitialiseHospitals();
 
+            StartTransfers();
+
             //AddTestHelicopter();
             //AddTest2Helicopter();
 
@@ -468,6 +470,17 @@ namespace mobileAppClient.Views.Clinician
                     customMap.Pins.Add(singleHelicopterPin);
                 });
                 
+            }
+        }
+
+        private async void StartTransfers()
+        {
+            TransplantListAPI transplantListAPI = new TransplantListAPI();
+            List<OrganTransfer> transfers = await transplantListAPI.GetAllTransfers();
+
+            foreach (OrganTransfer transfer in transfers)
+            {
+                AddHelicopter(new Position(transfer.startLat, transfer.startLon), new Position(transfer.endtLat, transfer.endLon), transfer.organType);
             }
         }
     }

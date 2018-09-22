@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using mobileAppClient.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -115,6 +116,33 @@ namespace mobileAppClient.odmsAPI
             Console.Write("Patch all user items response: " + response);
 
             return response.StatusCode;
+        }
+
+        public async Task<List<OrganTransfer>> GetAllTransfers()
+        {
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/transfer");
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            var response = await client.SendAsync(request);
+            string body = await response.Content.ReadAsStringAsync();
+
+            try
+            {
+                return JsonConvert.DeserializeObject<List<OrganTransfer>>(body);
+            }
+            catch (JsonSerializationException jse)
+            {
+                return new List<OrganTransfer>();
+            }
+            catch (JsonReaderException)
+            {
+                return new List<OrganTransfer>();
+
+            }
         }
     }
 }
