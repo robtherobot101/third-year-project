@@ -149,7 +149,7 @@ public class CreateUserController implements Initializable {
      * Enable/disable the create account button based on whether the required information is present or not.
      */
     private void checkRequiredFields() {
-        createAccountButton.setDisable((usernameInput.getText().isEmpty() && emailInput.getText().isEmpty() && nhiInput.getText().isEmpty()) || firstNameInput.getText().isEmpty() ||
+        createAccountButton.setDisable(usernameInput.getText().isEmpty() || nhiInput.getText().isEmpty() || firstNameInput.getText().isEmpty() ||
                 passwordInput.getText().isEmpty() || passwordConfirmInput.getText().isEmpty() || dateOfBirthInput.getValue() == null || nhiInput.getText().isEmpty());
     }
 
