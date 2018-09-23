@@ -192,6 +192,9 @@ public class Conversations {
             PreparedStatement statement = null;
 
             try {
+                statement = connection.prepareStatement("SET NAMES utf8mb4");
+                statement.executeUpdate();
+                statement.close();
                 statement = connection.prepareStatement("INSERT INTO MESSAGE(conversation_id, text, date_time, user_id) VALUES(?, ?, ?, ?);");
                 statement.setInt(1, conversationId);
                 statement.setString(2, message.getText());
