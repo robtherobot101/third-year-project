@@ -60,7 +60,7 @@ namespace mobileAppClient.iOS
             //SET THE TEXT DETAIL TO BE THE COUNTDOWN
              //Get organ object from organ list             DonatableOrgan currentOrgan = null;             foreach(DonatableOrgan donatableOrgan in pin.donatableOrgans) {                 if(donatableOrgan.organType.ToLower().Equals(item.ToLower())) {                     currentOrgan = donatableOrgan;                 }             }             string countdownDetail = "";             if (currentOrgan.expired)             {
                 cell.DetailTextLabel.Text = "EXPIRED";                 cell.DetailTextLabel.TextColor = UIColor.Red;             } else if(currentOrgan.inTransfer == 1) {
-                cell.DetailTextLabel.Text = "IN TRANSFER";
+                cell.DetailTextLabel.Text = "IN TRANSIT";
                 cell.DetailTextLabel.TextColor = UIColor.Orange;
             } else if(currentOrgan.inTransfer == 2) {
                 cell.DetailTextLabel.Text = "SUCCESSFULLY TRANSFERRED";

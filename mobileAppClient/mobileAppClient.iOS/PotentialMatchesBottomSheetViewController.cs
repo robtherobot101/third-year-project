@@ -63,13 +63,13 @@ namespace mobileAppClient.iOS
             {
                 potentialRecipientsLabel.Text = "This organ has expired.";
                 potentialRecipientsTableView.Hidden = true;
-            } else if (currentOrganCell.DetailTextLabel.Text.Equals("IN TRANSFER"))
+            } else if (currentOrganCell.DetailTextLabel.Text.Equals("IN TRANSIT"))
             {
                 potentialRecipientsLabel.Text = "This organ is currently in transit.";
                 potentialRecipientsTableView.Hidden = true;
             } else if (currentOrganCell.DetailTextLabel.Text.Equals("SUCCESSFULLY TRANSFERRED"))
             {
-                potentialRecipientsLabel.Text = "This organ has been successfully transferred.";
+                potentialRecipientsLabel.Text = "This organ has been transferred.";
                 potentialRecipientsTableView.Hidden = true;
             }
             else if (currentOrgan.topReceivers.Count == 0) {
@@ -106,7 +106,7 @@ namespace mobileAppClient.iOS
                 if (detailString.Equals("EXPIRED"))
                 {
                     return;
-                } else if (detailString.Equals("IN TRANSFER"))
+                } else if (detailString.Equals("IN TRANSIT"))
                 {
                     return;
                 } else if (detailString.Equals("SUCCESSFULLY TRANSFERRED"))
@@ -166,7 +166,6 @@ namespace mobileAppClient.iOS
             Device.BeginInvokeOnMainThread(() =>
             {
                 organTimeLeft--;
-                Console.WriteLine(organTimeLeft);
 
                 if(organTimeLeft <= 0) {
                     return;
@@ -211,7 +210,7 @@ namespace mobileAppClient.iOS
             if (detailString.Equals("EXPIRED"))
             {
                 return;
-            } else if (detailString.Equals("IN TRANSFER"))
+            } else if (detailString.Equals("IN TRANSIT"))
             {
                 return;
             } else if (detailString.Equals("SUCCESSFULLY TRANSFERRED"))

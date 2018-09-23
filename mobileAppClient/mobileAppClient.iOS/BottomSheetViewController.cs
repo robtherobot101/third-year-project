@@ -58,7 +58,7 @@ namespace mobileAppClient.iOS
                     string detailString = cell.DetailTextLabel.Text;
                     if(detailString.Equals("EXPIRED")) {
                         continue;
-                    } else if(detailString.Equals("IN TRANSFER")) {
+                    } else if(detailString.Equals("IN TRANSIT")) {
                         continue;
                     } else if(detailString.Equals("SUCCESSFULLY TRANSFERRED")) {
                         continue;

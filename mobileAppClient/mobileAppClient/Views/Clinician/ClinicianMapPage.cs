@@ -382,7 +382,8 @@ namespace mobileAppClient.Views.Clinician
 	            Label = "Heli",
 	            HelicopterDetails = heli,
 	            Position = heli.startPosition,
-	            Address = heliID
+	            Address = heliID,
+                Url = "Heli" + "," + heliID
             };
 
             // Add the main helichopper pin to our list of custom heli pins we can track (heli pin contains the transported organ custom pin)

@@ -127,7 +127,7 @@ namespace mobileAppClient.iOS
 
             //Update bottom sheet to show In transfer - empty table and update countdown
             
-            owner.timeRemainingLabel.Text = "IN TRANSFER";
+            owner.timeRemainingLabel.Text = "IN TRANSIT";
             owner.timeRemainingLabel.TextColor = UIColor.Orange;
             owner.potentialRecipientsLabel.Text = "This organ is currently in transit.";
             owner.potentialRecipientsTableView.Hidden = true;
