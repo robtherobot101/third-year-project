@@ -18,7 +18,7 @@ using ServiceStack;
 namespace mobileAppClient.Droid
 {
     [Activity]
-    public class BottomSheetListActivity : AppCompatActivity
+    public class BottomSheetListActivity : AppCompatActivity, View.IOnClickListener
     {
         List<DonatableOrgan> organs;
         protected override void OnCreate(Bundle bundle)
@@ -28,6 +28,24 @@ namespace mobileAppClient.Droid
 
             PrepareSheet();
 
+        }
+
+        public void OnClick(View view)
+        {
+            int rowIndex = view.Id;
+            String organText;
+           
+            for (int index = 0; index < ((ViewGroup)view).ChildCount; ++index)
+            {
+                View nextChild = ((ViewGroup)view).GetChildAt(index);
+                if (nextChild.GetType() == typeof(TextView))
+                {
+                    organText = ((TextView)nextChild).Text;
+                    transferOrgan(organs, organText, rowIndex);
+                    break;
+                }
+            }
+  
         }
 
         public void PrepareSheet()
@@ -67,15 +85,20 @@ namespace mobileAppClient.Droid
             }
 
             var organString = Intent.GetStringExtra("organs");
-
             organs = organString.FromJson<List<DonatableOrgan>>();
-            
+
+            //This is used onClick as an index to insert the receiver table.
+            int i = 1;
             foreach (DonatableOrgan organ in organs)
             {
                 TableRow organRow = new TableRow(this);
                 TextView organText = new TextView(this);
                 ImageView organImage = new ImageView(this);
                 String organName = organ.organType;
+              //  ViewGroup.LayoutParams textParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
+              //  organText.LayoutParameters = textParameters;
+
+             
 
                 switch (organ.organType.ToLower())
                 {
@@ -107,7 +130,7 @@ namespace mobileAppClient.Droid
                         organImage.SetImageResource(Resource.Drawable.liver_icon);
                         organText.Text = "Liver";
                         break;
-                    case "lungs":
+                    case "lung":
                         organImage.SetImageResource(Resource.Drawable.lungs_icon);
                         organText.Text = "Lungs";
                         break;
@@ -125,21 +148,19 @@ namespace mobileAppClient.Droid
                         break;
                 }
                 organText.SetTextAppearance(this, Android.Resource.Style.TextAppearanceMedium);
-
+                
                 organImage.SetAdjustViewBounds(true);
                 organImage.SetMaxHeight(80);
                 organImage.SetMaxWidth(80);
                 organImage.SetPadding(5, 0, 20, 0);
-               // organRow.Click += (sender, e) =>
-               // {
-              //      transferOrgan(organs, organName, organTable.IndexOfChild(organRow));
-              //  };
-                
+               
 
                 organRow.AddView(organImage);
                 organRow.AddView(organText);
+                organRow.Id = i;
+                organRow.SetOnClickListener(this);
                 organTable.AddView(organRow);
-
+                i++;
             }
                
 
@@ -154,7 +175,7 @@ namespace mobileAppClient.Droid
 
             foreach(DonatableOrgan organ in organs)
             {
-                if (organName.Equals(organ.organType))
+                if (organName.ToLower().Equals(organ.organType.ToLower()))
                 {
                     foreach (User recipient in organ.topReceivers)
                     {
@@ -164,12 +185,13 @@ namespace mobileAppClient.Droid
                         recipientName.Text = recipient.FullName;
 
                         recipientRow.AddView(recipientName);
+                        recipientTable.AddView(recipientRow);
                     }
                 }
             }
 
-            //Uncommenting causes the tableview not to display proper
-            //organTable.AddView(recipientTable, index);
+            //Add null check to show "No Valid Receivers" or something
+            organTable.AddView(recipientTable, index);
         }
 
     }
