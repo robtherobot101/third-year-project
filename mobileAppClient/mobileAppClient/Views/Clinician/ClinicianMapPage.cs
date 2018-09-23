@@ -387,8 +387,8 @@ namespace mobileAppClient.Views.Clinician
             };
 
             // Add the main helichopper pin to our list of custom heli pins we can track (heli pin contains the transported organ custom pin)
-	        customMap.HelicopterPins.Add(heliPin.Address, heliPin);
-
+            customMap.HelicopterPins.Add(heliPin.Address, heliPin);
+            
             // Add the pin we want visible on the map (but cant track these)
 	        customMap.Pins.Add(heliPin);
         }
@@ -558,6 +558,7 @@ namespace mobileAppClient.Views.Clinician
 
             TransplantListAPI transplantListAPI = new TransplantListAPI();
             await transplantListAPI.InsertTransfer(newOrganTransfer);
+            transplantListAPI.SetInTransfer(currentOrgan.id, 1);
 
             int TTA = (int)newOrganTransfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds;
 
