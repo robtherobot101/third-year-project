@@ -33,17 +33,24 @@ namespace mobileAppClient.Views.UserSettings
         {
             passwordInput.IsVisible = !passwordInput.IsVisible;
             confirmPasswordInput.IsVisible = !confirmPasswordInput.IsVisible;
-            changingPassword = true;
+            changingPassword = !changingPassword;
         }
 
         async void Handle_ConfirmButtonClicked(object sender, System.EventArgs e)
         {
-            if(passwordInput.Text != confirmPasswordInput.Text)
+            if (passwordInput.Text == "")
+            {
+                await DisplayAlert("",
+                    "Password must not be empty",
+                    "OK");
+            }
+            else if (passwordInput.Text != confirmPasswordInput.Text)
             {
                 await DisplayAlert("",
                     "Passwords do not match",
                     "OK");
-            } else
+            }
+            else
             {
                 if(changingPassword)
                 {
@@ -51,7 +58,7 @@ namespace mobileAppClient.Views.UserSettings
                 }
                 UserController.Instance.LoggedInUser.username = UsernameEntry.Text;
                 UserController.Instance.LoggedInUser.email = EmailEntry.Text;
-                HttpStatusCode status = await new UserAPI().updateAccountSettings(UserController.Instance.LoggedInUser, UserController.Instance.AuthToken);
+                HttpStatusCode status = await new UserAPI().updateAccountSettings(UserController.Instance.LoggedInUser, UserController.Instance.AuthToken, changingPassword);
 
                 switch (status)
                 {

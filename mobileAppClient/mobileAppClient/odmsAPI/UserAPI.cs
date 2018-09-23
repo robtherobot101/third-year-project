@@ -551,17 +551,28 @@ namespace mobileAppClient.odmsAPI
             }
         }
 
-        public async Task<HttpStatusCode> updateAccountSettings(User user, string token)
+        public async Task<HttpStatusCode> updateAccountSettings(User user, string token, bool setPassword)
         {
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
-            Newtonsoft.Json.Linq.JObject o = Newtonsoft.Json.Linq.JObject.FromObject(new
+            Newtonsoft.Json.Linq.JObject o;
+            if (setPassword)
             {
-                username = user.username,
-                password = user.password,
-                email = user.email
-            });
+                o = Newtonsoft.Json.Linq.JObject.FromObject(new
+                {
+                    username = user.username,
+                    email = user.email,
+                    password = user.password
+                });
+            } else
+            {
+                o = Newtonsoft.Json.Linq.JObject.FromObject(new
+                {
+                    username = user.username,
+                    email = user.email
+                });
+            }
 
             String itemRequestBody = JsonConvert.SerializeObject(o);
             HttpContent body = new StringContent(itemRequestBody);

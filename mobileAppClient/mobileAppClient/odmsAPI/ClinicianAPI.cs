@@ -114,5 +114,39 @@ namespace mobileAppClient.odmsAPI
 
             return new Tuple<HttpStatusCode, List<Hospital>>(HttpStatusCode.OK, resultHospitals);
         }
+
+        public async Task<HttpStatusCode> updateAccountSettings(Clinician clinician, string token, bool setPassword)
+        {
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            Newtonsoft.Json.Linq.JObject o;
+            if (setPassword)
+            {
+                o = Newtonsoft.Json.Linq.JObject.FromObject(new
+                {
+                    username = clinician.username,
+                    password = clinician.password
+                });
+            }
+            else
+            {
+                o = Newtonsoft.Json.Linq.JObject.FromObject(new
+                {
+                    username = clinician.username
+                });
+            }
+
+            String itemRequestBody = JsonConvert.SerializeObject(o);
+            HttpContent body = new StringContent(itemRequestBody);
+
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/clinicians/" + clinician.staffID + "/account");
+            request.Content = body;
+
+            request.Headers.Add("token", token);
+
+            var response = await client.SendAsync(request);
+            return response.StatusCode;
+        }
     }
 }

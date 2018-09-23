@@ -14,7 +14,7 @@
                         <EntryCell Label="Email" x:Name="EmailEntry"/>
 
                         <ViewCell Tapped="Handle_ChangePasswordTapped" x:Name="ChangePasswordMenuItemViewCell">
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,10,0">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,15,10,15">
                                 <Label Text="Change Password" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
                                 <controls:TintedImage Source="arrow_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25"/>
                             </StackLayout>

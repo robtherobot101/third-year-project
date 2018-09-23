@@ -84,7 +84,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Views\ClincianSettings\ClinicianSettings.xaml.cs">
+    <Compile Update="Views\ClinicianSettings\ClinicianSettings.xaml.cs">
       <DependentUpon>ClinicianSettings.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\Clinician\AttributesPageClinician.xaml.cs">

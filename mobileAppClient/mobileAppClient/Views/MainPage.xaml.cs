@@ -136,7 +136,9 @@ namespace mobileAppClient
             menuList.Add(transplantListPage);
             menuList.Add(mapPage);
             menuList.Add(messagesPage);
+            menuList.Add(clinicianSettingsPage);
             menuList.Add(logoutPage);
+
         }
 
         public void clinicianViewingUser()
@@ -206,8 +208,6 @@ namespace mobileAppClient
                     catch (TargetInvocationException ie)
                     {
                         Console.WriteLine("Exception: " + ie.InnerException);
-                        Console.WriteLine("Exception: " + ie.InnerException.InnerException);
-                        Console.WriteLine("Exception: " + ie.InnerException.InnerException.InnerException);
                     }
                     break;
             }
