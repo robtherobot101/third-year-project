@@ -61,6 +61,7 @@ namespace mobileAppClient
         /// </summary>
         protected override async void OnAppearing()
         {
+            ConversationPage.currentConversation = null;
             conversationList.Clear();
             IsLoading = true;
             if (isClinicianAccessing)

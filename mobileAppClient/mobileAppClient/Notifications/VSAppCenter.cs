@@ -2,6 +2,7 @@
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
+using Plugin.Toasts;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -32,6 +33,10 @@ namespace mobileAppClient.Notifications
                         if (ConversationPage.currentConversation != null && ConversationPage.currentConversation.id == message.conversationId)
                         {
                             ConversationPage.currentConversation.messages.Add(message);
+                        }
+                        else
+                        {
+                            DependencyService.Get<IToast>().ShortAlert("You have received a message");
                         }
                     }
                 };
