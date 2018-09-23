@@ -21,6 +21,7 @@ namespace mobileAppClient.iOS
         public CustomMap map;
         public MKMapView nativeMap;
         public CustomMapRenderer customMapRenderer;
+        public Timer OrganTimeTickingTimer;
 
         public BottomSheetViewController(CustomPin pin, CustomMap map, MKMapView nativeMap, CustomMapRenderer customMapRenderer) : base("BottomSheetViewController", null)
         {
@@ -46,7 +47,7 @@ namespace mobileAppClient.iOS
         }
 
         public void StartTickingTimer(int interval) {
-            Timer timer = new Timer(RefreshCountdownsInTableView, null, 0, interval); 
+            OrganTimeTickingTimer = new Timer(RefreshCountdownsInTableView, null, 0, interval); 
         }
 
         public void RefreshCountdownsInTableView(object o) {
@@ -95,6 +96,12 @@ namespace mobileAppClient.iOS
                 var yComponent = UIScreen.MainScreen.Bounds.Height;
                 this.View.Frame = new CGRect(frame.X, yComponent, frame.Width, frame.Height);
             }));
+        }
+
+        public void StopTimers()
+        {
+            OrganTimeTickingTimer.Dispose();
+            OrganTimeTickingTimer = null;
         }
 
 
