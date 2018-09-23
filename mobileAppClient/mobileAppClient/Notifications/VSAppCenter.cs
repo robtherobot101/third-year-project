@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
+using mobileAppClient.Models;
 using Xamarin.Forms;
 
 namespace mobileAppClient.Notifications
@@ -38,7 +39,15 @@ namespace mobileAppClient.Notifications
                         }
                         else
                         {
-                            messageThreadsListPageController?.refreshConversationsExternally();
+                            if (messageThreadsListPageController != null)
+                            {
+                                List<Conversation> localConversation = new List<Conversation>(messageThreadsListPageController.conversationList);
+                                localConversation.Find(conversation => conversation.id == message.conversationId)?.messages.Add(message);
+
+                                messageThreadsListPageController.conversationList.Clear();
+                                messageThreadsListPageController.conversationList.AddRange(localConversation);                              
+                            }
+                            
                             DependencyService.Get<IToast>().ShortAlert("You have received a message");
                         }
                     }

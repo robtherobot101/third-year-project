@@ -65,6 +65,7 @@ namespace mobileAppClient
             VSAppCenter.setConversationListController(this);
         }
 
+
         /// <summary>
         /// Activated whenever focus is on this page
         /// </summary>
