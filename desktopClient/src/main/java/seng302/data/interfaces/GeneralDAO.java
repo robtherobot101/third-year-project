@@ -50,7 +50,7 @@ public interface GeneralDAO {
 
     void setTransferType(String token, int type, int organ) throws HttpResponseException;
 
-    void deleteWaitingListItem(String token, long userId, int organ) throws HttpResponseException;
+    void successfullyTransplantWaitingListItem(String token, int organ) throws HttpResponseException;
 
     int getSingleWaitingListItem(String token, long userId, Organ organ) throws HttpResponseException;
 

@@ -240,11 +240,9 @@ public class ClinicianTransferOrgansController implements Initializable{
         List<OrganTransfer> allOrganTransfers =  WindowManager.getDataManager().getGeneral().getAllOrganTransfers(token);
         for (OrganTransfer transfer : allOrganTransfers) {
             if (transfer.getArrivalTime().isBefore(LocalDateTime.now())) {
-                System.out.println(transfer.getReceiverId());
-                System.out.println(transfer.getOrganType());
                 int organId = WindowManager.getDataManager().getGeneral().getSingleWaitingListItem(token, transfer.getReceiverId(), transfer.getOrganType());
                 WindowManager.getDataManager().getGeneral().setTransferType(token, 2, transfer.getOrganId());
-                WindowManager.getDataManager().getGeneral().deleteWaitingListItem(token, transfer.getReceiverId(), organId);
+                WindowManager.getDataManager().getGeneral().successfullyTransplantWaitingListItem(token, organId);
                 WindowManager.getDataManager().getGeneral().deleteTransfer(token, transfer.getOrganId());
             }
         }

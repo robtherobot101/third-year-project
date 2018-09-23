@@ -215,7 +215,7 @@ public class GeneralM implements GeneralDAO {
     }
 
     @Override
-    public void deleteWaitingListItem(String token, long userId, int organ) throws HttpResponseException {
+    public void successfullyTransplantWaitingListItem(String token, int organ) throws HttpResponseException {
 
     }
 
