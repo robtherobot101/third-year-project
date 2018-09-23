@@ -58,6 +58,10 @@ namespace mobileAppClient.iOS
                     string detailString = cell.DetailTextLabel.Text;
                     if(detailString.Equals("EXPIRED")) {
                         continue;
+                    } else if(detailString.Equals("IN TRANSIT")) {
+                        continue;
+                    } else if(detailString.Equals("SUCCESSFULLY TRANSFERRED")) {
+                        continue;
                     } else {
                         string timeLeftString = detailString.Substring(16);
                         string timeString = timeLeftString.Remove(timeLeftString.Length - 5);
@@ -116,13 +120,18 @@ namespace mobileAppClient.iOS
         public override void ViewDidAppear(bool animated)
         {
             base.ViewDidAppear(animated);
-            UIView.Animate(0.3, new Action(() => {
+            OpenMenu();
+
+          
+        }
+
+        public async Task OpenMenu() {
+            await UIView.AnimateAsync(0.3, new Action(() => {
                 var frame = this.View.Frame;
                 //var yComponent = UIScreen.MainScreen.Bounds.Height - 200;
                 var yComponent = this.partialView;
                 this.View.Frame = new CGRect(0, yComponent, frame.Width, frame.Height);
             }));
-          
         }
 
         public override void DidReceiveMemoryWarning()

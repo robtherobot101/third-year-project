@@ -72,14 +72,17 @@ public class OrgansController {
                     }
                 }
             } else {
+                System.out.println("brah2");
                 for(DonatableOrgan organ: allDonatableOrgans){
                     organ.setTopReceivers(organMatching.getTop5Matches(organ, ""));
                 }
+                System.out.println("brah3");
             }
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String serializedOrgans = gson.toJson(allDonatableOrgans);
             response.type("application/json");
             response.status(200);
+            System.out.println("brah");
             return serializedOrgans;
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
@@ -164,6 +167,37 @@ public class OrgansController {
             }
 
         }
+    }
+
+    public String setInTransfer(Request request, Response response) {
+        int organId = Integer.parseInt(request.params(":id"));
+        int transferType = Integer.parseInt(request.params(":transferType"));
+        try {
+            model.inTransfer(organId, transferType);
+            response.status(201);
+            return "ORGAN  " + organId + " SET IN TRANSFER";
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
+    }
+
+    public String getUsersOrgans(Request request, Response response) {
+        int userId = Integer.parseInt(request.params(":id"));
+        List<DonatableOrgan> allDonatableOrgans;
+        try {
+            allDonatableOrgans = model.getSingUsersDonatableOrgans(userId);
+        } catch (SQLException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            return e.getMessage();
+        }
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String serializedOrgans = gson.toJson(allDonatableOrgans);
+
+        response.type("application/json");
+        response.status(200);
+        return serializedOrgans;
     }
 
 }

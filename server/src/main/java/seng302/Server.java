@@ -226,6 +226,11 @@ public class Server {
                     delete("/:waitingListItemId", waitingListController::deleteWaitingListItem);
                 });
 
+                path("/:id/waitingListOrgan", () -> {
+                    before("",          profileUtils::hasAccessToAllUsers);
+                    get("/:organType",  waitingListController::getWaitingListId);
+                });
+
                 path("/:id/conversations", () -> {
                     before("", (request, response) -> profileUtils.isSpecificUser(request, response, ProfileType.USER));
                     get("", (request, response) -> conversationsController.getAllConversations(request, response, ProfileType.USER));
@@ -244,8 +249,9 @@ public class Server {
             });
 
             path("/waitingListItems", () -> {
-                before("", profileUtils::hasAccessToAllUsers);
-                get("",  waitingListController::getAllWaitingListItems);
+                before("",                      profileUtils::hasAccessToAllUsers);
+                get("",                         waitingListController::getAllWaitingListItems);
+                patch("/:waitingListItemId",    waitingListController::transplantCompleted);
             });
 
             path("/mapObjects", () -> {
@@ -268,10 +274,12 @@ public class Server {
             });
 
             path("/organs", () -> {
-                get("",     organsController::queryOrgans);
-                post("",    organsController::insertOrgan);
-                delete("",  organsController::removeOrgan);
-                patch("",   organsController::updateOrgan);
+                get("",         organsController::queryOrgans);
+                get("/:id",     organsController::getUsersOrgans);
+                post("",        organsController::insertOrgan);
+                delete("",      organsController::removeOrgan);
+                patch("",       organsController::updateOrgan);
+                patch("/:id/:transferType",   organsController::setInTransfer);
             });
 
             path("/hospitals", () -> {
@@ -281,7 +289,7 @@ public class Server {
             path("/transfer",()->{
                get("", mapObjectController::getAllTransfers);
                post("", mapObjectController::postTransfer);
-               delete("/organId", mapObjectController::deleteOrganTransfer);
+               delete("/:organId", mapObjectController::deleteOrganTransfer);
             });
         });
     }
