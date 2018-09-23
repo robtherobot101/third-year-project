@@ -29,7 +29,6 @@ namespace mobileAppClient.Views.Clinician
         public ClinicianMapPage()
         {
             this.SlideMenu = new SlideUpMenuView();
-
         }
 
         public async void displayBottomSheet(CustomPin pin, CustomMap map) {

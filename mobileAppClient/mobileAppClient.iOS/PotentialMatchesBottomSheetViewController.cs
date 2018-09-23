@@ -28,6 +28,8 @@ namespace mobileAppClient.iOS
         public double organTimeLeft;
         public CustomMapRenderer customMapRenderer;
         public DonatableOrgan currentOrgan;
+        public Timer OrganTimeTickingTimer;
+        public Timer OrganRadiusTickingTimer;
 
         public PotentialMatchesBottomSheetViewController(CustomPin pin, CustomMap map, MKMapView nativeMap, 
                                                          string organ, UITableViewCell currentOrganCell, CustomMapRenderer customMapRenderer) : base("PotentialMatchesBottomSheetViewController", null)
@@ -89,12 +91,13 @@ namespace mobileAppClient.iOS
 
         public void StartOrganTimeTickingTimer(int interval)
         {
-            Timer timer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
+            OrganTimeTickingTimer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
         }
 
         public void StartOrganCircleRadiusCountdown(int interval)
         {
-            Timer timer2 = new Timer(RefreshOrganCircleOnMap, null, 0, interval);
+            OrganRadiusTickingTimer = new Timer(RefreshOrganCircleOnMap, null, 0, interval);
+
         }
 
         public void RefreshCountdownsInTableView(object o)
@@ -121,7 +124,7 @@ namespace mobileAppClient.iOS
                     TimeSpan timeLeft = TimeSpan.Parse(timeString);
                     if (timeLeft.Equals(new TimeSpan(0, 0, 0)))
                     {
-                        detailString = "EXPIRED";
+                        timeRemainingLabel.Text = "EXPIRED";
                         timeRemainingLabel.TextColor = UIColor.Red;
                         currentOrgan.expired = true;
                         potentialRecipientsLabel.Text = "This organ has expired.";
@@ -146,9 +149,12 @@ namespace mobileAppClient.iOS
         {
             customMapRenderer.ClearAllReceivers();
             customMapRenderer.removeOverlays();
+            StopTimers();
 
             var window = UIApplication.SharedApplication.KeyWindow;
             var bottomSheetVC = new BottomSheetViewController(customPin, map, nativeMap, customMapRenderer);
+
+            bottomSheetVC.AddChildViewController(window.RootViewController.ChildViewControllers[0]);
 
             window.RootViewController = bottomSheetVC;
 
@@ -206,6 +212,13 @@ namespace mobileAppClient.iOS
 
 
             });
+        }
+
+        public void StopTimers() {
+            OrganRadiusTickingTimer.Dispose();
+            OrganRadiusTickingTimer = null;
+            OrganTimeTickingTimer.Dispose();
+            OrganTimeTickingTimer = null;
         }
 
         async void prepareRecipientsOnMap(Position position) {

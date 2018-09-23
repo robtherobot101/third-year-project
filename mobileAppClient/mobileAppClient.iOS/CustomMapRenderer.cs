@@ -345,7 +345,6 @@ namespace CustomRenderer.iOS
                 customPinView = null;
 
                 removeOverlays();
-
                 ClearAllReceivers();
 
 
@@ -355,15 +354,20 @@ namespace CustomRenderer.iOS
                 {
                     BottomSheetViewController bottomSheet = (BottomSheetViewController)rootVC;
                     await bottomSheet.closeMenu();
+                    bottomSheet.StopTimers();
+                    bottomSheet.Dispose();
                     bottomSheet = null;
-                    rootVC = null;
+                    window.RootViewController = rootVC.ChildViewControllers[0];
+
                 }
                 else
                 {
                     PotentialMatchesBottomSheetViewController matchesSheet = (PotentialMatchesBottomSheetViewController)rootVC;
                     await matchesSheet.closeMenu();
+                    matchesSheet.StopTimers();
+                    matchesSheet.Dispose();
                     matchesSheet = null;
-                    rootVC = null;
+                    window.RootViewController = rootVC.ChildViewControllers[0];
                 }
 
             } 
@@ -371,8 +375,9 @@ namespace CustomRenderer.iOS
 
         public void removeOverlays() {
             if(nativeMap.Overlays != null && nativeMap.Overlays.Length > 0) {
-                nativeMap.Overlays[0].Dispose();
                 nativeMap.RemoveOverlay(nativeMap.Overlays[0]);
+                this.circleRenderer = null;
+                nativeMap.OverlayRenderer = this.GetOverlayRenderer;
 
             }
 
