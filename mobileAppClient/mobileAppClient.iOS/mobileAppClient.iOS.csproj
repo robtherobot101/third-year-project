@@ -297,8 +297,8 @@
     <BundleResource Include="Resources\arrow_icon.png" />
     <BundleResource Include="Resources\facebook_icon.png" />
     <BundleResource Include="Resources\map_icon.png" />
-    <BundleResource Include="Resources\bone-marrow_icon.png" />
-    <BundleResource Include="Resources\middle-ear_icon.png" />
+    <BundleResource Include="Resources\bone_icon.png" />
+    <BundleResource Include="Resources\ear_icon.png" />
     <BundleResource Include="Resources\cornea_icon.png" />
     <BundleResource Include="Resources\heart_icon.png" />
     <BundleResource Include="Resources\intestine_icon.png" />
@@ -307,7 +307,7 @@
     <BundleResource Include="Resources\lung_icon.png" />
     <BundleResource Include="Resources\pancreas_icon.png" />
     <BundleResource Include="Resources\skin_icon.png" />
-    <BundleResource Include="Resources\connective-tissue_icon.png" />
+    <BundleResource Include="Resources\tissue_icon.png" />
     <BundleResource Include="Resources\man1.png" />
     <BundleResource Include="Resources\man2.png" />
     <BundleResource Include="Resources\man3.png" />

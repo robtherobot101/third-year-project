@@ -70,9 +70,12 @@ public class MapObjectModel extends DatabaseMethods {
                         LocalDateTime.ofEpochSecond(organsResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
                         Organ.parse(organsResultSet.getString("name")),
                         mapObjectResultSet.getInt("id"),
-                        expired
+                        expired,
+                        organsResultSet.getInt("inTransfer")
 
                 );
+
+                organ.setId(organsResultSet.getInt("id"));
 
 
                 organ.setTopReceivers(organMatching.getTop5Matches(organ, ""));
@@ -108,8 +111,7 @@ public class MapObjectModel extends DatabaseMethods {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<OrganTransfer> allTransfers = new ArrayList<>();
             String query =
-                    "SELECT * FROM TRANSFERS " +
-                            "WHERE ArrivalTime > NOW()";
+                    "SELECT * FROM TRANSFERS ";
 
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
@@ -139,7 +141,7 @@ public class MapObjectModel extends DatabaseMethods {
             statement.setDouble(3, transfer.getEndLat());
             statement.setDouble(4, transfer.getEndLon());
             statement.setTimestamp(5, Timestamp.valueOf(transfer.getArrivalTime()));
-            statement.setInt(6, transfer.getOrganId());
+            statement.setInt(6, transfer.getId());
             statement.setLong(7, transfer.getReceiverId());
             statement.setString(8, transfer.getOrganType().toString());
 
