@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Xamarin.Forms;
+using System.Globalization;
 
 namespace mobileAppClient
 {
@@ -21,7 +22,8 @@ namespace mobileAppClient
                 dobInput.IsEnabled = true;
             } else {
                 dobInput.IsEnabled = false;
-                dobInput.Date = DateTime.Parse(facebookProfile.Birthday);
+                CultureInfo MyCultureInfo = new CultureInfo("en-US");
+                dobInput.Date = DateTime.Parse(facebookProfile.Birthday, MyCultureInfo);
             }
 
 
