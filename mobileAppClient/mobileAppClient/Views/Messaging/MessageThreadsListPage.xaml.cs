@@ -61,6 +61,7 @@ namespace mobileAppClient
         /// </summary>
         protected override async void OnAppearing()
         {
+            ConversationPage.currentConversation = null;
             conversationList.Clear();
             IsLoading = true;
             if (isClinicianAccessing)
@@ -92,6 +93,9 @@ namespace mobileAppClient
         async void Handle_Conversation_Tapped(object sender, ItemTappedEventArgs e)
         {
             var localId = localUser?.id ?? localClinician.staffID;
+            foreach (Message m in ((Conversation)e.Item).messages) {
+                m.SetType(localId);
+            }
             ConversationPage.currentConversation = (Conversation)e.Item;
             await Navigation.PushAsync(new ConversationPage((Conversation)e.Item, localId));
         }

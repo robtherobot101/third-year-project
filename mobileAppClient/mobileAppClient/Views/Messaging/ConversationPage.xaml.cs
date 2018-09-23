@@ -39,12 +39,11 @@ namespace mobileAppClient
 		    this.localId = localId;
 
 		    Title = conversation.externalName;
-            conversationMessages = new CustomObservableCollection<Message>();
+            conversationMessages = conversation.messages;
 
             MessagesListView.ItemsSource = conversationMessages;
 		    MessagesListView.ItemTapped += OnMessageTapped;
 
-            populateMessages();
         }
 
 
@@ -69,21 +68,6 @@ namespace mobileAppClient
 	        if (e.Item == null) return;
 	        ((ListView)sender).SelectedItem = null;
 	    }
-
-        private void populateMessages()
-        {
-            conversationMessages.Clear();
-            foreach (Message currentMessage in conversation.messages)
-            {
-                currentMessage.SetType(localId);
-                conversationMessages.Add(currentMessage);
-            }
-
-            if (conversationMessages.Count > 0)
-            {
-                MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
-            }
-        }
 
         /// <summary>
         /// Handles the sending of a message
@@ -119,5 +103,7 @@ namespace mobileAppClient
             MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
 	        chatTextInput.Text = "";
 	    }
+
+        
 	}
 }

@@ -16,6 +16,7 @@ using ImageCircle.Forms.Plugin.Droid;
 using Firebase.Messaging;
 using Firebase.Iid;
 using Android.Util;
+using Plugin.Toasts;
 
 namespace mobileAppClient.Droid
 {
