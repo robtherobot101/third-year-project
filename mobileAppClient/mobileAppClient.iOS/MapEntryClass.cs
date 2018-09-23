@@ -31,8 +31,20 @@ namespace mobileAppClient.iOS
 
             //UIView.Transition(window, 0.3, UIViewAnimationOptions.CurveEaseIn, () => window.RootViewController = bottomSheetVC, null);
             //UIView.Transition()
-               
+
+            var rootVC = window.RootViewController;
+
+            if(rootVC != null) {
+                bottomSheetVC.AddChildViewController(rootVC);
+            }
+
             window.RootViewController = bottomSheetVC;
+
+
+
+            //rootVC = window.RootViewController;
+
+            //var children = rootVC.ChildViewControllers;
 
             //var rootVC = window.RootViewController;
 

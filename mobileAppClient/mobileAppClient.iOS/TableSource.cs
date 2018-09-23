@@ -108,6 +108,7 @@ namespace mobileAppClient.iOS
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
             removeOverlays();
+            owner.StopTimers();
 
             string organ = organs[indexPath.Row].Replace("_icon.png", "");
 
@@ -117,7 +118,7 @@ namespace mobileAppClient.iOS
             
             var window = UIApplication.SharedApplication.KeyWindow;
 
-            owner = null;
+            potentialRecipientsController.AddChildViewController(owner.ChildViewControllers[0]);
 
             window.RootViewController = potentialRecipientsController;
 

@@ -135,6 +135,7 @@ namespace mobileAppClient.iOS
             //Update map to get rid of overlays and recipients 
             customMapRenderer.removeOverlays();
             customMapRenderer.ClearAllReceivers();
+            owner.StopTimers();
 
             currentOrgan.inTransfer = 1;
 
