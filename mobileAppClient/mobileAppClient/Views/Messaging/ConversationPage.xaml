@@ -33,9 +33,10 @@
                        HorizontalOptions="FillAndExpand" 
                        PlaceholderColor="LightGray"
                        Placeholder="Message"
-                       Grid.Row="0" 
+                       Grid.Row="0"
+                       Completed="Handle_SendMessage"
+                       ReturnType="Send"
                        Grid.Column="0"
-                       
                        />
                 <Label Text="Send"
                        Grid.Row="0"
