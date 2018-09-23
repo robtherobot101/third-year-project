@@ -136,6 +136,9 @@ namespace mobileAppClient.iOS
             customMapRenderer.removeOverlays();
             customMapRenderer.ClearAllReceivers();
 
+            currentOrgan.inTransfer = 1;
+
+
             //Insert transfer into database and add new helicopter.
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
             parent.NewTransfer(currentOrgan, selectedRecipient, customPin.Position);

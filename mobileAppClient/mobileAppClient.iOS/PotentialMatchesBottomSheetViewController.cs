@@ -144,6 +144,9 @@ namespace mobileAppClient.iOS
 
         void BackButton_TouchUpInside(object sender, EventArgs e)
         {
+            customMapRenderer.ClearAllReceivers();
+            customMapRenderer.removeOverlays();
+
             var window = UIApplication.SharedApplication.KeyWindow;
             var bottomSheetVC = new BottomSheetViewController(customPin, map, nativeMap, customMapRenderer);
 
@@ -227,7 +230,7 @@ namespace mobileAppClient.iOS
                 double distanceTime = organTimeLeft * 70;
 
                 double mapRadius;
-                if (organTimeLeft > 500000)
+                if (distanceTime > 500000)
                 {
                     mapRadius = 500000;
                 }
@@ -243,9 +246,9 @@ namespace mobileAppClient.iOS
                 };
                 var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(map.Circle.Position.Latitude, map.Circle.Position.Longitude), map.Circle.Radius);
                 nativeMap.AddOverlay(circleOverlay);
-                Position mapCenter = new Position(position.Latitude - 1, position.Longitude);
+                Position mapCenter = new Position(position.Latitude, position.Longitude);
                 map.MoveToRegion(MapSpan.FromCenterAndRadius(
-                    mapCenter, Distance.FromMiles(100.0)));
+                    mapCenter, Distance.FromMeters(map.Circle.Radius)));
 
                 //Add all other user objects around the user
                 Random rnd = new Random();
