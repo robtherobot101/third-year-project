@@ -357,17 +357,21 @@ namespace mobileAppClient.Views.Clinician
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <param name="organToTransferType"></param>
-	    public void AddHelicopter(Position start, Position end, Organ organToTransferType, int seconds)
+	    private void AddHelicopter(Position start, Position end, Organ organToTransferType, int seconds,  long receiverId, int waitingListItemId, int organId)
 	    {
             // Iterate the unique helicopter identifier (is used as a dict key in the map renderer)
 	        string heliID = (++heliCount).ToString();
 
-	        Helicopter heli = new Helicopter()
-	        {
-	            startPosition = start,
-	            destinationPosition = end,
+            Helicopter heli = new Helicopter()
+            {
+                startPosition = start,
+                destinationPosition = end,
                 isLanding = false,
-                duration = seconds
+                duration = seconds,
+                organId = organId,
+                receiverId = receiverId,
+                waitingListItemId = waitingListItemId
+
 	        };
 
             // Address is used by helicopters to hold their unique ID
@@ -451,6 +455,9 @@ namespace mobileAppClient.Views.Clinician
                         // When the pin (in the last refresh loop had its isLanding flag raised) is refreshed again,
                         // remove the pin as it will have been tidied up on the map renderer side
                         customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
+
+                        HelicopterFinished(singleHelicopterPin.HelicopterDetails.receiverId, singleHelicopterPin.HelicopterDetails.waitingListItemId, singleHelicopterPin.HelicopterDetails.organId);
+
                         return;
                     }
                 }
@@ -471,8 +478,16 @@ namespace mobileAppClient.Views.Clinician
 
             foreach (OrganTransfer transfer in transfers)
             {
+                int waitingListId = await transplantListAPI.GetWaitingListId( (int)transfer.receiverId, transfer.organType);
 
-                AddHelicopter(GetCurrentPoint(transfer), new Position(transfer.endLat, transfer.endLon), transfer.organType, (int) transfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds);
+                AddHelicopter(
+                    GetCurrentPoint(transfer),
+                    new Position(transfer.endLat, transfer.endLon),
+                    transfer.organType,
+                    (int) transfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds,
+                    transfer.receiverId,
+                    waitingListId,
+                    transfer.id);
             }
         }
 
@@ -537,10 +552,16 @@ namespace mobileAppClient.Views.Clinician
 
             int TTA = (int)newOrganTransfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds;
 
+            int waitingListId = await transplantListAPI.GetWaitingListId((int)newOrganTransfer.receiverId, newOrganTransfer.organType);
+
             AddHelicopter(donorPosition,
                           HospitalPosition,
                           newOrganTransfer.organType,
-                          TTA);
+                          TTA,
+                          newOrganTransfer.receiverId,
+                          waitingListId,
+                          newOrganTransfer.id
+                          );
         }
 
         public double distance(double lat1, double lat2, double lon1,
@@ -563,5 +584,15 @@ namespace mobileAppClient.Views.Clinician
 
             return Math.Sqrt(interDistance);
         }
+
+        private void HelicopterFinished(long userId, int waitingListItemId, int organId)
+        {
+            TransplantListAPI transplantListAPI = new TransplantListAPI();
+            transplantListAPI.DeleteTransfer(organId);
+            transplantListAPI.DeleteWaitingListItem(userId, waitingListItemId);
+            transplantListAPI.SetInTransfer(organId);
+
+        }
+
     }
 }

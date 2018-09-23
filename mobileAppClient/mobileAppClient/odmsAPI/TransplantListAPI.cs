@@ -153,7 +153,7 @@ namespace mobileAppClient.odmsAPI
             }
         }
 
-        private async void DeleteTransfer(int id)
+        public async void DeleteTransfer(int id)
         {
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
@@ -165,19 +165,19 @@ namespace mobileAppClient.odmsAPI
             var response = await client.SendAsync(request);
         }
 
-        private async void DeleteWaitingListItem(int userId, int id)
+        public async void DeleteWaitingListItem(long userId, int organId)
         {
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
 
-            var request = new HttpRequestMessage(new HttpMethod("Delete"), url + "/" + userId + "/waitingListItems/" + id);
+            var request = new HttpRequestMessage(new HttpMethod("Delete"), url + "/" + userId + "/waitingListItems/" + organId);
             request.Headers.Add("token", ClinicianController.Instance.AuthToken);
 
             var response = await client.SendAsync(request);
         }
 
-        private async void SetInTransfer(int organId)
+        public async void SetInTransfer(int organId)
         {
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
@@ -226,6 +226,37 @@ namespace mobileAppClient.odmsAPI
             catch (HttpRequestException ex)
             {
                 return HttpStatusCode.ServiceUnavailable;
+            }
+        }
+
+        public async Task<int> GetWaitingListId(int userId, Organ organ)
+        {
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/" + userId + "/waitingListOrgan/" + organ);
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            var response = await client.SendAsync(request);
+            string body = await response.Content.ReadAsStringAsync();
+
+            try
+            {
+                //return JsonConvert.DeserializeObject<List<OrganTransfer>>(body);
+                int id = JsonConvert.DeserializeObject<int>(body);
+                return id;
+            }
+            catch (JsonSerializationException jse)
+            {
+                Console.WriteLine(jse.Message);
+                return 0;
+            }
+            catch (JsonReaderException e)
+            {
+                Console.WriteLine(e.Message);
+                return 0;
+
             }
         }
     }
