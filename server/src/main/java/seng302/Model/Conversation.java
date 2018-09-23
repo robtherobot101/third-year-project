@@ -1,34 +1,39 @@
 package seng302.Model;
 
-import javafx.util.Pair;
-import seng302.Model.Attribute.ProfileType;
-
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Conversation {
     private int id;
     private List<Message> messages;
-    private List<Pair<Integer, ProfileType>> members;
+    private List<Integer> members;
+    private Map<Integer, String> memberNames;
 
     /**
      * Constructs a new conversation from a database entry.
      *
      * @param id The id of the conversation
      * @param messages The messages in the conversation
-     * @param members The conversation members
+     * @param memberNames The conversation members
      */
-    public Conversation(int id, List<Message> messages, List<Pair<Integer, ProfileType>> members) {
+    public Conversation(int id, List<Message> messages, Map<Integer, String> memberNames) {
         this.id = id;
         this.messages = messages;
-        this.members = members;
+        this.memberNames = memberNames;
+        members = new ArrayList<>(memberNames.keySet());
     }
 
     public List<Message> getMessages() {
         return messages;
     }
 
-    public List<Pair<Integer, ProfileType>> getMembers() {
+    public List<Integer> getMembers() {
         return members;
+    }
+
+    public Map<Integer, String> getMemberNames() {
+        return memberNames;
     }
 
     public int getId() {

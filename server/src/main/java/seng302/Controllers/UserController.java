@@ -6,9 +6,11 @@ import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Logic.SaltHash;
 import seng302.Logic.Database.ProfileUtils;
+import seng302.Model.Attribute.Organ;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
 import seng302.Model.UserCSVStorer;
+import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -418,6 +420,7 @@ public class UserController {
                     int accessLevel = profileUtils.checkToken(token);
                     model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
                     response.status(201);
+                    PushAPI.getInstance().sendTextNotification((int)queriedUser.getId(), "Details updated.", "Your details have been updated.");
                     return "USER SUCCESSFULLY UPDATED";
                 } catch (SQLException e) {
 
@@ -567,6 +570,8 @@ public class UserController {
                 File outputfile = new File(filepath);
                 ImageIO.write(img, "png", outputfile);
 
+                PushAPI.getInstance().sendTextNotification((int)queriedUser.getId(), "Profile photo changed.",
+                        "Your profile photo has been changed.");
                 return "PHOTO SUCCESSFULLY SAVED";
             }  catch (IOException e) {
                 System.out.println(e);
@@ -599,6 +604,8 @@ public class UserController {
         //Update DB
         if (deleted){
             //update
+            PushAPI.getInstance().sendTextNotification((int)queriedUser.getId(), "Profile photo deleted.",
+                    "Your profile photo has been deleted.");
             return "Photo successfully deleted";
         } else {
             //update
