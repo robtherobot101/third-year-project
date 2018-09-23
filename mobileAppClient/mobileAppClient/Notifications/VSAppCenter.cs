@@ -33,6 +33,7 @@ namespace mobileAppClient.Notifications
                         if (ConversationPage.currentConversation != null && ConversationPage.currentConversation.id == message.conversationId)
                         {
                             ConversationPage.currentConversation.messages.Add(message);
+                            
                         }
                         else
                         {
