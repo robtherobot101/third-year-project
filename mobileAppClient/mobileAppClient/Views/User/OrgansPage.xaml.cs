@@ -32,44 +32,6 @@ namespace mobileAppClient
             {
                 isClinicianEditing = false;
             }
-            foreach (Organ item in UserController.Instance.LoggedInUser.organs) {
-                Console.WriteLine(item);
-                switch(item) {
-                    case Organ.LIVER:
-                        LiverCell.On = true;
-                        break;
-                    case Organ.KIDNEY:
-                        KidneyCell.On = true;
-                        break;
-                    case Organ.PANCREAS:
-                        PancreasCell.On = true;
-                        break;
-                    case Organ.HEART: 
-                        HeartCell.On = true;
-                        break;
-                    case Organ.LUNG:
-                        LungCell.On = true;
-                        break;
-                    case Organ.INTESTINE:
-                        IntestineCell.On = true;
-                        break;
-                    case Organ.CORNEA:
-                        CorneaCell.On = true;
-                        break;
-                    case Organ.EAR:
-                        MiddleEarCell.On = true;
-                        break;
-                    case Organ.SKIN:
-                        SkinCell.On = true;
-                        break;
-                    case Organ.BONE:
-                        BoneMarrowCell.On = true;
-                        break;
-                    case Organ.TISSUE:
-                        ConnectiveTissueCell.On = true;
-                        break;
-                }
-            }
 
         }
 
@@ -169,6 +131,135 @@ namespace mobileAppClient
                     "Server error, please try again",
                     "OK");
                     break;
+            }
+        }
+
+        private async Task<List<DonatableOrgan>> GetOrgans()
+        {
+            TransplantListAPI transplantListAPI = new TransplantListAPI();
+            List<DonatableOrgan> donatableOrgans = await transplantListAPI.GetSingleUsersDonatableOrgans(UserController.Instance.LoggedInUser.id);
+            return donatableOrgans;
+        }
+
+        protected override async void OnAppearing()
+        { 
+            List<DonatableOrgan> donatableOrgans = await GetOrgans();
+            foreach (Organ item in UserController.Instance.LoggedInUser.organs)
+            {
+                Console.WriteLine(item);
+                switch (item)
+                {
+                    case Organ.LIVER:
+                        LiverCell.On = true;
+                        foreach (DonatableOrgan organ in donatableOrgans)
+                        {
+                            if (OrganExtensions.ToOrgan(organ.organType) == item && (organ.inTransfer != 0 || organ.expired))
+                            {
+                                LiverCell.IsEnabled = false;
+                            }
+                        }
+                        break;
+                    case Organ.KIDNEY:
+                        KidneyCell.On = true;
+                        foreach (DonatableOrgan organ in donatableOrgans)
+                        {
+                            if (OrganExtensions.ToOrgan(organ.organType) == item && (organ.inTransfer != 0 || organ.expired))
+                            {
+                                KidneyCell.IsEnabled = false;
+                            }
+                        }
+                        break;
+                    case Organ.PANCREAS:
+                        PancreasCell.On = true;
+                        foreach (DonatableOrgan organ in donatableOrgans)
+                        {
+                            if (OrganExtensions.ToOrgan(organ.organType) == item && (organ.inTransfer != 0 || organ.expired))
+                            {
+                                PancreasCell.IsEnabled = false;
+                            }
+                        }
+                        break;
+                    case Organ.HEART:
+                        HeartCell.On = true;
+                        foreach (DonatableOrgan organ in donatableOrgans)
+                        {
+                            if (OrganExtensions.ToOrgan(organ.organType) == item && (organ.inTransfer != 0 || organ.expired))
+                            {
+                                HeartCell.IsEnabled = false;
+                            }
+                        }
+                        break;
+                    case Organ.LUNG:
+                        LungCell.On = true;
+                        foreach (DonatableOrgan organ in donatableOrgans)
+                        {
+                            if (OrganExtensions.ToOrgan(organ.organType) == item && (organ.inTransfer != 0 || organ.expired))
+                            {
+                                LungCell.IsEnabled = false;
+                            }
+                        }
+                        break;
+                    case Organ.INTESTINE:
+                        IntestineCell.On = true;
+                        foreach (DonatableOrgan organ in donatableOrgans)
+                        {
+                            if (OrganExtensions.ToOrgan(organ.organType) == item && (organ.inTransfer != 0 || organ.expired))
+                            {
+                                IntestineCell.IsEnabled = false;
+                            }
+                        }
+                        break;
+                    case Organ.CORNEA:
+                        CorneaCell.On = true;
+                        foreach (DonatableOrgan organ in donatableOrgans)
+                        {
+                            if (OrganExtensions.ToOrgan(organ.organType) == item && (organ.inTransfer != 0 || organ.expired))
+                            {
+                                CorneaCell.IsEnabled = false;
+                            }
+                        }
+                        break;
+                    case Organ.EAR:
+                        MiddleEarCell.On = true;
+                        foreach (DonatableOrgan organ in donatableOrgans)
+                        {
+                            if (OrganExtensions.ToOrgan(organ.organType) == item && (organ.inTransfer != 0 || organ.expired))
+                            {
+                                MiddleEarCell.IsEnabled = false;
+                            }
+                        }
+                        break;
+                    case Organ.SKIN:
+                        SkinCell.On = true;
+                        foreach (DonatableOrgan organ in donatableOrgans)
+                        {
+                            if (OrganExtensions.ToOrgan(organ.organType) == item && (organ.inTransfer != 0 || organ.expired))
+                            {
+                                SkinCell.IsEnabled = false;
+                            }
+                        }
+                        break;
+                    case Organ.BONE:
+                        BoneMarrowCell.On = true;
+                        foreach (DonatableOrgan organ in donatableOrgans)
+                        {
+                            if (OrganExtensions.ToOrgan(organ.organType) == item && (organ.inTransfer != 0 || organ.expired))
+                            {
+                                BoneMarrowCell.IsEnabled = false;
+                            }
+                        }
+                        break;
+                    case Organ.TISSUE:
+                        ConnectiveTissueCell.On = true;
+                        foreach (DonatableOrgan organ in donatableOrgans)
+                        {
+                            if (OrganExtensions.ToOrgan(organ.organType) == item && (organ.inTransfer != 0 || organ.expired))
+                            {
+                                ConnectiveTissueCell.IsEnabled = false;
+                            }
+                        }
+                        break;
+                }
             }
         }
     }

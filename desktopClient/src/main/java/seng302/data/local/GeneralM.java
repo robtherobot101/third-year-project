@@ -3,6 +3,7 @@ package seng302.data.local;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.http.client.HttpResponseException;
 import org.json.JSONObject;
+import seng302.User.Attribute.Organ;
 import seng302.data.interfaces.AdminsDAO;
 import seng302.data.interfaces.CliniciansDAO;
 import seng302.data.interfaces.GeneralDAO;
@@ -205,6 +206,31 @@ public class GeneralM implements GeneralDAO {
 
     @Override
     public List<OrganTransfer> getAllOrganTransfers(String token) throws HttpResponseException {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public void setTransferType(String token, int type, int organ) throws HttpResponseException {
+
+    }
+
+    @Override
+    public void successfullyTransplantWaitingListItem(String token, int organ) throws HttpResponseException {
+
+    }
+
+    @Override
+    public int getSingleWaitingListItem(String token, long userId, Organ organ) throws HttpResponseException {
+        return 0;
+    }
+
+    @Override
+    public void deleteTransfer(String token, int organ) throws HttpResponseException {
+
+    }
+
+    @Override
+    public List<DonatableOrgan> getSingleUsersDonatableOrgans(String token, long userId) throws HttpResponseException {
         return new ArrayList<>();
     }
 }

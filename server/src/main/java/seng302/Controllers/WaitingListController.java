@@ -238,6 +238,18 @@ public class WaitingListController {
         }
     }
 
+    public String transplantCompleted(Request request, Response response) {
+        int waitingListId = Integer.parseInt(request.params(":waitingListItemId"));
+        try {
+            model.transplantWaitingListItem(waitingListId);
+            response.status(201);
+            return "WAITING LIST ITEM WITH ID: " + waitingListId + " SUCCESSFULLY UPDATED";
+        } catch (SQLException e) {
+            response.status(500);
+            return e.getMessage();
+        }
+    }
+
     /**
      * Checks for the validity of the request ID, and returns a WaitingListItem obj
      * @param request HTTP request
@@ -266,4 +278,34 @@ public class WaitingListController {
         }
         return queriedWaitingListItem;
     }
+
+
+    public String getWaitingListId(Request request, Response response) {
+        int userId = Integer.parseInt(request.params(":id"));
+        Organ organType = Organ.parse(request.params(":organType"));
+        System.out.println(organType);
+        int queriedWaitingListId;
+        try {
+            queriedWaitingListId = model.getWaitingListId(userId, organType);
+        } catch (SQLException e) {
+            response.status(500);
+            response.body("Internal server error");
+            return null;
+        }
+
+        if (queriedWaitingListId == 0) {
+            response.status(404);
+            response.body("Not found");
+            return null;
+        }
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String serialQueriedWaitingListItem = gson.toJson(queriedWaitingListId);
+
+        response.type("application/json");
+        response.status(200);
+        return serialQueriedWaitingListItem;
+    }
+
+
 }

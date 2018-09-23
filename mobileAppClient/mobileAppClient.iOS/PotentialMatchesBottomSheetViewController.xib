@@ -14,6 +14,7 @@
                 <outlet property="potentialRecipientsTableView" destination="176" id="name-outlet-176"/>
                 <outlet property="timeRemainingLabel" destination="172" id="name-outlet-172"/>
                 <outlet property="view" destination="2" id="RRd-Eg-VrN"/>
+                <outlet property="potentialRecipientsLabel" destination="173" id="name-outlet-173"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

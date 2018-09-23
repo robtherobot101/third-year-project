@@ -15,7 +15,7 @@ public class OrganTransfer {
     private double endLat;
     private double endLon;
     private LocalDateTime arrivalTime;
-    private int OrganId;
+    private int id;
     private long receiverId;
     private Organ organType;
 
@@ -34,13 +34,13 @@ public class OrganTransfer {
     private Duration timeLeft;
     private String destinationRegion;
 
-    public OrganTransfer(double startLat, double startLon, double endLat, double endLon, LocalDateTime arrivalTime, int organId, long receiverId, Organ organType){
+    public OrganTransfer(double startLat, double startLon, double endLat, double endLon, LocalDateTime arrivalTime, int id, long receiverId, Organ organType){
         this.startLat = startLat;
         this.startLon = startLon;
         this.endLat = endLat;
         this.endLon = endLon;
         this.arrivalTime = arrivalTime;
-        this.OrganId = organId;
+        this.id = id;
         this.receiverId = receiverId;
         this.organType = organType;
     }
@@ -69,8 +69,8 @@ public class OrganTransfer {
         return timeLeft;
     }
 
-    public String getDestinationRegion() {
-        return destinationRegion;
+    public int getOrganId() {
+        return id;
     }
 
     public void setDestinationRegion(String destinationRegion) {
