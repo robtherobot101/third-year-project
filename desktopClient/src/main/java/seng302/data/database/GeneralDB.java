@@ -291,8 +291,8 @@ public class GeneralDB implements GeneralDAO {
     }
 
     @Override
-    public void deleteWaitingListItem(String token, long userId, int organ) throws HttpResponseException {
-        APIResponse response = server.deleteRequest(new HashMap<>(), token, "users/" + userId + "/waitingListItems/" + organ);
+    public void successfullyTransplantWaitingListItem(String token, int organ) throws HttpResponseException {
+        APIResponse response = server.patchRequest(new JsonObject(), new HashMap<>(), token, "waitingListItems/" + organ);
         if (response.getStatusCode() != 201){
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         }

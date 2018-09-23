@@ -249,8 +249,9 @@ public class Server {
             });
 
             path("/waitingListItems", () -> {
-                before("", profileUtils::hasAccessToAllUsers);
-                get("",  waitingListController::getAllWaitingListItems);
+                before("",                      profileUtils::hasAccessToAllUsers);
+                get("",                         waitingListController::getAllWaitingListItems);
+                patch("/:waitingListItemId",    waitingListController::transplantCompleted);
             });
 
             path("/mapObjects", () -> {

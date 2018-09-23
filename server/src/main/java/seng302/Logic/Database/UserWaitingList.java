@@ -206,6 +206,20 @@ public class UserWaitingList extends DatabaseMethods {
         }
     }
 
+    public void transplantWaitingListItem(int waitingListItemId) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "UPDATE WAITING_LIST_ITEM SET organ_deregistered_date = ?, deregistered_code = ? WHERE id = ?";
+            statement = connection.prepareStatement(update);
+            statement.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+            statement.setInt(2, 4);
+            statement.setInt(3, waitingListItemId);
+            System.out.println("Successful trans plant of waiting list item with id: " + waitingListItemId);
+        } finally {
+            close(statement);
+        }
+    }
+
 
     /**
      * Replace a user's waiting list items on the database with a new set of waiting list items.

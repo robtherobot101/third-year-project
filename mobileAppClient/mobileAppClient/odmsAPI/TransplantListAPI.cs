@@ -165,13 +165,13 @@ namespace mobileAppClient.odmsAPI
             var response = await client.SendAsync(request);
         }
 
-        public async void DeleteWaitingListItem(long userId, int organId)
+        public async void DeleteWaitingListItem(int organId)
         {
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
 
-            var request = new HttpRequestMessage(new HttpMethod("Delete"), url + "/" + userId + "/waitingListItems/" + organId);
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/waitingListItems/" + organId);
             request.Headers.Add("token", ClinicianController.Instance.AuthToken);
 
             var response = await client.SendAsync(request);
@@ -183,7 +183,7 @@ namespace mobileAppClient.odmsAPI
             HttpClient client = ServerConfig.Instance.client;
 
 
-            var request = new HttpRequestMessage(new HttpMethod("patch"), url + "/organs/" + organId + "/" + transferNum);
+            var request = new HttpRequestMessage(new HttpMethod("PATCH"), url + "/organs/" + organId + "/" + transferNum);
             request.Headers.Add("token", ClinicianController.Instance.AuthToken);
 
             var response = await client.SendAsync(request);

@@ -457,7 +457,7 @@ namespace mobileAppClient.Views.Clinician
                         // remove the pin as it will have been tidied up on the map renderer side
                         customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
 
-                        HelicopterFinished(singleHelicopterPin.HelicopterDetails.receiverId, singleHelicopterPin.HelicopterDetails.waitingListItemId, singleHelicopterPin.HelicopterDetails.organId);
+                        HelicopterFinished(singleHelicopterPin.HelicopterDetails.waitingListItemId, singleHelicopterPin.HelicopterDetails.organId);
 
                         return;
                     }
@@ -483,7 +483,7 @@ namespace mobileAppClient.Views.Clinician
 
                 if (transfer.arrivalTime.ToDateTimeWithSeconds() < DateTime.Now)
                 {
-                    HelicopterFinished(transfer.receiverId, waitingListId, transfer.id);
+                    HelicopterFinished(waitingListId, transfer.id);
                 }
                 else
                 {
@@ -595,11 +595,11 @@ namespace mobileAppClient.Views.Clinician
             return Math.Sqrt(interDistance);
         }
 
-        private void HelicopterFinished(long userId, int waitingListItemId, int organId)
+        private void HelicopterFinished(int waitingListItemId, int organId)
         {
             TransplantListAPI transplantListAPI = new TransplantListAPI();
             transplantListAPI.DeleteTransfer(organId);
-            transplantListAPI.DeleteWaitingListItem(userId, waitingListItemId);
+            transplantListAPI.DeleteWaitingListItem(waitingListItemId);
             transplantListAPI.SetInTransfer(organId, 2);
 
         }

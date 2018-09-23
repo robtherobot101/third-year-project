@@ -229,6 +229,18 @@ public class WaitingListController {
         }
     }
 
+    public String transplantCompleted(Request request, Response response) {
+        int waitingListId = Integer.parseInt(request.params(":waitingListItemId"));
+        try {
+            model.transplantWaitingListItem(waitingListId);
+            response.status(201);
+            return "WAITING LIST ITEM WITH ID: " + waitingListId + " SUCCESSFULLY UPDATED";
+        } catch (SQLException e) {
+            response.status(500);
+            return e.getMessage();
+        }
+    }
+
     /**
      * Checks for the validity of the request ID, and returns a WaitingListItem obj
      * @param request HTTP request
