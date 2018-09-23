@@ -82,6 +82,7 @@ public class PushAPI {
         for (Map.Entry<String, String> entry : message.messageMap().entrySet()) {
             n.addCustomData(entry.getKey(), entry.getValue());
         }
+        System.out.println(n.toJSON(Arrays.asList("1", "2")));
         sendNotification(n, String.valueOf(userAccountId));
     }
 
