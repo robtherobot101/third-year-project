@@ -218,6 +218,7 @@ public class Conversations {
         int id = -1;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             PreparedStatement statement = null;
+            ResultSet resultSet = null;
 
             try {
                 statement = connection.prepareStatement("INSERT INTO CONVERSATION VALUES(0, ?)");
@@ -227,11 +228,10 @@ public class Conversations {
                 DbUtils.closeQuietly(statement);
                 statement = connection.prepareStatement("SELECT id FROM CONVERSATION WHERE token = ?");
                 statement.setString(1, token);
-                ResultSet resultSet = statement.executeQuery();
+                resultSet = statement.executeQuery();
                 resultSet.next();
                 id = resultSet.getInt(1);
                 DbUtils.closeQuietly(resultSet);
-                DbUtils.closeQuietly(statement);
 
                 for (Integer participant: participants) {
                     try {
@@ -246,6 +246,7 @@ public class Conversations {
                 }
             } catch (SQLException ignored) {
             } finally {
+                DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
             }
         }

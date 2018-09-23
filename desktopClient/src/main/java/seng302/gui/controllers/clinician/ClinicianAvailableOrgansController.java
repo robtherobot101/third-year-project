@@ -431,7 +431,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
     }
 
-    private boolean checkGetToReceievrInTime(DonatableOrgan organ, User receiver) throws HttpResponseException, UnirestException{
+    private boolean checkGetToReceievrInTime(DonatableOrgan organ, User receiver) throws HttpResponseException, UnirestException, NullPointerException{
 
         User donor = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
         JSONObject donorLocation = WindowManager.getDataManager().getGeneral().getPosition(donor.getCityOfDeath() +", " + donor.getRegionOfDeath() + ", " + donor.getCountryOfDeath());
@@ -463,7 +463,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * @param organ the organ to transfer
      * @throws HttpResponseException Throws if cannot connect to server
      */
-    private void transferOrganDialog(DonatableOrgan organ, User user) throws HttpResponseException, UnirestException{
+    private void transferOrganDialog(DonatableOrgan organ, User user) throws HttpResponseException, UnirestException, NullPointerException{
         if (!checkGetToReceievrInTime(organ, user)) {
 
             Dialog<ButtonType> dialog = new Dialog<>();
@@ -495,7 +495,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
     }
 
-    private void transferOrgan(DonatableOrgan organ, User receiver) throws HttpResponseException, UnirestException{
+    private void transferOrgan(DonatableOrgan organ, User receiver) throws HttpResponseException, UnirestException, NullPointerException{
 
         User donor = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
         JSONObject donorLocation = WindowManager.getDataManager().getGeneral().getPosition(donor.getCityOfDeath() +", " + donor.getRegionOfDeath() + ", " + donor.getCountryOfDeath());
@@ -625,7 +625,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
             User user = (User) organsTreeTable.getSelectionModel().getSelectedItem().getValue();
             try {
                 transferOrganDialog(organ, user);
-            } catch (HttpResponseException | UnirestException e){
+            } catch (HttpResponseException | UnirestException | NullPointerException e){
                 Debugger.error(e.getMessage());
             }
         });

@@ -98,6 +98,7 @@ public class GeneralClinician extends DatabaseMethods {
             statement.setString(1, clinician.getUsername());
             statement.setString(2, clinician.getPassword());
             statement.executeUpdate();
+            statement.close();
             String insert = "INSERT INTO CLINICIAN(name, work_address, region, staff_id) VALUES(?, ?, ?, (SELECT id FROM ACCOUNT WHERE username = ?))";
             statement = connection.prepareStatement(insert);
 

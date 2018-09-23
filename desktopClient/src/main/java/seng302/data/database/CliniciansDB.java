@@ -70,7 +70,6 @@ public class CliniciansDB implements CliniciansDAO {
         jo.addProperty("password", password);
 
         APIResponse response = server.patchRequest(jo, new HashMap<>(), token, clinicians, String.valueOf(id), "account");
-        System.out.println(response.getAsString());
         if (response == null) {
             throw new HttpResponseException(0, "Could not reach server");
         }
