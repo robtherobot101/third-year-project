@@ -1,57 +1,64 @@
 package seng302.User.Importers;
 
 import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
+import seng302.User.Admin;
 import seng302.User.User;
 
+import java.io.*;
 import java.lang.reflect.Type;
+import seng302.generic.Debugger;
+
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class JSONParser {
 
-    public static Gson gson = new GsonBuilder().setPrettyPrinting()
-            .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeSerializer())
-            .registerTypeAdapter(LocalDate.class, new LocalDateDeserializer())
-            .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeDeserializer()).create();
+    public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-    /**
-     * Class to serialize LocalDates without requiring reflective access
-     */
-    private static class LocalDateSerializer implements JsonSerializer<LocalDate> {
+    public static Path checkPath(String rawPath) {
+        File inputFile = new File(rawPath);
 
-        public JsonElement serialize(LocalDate date, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(User.dateFormat.format(date));
+        Path filePath;
+        try {
+            filePath = inputFile.toPath();
+        } catch (InvalidPathException e) {
+            Debugger.log("Invalid file path");
+            return null;
         }
+
+        // Check file type is JSON
+        String extension = "";
+        int i = rawPath.lastIndexOf('.');
+        if (i > 0) {
+            extension = rawPath.substring(i+1);
+        }
+        assert(extension.equals("json"));
+        return filePath;
     }
 
-    /**
-     * Class to serialize LocalDateTimes without requiring reflective access
-     */
-    private static class LocalDateTimeSerializer implements JsonSerializer<LocalDateTime> {
+    public static <T> List<T> readJson(Path filePath) {
+        try (InputStream in = Files.newInputStream(filePath); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
+            Type type = new TypeToken<ArrayList<T>>() {
+            }.getType();
 
-        public JsonElement serialize(LocalDateTime date, Type typeOfSrc, JsonSerializationContext context) {
-            return new JsonPrimitive(User.dateTimeFormat.format(date));
+            List<T> importedProfiles = JSONParser.gson.fromJson(reader, type);
+            Debugger.log(String.format("Imported list successfully. (%d profiles)", importedProfiles.size()));
+            return importedProfiles;
+        } catch (IOException e) {
+            Debugger.error("IOException on " + filePath.toString() + ": Check your inputs and permissions!");
+        } catch (JsonSyntaxException | DateTimeException e1) {
+            Debugger.error("Invalid syntax in input file.");
+        } catch (NullPointerException e2) {
+            Debugger.error("Input file was empty.");
         }
-    }
-
-    /**
-     * Class to deserialize LocalDates without requiring reflective access
-     */
-    private static class LocalDateDeserializer implements JsonDeserializer<LocalDate> {
-
-        public LocalDate deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
-            return LocalDate.parse(date.toString().replace("\"", ""), User.dateFormat);
-        }
-    }
-
-    /**
-     * Class to deserialize LocalDateTimes without requiring reflective access
-     */
-    private static class LocalDateTimeDeserializer implements JsonDeserializer<LocalDateTime> {
-
-        public LocalDateTime deserialize(JsonElement date, Type typeOfSrc, JsonDeserializationContext context) {
-            return LocalDateTime.parse(date.toString().replace("\"", ""), User.dateTimeFormat);
-        }
+        return null;
     }
 }

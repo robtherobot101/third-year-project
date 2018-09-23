@@ -127,57 +127,6 @@ public class CreateAndLoginGUITest extends TestFXTest {
         //verifyThat("#userDisplayText", Node::isVisible);
     }
 
-    @Ignore
-    @Test
-    public void duplicateUsername() throws TimeoutException, SQLException {
-        User testUser = addTestUser();
-        clickOn("#createAccountButton");
-
-        clickOn("#usernameInput");
-        write(testUser.getUsername());
-        clickOn("#nhiInput");
-        write("lsm4962");
-        clickOn("#firstNameInput");
-        write("Matthew");
-        clickOn("#dateOfBirthInput");
-        write("12/06/1997");
-        clickOn("#passwordInput");
-        write("password123");
-        clickOn("#passwordConfirmInput");
-        write("password123");
-
-        clickOn("#createAccountButton");
-        //Make sure the scene did not change
-        assertNotNull(lookup("#createAccountButton").query());
-
-        //Now change the username to be unique and try again
-        clickOn("#usernameInput");
-        write("-new");
-        clickOn("#passwordConfirmInput");
-        clickOn("#createAccountButton");
-        waitForNodeVisible(5, "#undoBannerButton");
-        //Make sure that the create account button is no longer shown (because the account is now created and the scene should have changed)
-        assertNotNull(lookup("#undoBannerButton").query());
-    }
-
-    @Ignore
-    @Test
-    public void testValidLoginAsUser() throws SQLException {
-        User testUser = addTestUser();
-
-//        clickOn("#identificationInput");
-//        write(testUser.getUsername());
-        TextField textField = lookup("#identificationInput").query();
-        textField.setText(testUser.getUsername());
-//        clickOn("#passwordInput");
-//        write(testUser.getPassword());
-        textField = lookup("#passwordInput").query();
-        textField.setText(testUser.getPassword());
-        clickOn("#loginButton");
-        //Make sure that the user gui is now showing
-        assertNotNull(lookup("#undoBannerButton").query());
-    }
-
     @Test
     public void testInvalidLoginAsUser() throws SQLException {
         User testUser = addTestUser();

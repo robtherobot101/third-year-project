@@ -438,7 +438,9 @@ public class GeneralUser extends DatabaseMethods {
                     preferredNameString += middleName + " ";
                 }
             }
-            preferredNameString += resultSet.getString("preferred_last_name");
+            if (resultSet.getString("preferred_last_name") != null) {
+                preferredNameString += resultSet.getString("preferred_last_name");
+            }
 
             user.setPreferredNameArray(preferredNameString.split(" "));
 
