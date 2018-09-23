@@ -58,6 +58,10 @@ namespace mobileAppClient.iOS
                     string detailString = cell.DetailTextLabel.Text;
                     if(detailString.Equals("EXPIRED")) {
                         continue;
+                    } else if(detailString.Equals("IN TRANSFER")) {
+                        continue;
+                    } else if(detailString.Equals("SUCCESSFULLY TRANSFERRED")) {
+                        continue;
                     } else {
                         string timeLeftString = detailString.Substring(16);
                         string timeString = timeLeftString.Remove(timeLeftString.Length - 5);

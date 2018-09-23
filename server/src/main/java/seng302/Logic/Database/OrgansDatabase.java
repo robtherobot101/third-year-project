@@ -162,10 +162,6 @@ public class OrgansDatabase extends DatabaseMethods {
         if (organResultSet.getInt("expired") == 0) {
             expired = false;
         }
-        boolean inTransfer = true;
-        if (organResultSet.getInt("inTransfer") == 0) {
-            inTransfer = false;
-        }
         return new DonatableOrgan(
                 //organResultSet.getTimestamp("timeOfDeath") != null ? organResultSet.getTimestamp("timeOfDeath" ).toLocalDateTime() : null,
                 LocalDateTime.ofEpochSecond(organResultSet.getLong("timeOfDeath"), 0, ZoneOffset.ofHours(+12)),
@@ -173,7 +169,7 @@ public class OrgansDatabase extends DatabaseMethods {
                 organResultSet.getLong("user_id"),
                 organResultSet.getInt("id"),
                 expired,
-                inTransfer);
+                organResultSet.getInt("inTransfer"));
     }
 
     /**

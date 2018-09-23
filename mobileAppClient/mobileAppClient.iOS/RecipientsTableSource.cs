@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using CustomRenderer.iOS;
 using Foundation;
 using mobileAppClient.odmsAPI;
 using mobileAppClient.Views.Clinician;
@@ -21,10 +22,12 @@ namespace mobileAppClient.iOS
         CustomMap formsMap;
         User selectedRecipient;
         CustomPin customPin;
+        CustomMapRenderer customMapRenderer;
 
 
         public RecipientsTableSource(PotentialMatchesBottomSheetViewController owner 
-                                     , DonatableOrgan currentOrgan, CustomMap map, CustomPin customPin)
+                                     , DonatableOrgan currentOrgan, CustomMap map, CustomPin customPin,
+                                     CustomMapRenderer customMapRenderer)
         {
             this.owner = owner;
             this.UserPhotos = new Dictionary<int, UIImage>();
@@ -32,6 +35,7 @@ namespace mobileAppClient.iOS
             this.currentOrgan = currentOrgan;
             this.formsMap = map;
             this.customPin = customPin;
+            this.customMapRenderer = customMapRenderer;
 
         }
 
@@ -94,12 +98,10 @@ namespace mobileAppClient.iOS
             cell.ImageView.Image = UIImage.FromFile("donationIcon.png");
 
             cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
-            //SET THE TEXT DETAIL TO BE THE COUNTDOWN
+            //string bloodTypeString = BloodTypeExtensions.ToString(BloodTypeExtensions.ToBloodTypeJSON(item.bloodType));
+            //string genderString = char.ToUpper(item.gender[0]) + item.gender.Substring(1).ToLower();
 
-            string bloodTypeString = BloodTypeExtensions.ToString(BloodTypeExtensions.ToBloodTypeJSON(item.bloodType));
-            string genderString = char.ToUpper(item.gender[0]) + item.gender.Substring(1).ToLower();
-
-            cell.DetailTextLabel.Text = "Blood Type: " + bloodTypeString + "  Gender: " + genderString + "  Age: " + item?.Age;
+            cell.DetailTextLabel.Text = "Address: " + item?.currentAddress + ", " + item?.region;
             //Change colour based on severity
             cell.DetailTextLabel.TextColor = UIColor.White;
 
@@ -122,6 +124,19 @@ namespace mobileAppClient.iOS
         void BeginTransferProcess(UIAlertAction obj)
         {
             Console.WriteLine("LET US BEGIN.");
+
+            //Update bottom sheet to show In transfer - empty table and update countdown
+            
+            owner.timeRemainingLabel.Text = "IN TRANSFER";
+            owner.timeRemainingLabel.TextColor = UIColor.Orange;
+            owner.potentialRecipientsLabel.Text = "This organ is currently in transit.";
+            owner.potentialRecipientsTableView.Hidden = true;
+
+            //Update map to get rid of overlays and recipients 
+            customMapRenderer.removeOverlays();
+            customMapRenderer.ClearAllReceivers();
+
+            //Insert transfer into database and add new helicopter.
             ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
             parent.NewTransfer(currentOrgan, selectedRecipient, customPin.Position);
         }

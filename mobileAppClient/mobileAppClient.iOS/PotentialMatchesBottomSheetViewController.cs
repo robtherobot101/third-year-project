@@ -63,6 +63,14 @@ namespace mobileAppClient.iOS
             {
                 potentialRecipientsLabel.Text = "This organ has expired.";
                 potentialRecipientsTableView.Hidden = true;
+            } else if (currentOrganCell.DetailTextLabel.Text.Equals("IN TRANSFER"))
+            {
+                potentialRecipientsLabel.Text = "This organ is currently in transit.";
+                potentialRecipientsTableView.Hidden = true;
+            } else if (currentOrganCell.DetailTextLabel.Text.Equals("SUCCESSFULLY TRANSFERRED"))
+            {
+                potentialRecipientsLabel.Text = "This organ has been successfully transferred.";
+                potentialRecipientsTableView.Hidden = true;
             }
             else if (currentOrgan.topReceivers.Count == 0) {
                 potentialRecipientsLabel.Text = "No matched recipients found.";
@@ -71,7 +79,7 @@ namespace mobileAppClient.iOS
             } else {
                 potentialRecipientsTableView.Hidden = false;
                 potentialRecipientsLabel.Text = "Potential Recipients:";
-                potentialRecipientsTableView.Source = new RecipientsTableSource(this, currentOrgan, map, customPin);
+                potentialRecipientsTableView.Source = new RecipientsTableSource(this, currentOrgan, map, customPin, customMapRenderer);
                 potentialRecipientsTableView.ScrollEnabled = true;
             }
 
@@ -96,6 +104,12 @@ namespace mobileAppClient.iOS
 
                 string detailString = timeRemainingLabel.Text;
                 if (detailString.Equals("EXPIRED"))
+                {
+                    return;
+                } else if (detailString.Equals("IN TRANSFER"))
+                {
+                    return;
+                } else if (detailString.Equals("SUCCESSFULLY TRANSFERRED"))
                 {
                     return;
                 }
@@ -195,6 +209,12 @@ namespace mobileAppClient.iOS
         async void prepareRecipientsOnMap(Position position) {
             string detailString = timeRemainingLabel.Text;
             if (detailString.Equals("EXPIRED"))
+            {
+                return;
+            } else if (detailString.Equals("IN TRANSFER"))
+            {
+                return;
+            } else if (detailString.Equals("SUCCESSFULLY TRANSFERRED"))
             {
                 return;
             }
@@ -361,7 +381,7 @@ namespace mobileAppClient.iOS
 
             StartOrganTimeTickingTimer(1000);
 
-            StartOrganCircleRadiusCountdown(2000);
+            StartOrganCircleRadiusCountdown(1000);
 
         }
 

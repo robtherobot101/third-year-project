@@ -21,9 +21,9 @@ public class DonatableOrgan {
     private String receiverDeathRegion;
     private double timePercent;
     private List<User> topReceivers;
-    private Boolean inTransfer;
+    private int inTransfer;
 
-    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id, boolean inTransfer){
+    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id, int inTransfer){
         this.timeOfDeath = timeOfExpiry;
         this.donorId = donorId;
         this.organType = organType;
@@ -31,7 +31,7 @@ public class DonatableOrgan {
         this.inTransfer = inTransfer;
     }
 
-    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, boolean inTransfer){
+    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int inTransfer){
         this.timeOfDeath = timeOfExpiry;
         this.donorId = donorId;
         this.organType = organType;
@@ -86,7 +86,7 @@ public class DonatableOrgan {
         return timeLeft;
     }
 
-    public Boolean getInTransfer() {
+    public int getInTransfer() {
         return inTransfer;
     }
 

@@ -59,7 +59,13 @@ namespace mobileAppClient.iOS
             cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
             //SET THE TEXT DETAIL TO BE THE COUNTDOWN
              //Get organ object from organ list             DonatableOrgan currentOrgan = null;             foreach(DonatableOrgan donatableOrgan in pin.donatableOrgans) {                 if(donatableOrgan.organType.ToLower().Equals(item.ToLower())) {                     currentOrgan = donatableOrgan;                 }             }             string countdownDetail = "";             if (currentOrgan.expired)             {
-                cell.DetailTextLabel.Text = "EXPIRED";                 cell.DetailTextLabel.TextColor = UIColor.Red;             }             else             {                 Tuple<string, long> timeRemainingTuple = currentOrgan.getTimeRemaining();                 cell.DetailTextLabel.Text = timeRemainingTuple.Item1;                 //Change colour based on severity
+                cell.DetailTextLabel.Text = "EXPIRED";                 cell.DetailTextLabel.TextColor = UIColor.Red;             } else if(currentOrgan.inTransfer == 1) {
+                cell.DetailTextLabel.Text = "IN TRANSFER";
+                cell.DetailTextLabel.TextColor = UIColor.Orange;
+            } else if(currentOrgan.inTransfer == 2) {
+                cell.DetailTextLabel.Text = "SUCCESSFULLY TRANSFERRED";
+                cell.DetailTextLabel.TextColor = UIColor.Green;
+            }             else             {                 Tuple<string, long> timeRemainingTuple = currentOrgan.getTimeRemaining();                 cell.DetailTextLabel.Text = timeRemainingTuple.Item1;                 //Change colour based on severity
                 long timeRemaining = timeRemainingTuple.Item2;                 if(timeRemaining <= 3600) {
                     cell.DetailTextLabel.TextColor = UIColor.FromRGB(244, 65, 65);
                 } else if(timeRemaining <= 10800) {

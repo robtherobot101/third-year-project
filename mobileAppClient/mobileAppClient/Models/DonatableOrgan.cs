@@ -11,6 +11,7 @@ namespace mobileAppClient
         public int id { get; set; }
         public bool expired { get; set; }
         public List<User> topReceivers { get; set; }
+        public int inTransfer { get; set; }
 
         public DonatableOrgan()
         {

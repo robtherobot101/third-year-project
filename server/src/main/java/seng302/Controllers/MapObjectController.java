@@ -91,7 +91,7 @@ public class MapObjectController {
             try {
                 model.insertTransfer(transfer);
                 response.status(201);
-                return "TRANSFER INSERTED FOR ORGAN ID: " + transfer.getOrganId();
+                return "TRANSFER INSERTED FOR ORGAN ID: " + transfer.getId();
             } catch (SQLException e) {
                 response.status(500);
                 return "Internal Server Error";
