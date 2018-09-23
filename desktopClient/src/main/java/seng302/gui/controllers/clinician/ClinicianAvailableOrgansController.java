@@ -440,12 +440,13 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         List<Hospital> hospitals = WindowManager.getDataManager().getGeneral().getHospitals(token);
         Hospital receiverHospital = null;
+
         for (Hospital hospital : hospitals) {
             if (hospital.getRegion().equals(receiver.getRegion())){
                 receiverHospital = hospital;
             }
         }
-
+        assert receiverHospital != null;
         double dist = distance(
                 startLat,
                 receiverHospital.getLatitude(),
@@ -508,6 +509,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
         double startLat = donorLocation.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
         double startLon = donorLocation.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+        assert receiverHospital != null;
         double dist = distance(
                 startLat,
                 receiverHospital.getLatitude(),

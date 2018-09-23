@@ -234,17 +234,17 @@ public class Conversations {
                 DbUtils.closeQuietly(resultSet);
 
                 for (Integer participant: participants) {
+                    PreparedStatement statement1 = null;
                     try {
-                        statement = connection.prepareStatement("INSERT INTO CONVERSATION_MEMBER VALUES(?, ?);");
-                        statement.setInt(1, id);
-                        statement.setInt(2, participant);
-                        statement.execute();
+                        statement1 = connection.prepareStatement("INSERT INTO CONVERSATION_MEMBER VALUES(?, ?);");
+                        statement1.setInt(1, id);
+                        statement1.setInt(2, participant);
+                        statement1.execute();
                     } catch (SQLIntegrityConstraintViolationException ignored) {
                     } finally {
-                        DbUtils.closeQuietly(statement);
+                        DbUtils.closeQuietly(statement1);
                     }
                 }
-            } catch (SQLException ignored) {
             } finally {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
