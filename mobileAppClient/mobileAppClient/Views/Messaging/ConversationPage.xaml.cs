@@ -29,7 +29,6 @@ namespace mobileAppClient
 
         private CustomObservableCollection<Message> conversationMessages;
 
-	    private Timer t;
 
 		public ConversationPage(Conversation conversationToDisplay, int localId)
 		{
@@ -40,20 +39,13 @@ namespace mobileAppClient
 		    this.localId = localId;
 
 		    Title = conversation.externalName;
-
-            conversationMessages = conversation.messages;
+            conversationMessages = new CustomObservableCollection<Message>();
 
             MessagesListView.ItemsSource = conversationMessages;
 		    MessagesListView.ItemTapped += OnMessageTapped;
 
             populateMessages();
         }
-
-	    protected async override void OnDisappearing()
-	    {
-	        t.Dispose();
-	    }
-
 
 
 	    /// <summary>
