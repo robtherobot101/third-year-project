@@ -11,6 +11,9 @@ using Foundation;
 using ImageCircle.Forms.Plugin.iOS;
 using UIKit;
 using Microsoft.AppCenter.Push;
+using Plugin.Toasts;
+using Xamarin.Forms;
+using UserNotifications;
 
 namespace mobileAppClient.iOS
 {
@@ -35,7 +38,7 @@ namespace mobileAppClient.iOS
             global::Xamarin.FormsMaps.Init();
             global::CarouselView.FormsPlugin.iOS.CarouselViewRenderer.Init();
             global::ImageCircle.Forms.Plugin.iOS.ImageCircleRenderer.Init();
-
+            
             LoadApplication(new App());
 
             // For circular images (on menu drawer)

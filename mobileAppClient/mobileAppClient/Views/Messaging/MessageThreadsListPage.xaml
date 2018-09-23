@@ -12,8 +12,6 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        <Button Text="New Conversation" x:Name="NewConversationButton" Clicked="NewConversationTapped" VerticalOptions="End"/>
     </StackLayout>
-    <ContentPage.ToolbarItems>
-        <ToolbarItem x:Name="NewConversationButton" Order="Primary" Icon="add_icon.png" Clicked="NewConversationTapped"/>
-    </ContentPage.ToolbarItems>
 </ContentPage>

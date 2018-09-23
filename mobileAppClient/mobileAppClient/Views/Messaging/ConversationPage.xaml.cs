@@ -23,9 +23,12 @@ namespace mobileAppClient
         private bool isClinicianAccessing { get; set; }
 
 	    private Conversation conversation;
+
+        // The current conversation being displayed
+        public static Conversation currentConversation = null;
+
         private CustomObservableCollection<Message> conversationMessages;
 
-	    private Timer t;
 
 		public ConversationPage(Conversation conversationToDisplay, int localId)
 		{
@@ -36,45 +39,16 @@ namespace mobileAppClient
 		    this.localId = localId;
 
 		    Title = conversation.externalName;
-
-            conversationMessages = new CustomObservableCollection<Message>();
+            conversationMessages = conversation.messages;
 
             MessagesListView.ItemsSource = conversationMessages;
 		    MessagesListView.ItemTapped += OnMessageTapped;
 
-            populateMessages();
-
-            StartTimer(4000);
+            if (conversationMessages.Count > 0)
+            {
+                MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
+            }
         }
-
-	    private void StartTimer(int interval)
-	    {
-            t = new Timer(timerTick, null, 100, interval);
-	    }
-
-	    public async void timerTick(object o)
-	    {
-	        Tuple<HttpStatusCode, Conversation> refreshedConversation = await new MessagingAPI().GetConversation(localId, conversation.id, isClinicianAccessing);
-	        if (refreshedConversation.Item1 == HttpStatusCode.OK)
-	        {
-	            List<Message> newConversationMessages = refreshedConversation.Item2.messages;
-                if (conversation.messages.Union(newConversationMessages).Count() != conversation.messages.Count())
-                {
-                    conversation.messages.AddRange(newConversationMessages.Except(conversation.messages));
-                }
-
-                if (conversationMessages.Count > 0)
-                {
-                    MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
-                }
-	        }
-	    }
-
-	    protected async override void OnDisappearing()
-	    {
-	        t.Dispose();
-	    }
-
 
 
 	    /// <summary>
@@ -98,16 +72,6 @@ namespace mobileAppClient
 	        if (e.Item == null) return;
 	        ((ListView)sender).SelectedItem = null;
 	    }
-
-        private void populateMessages()
-        {
-            conversationMessages.Clear();
-            foreach (Message currentMessage in conversation.messages)
-            {
-                currentMessage.SetType(localId);
-                conversationMessages.Add(currentMessage);
-            } 
-        }
 
         /// <summary>
         /// Handles the sending of a message
@@ -143,5 +107,7 @@ namespace mobileAppClient
             MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
 	        chatTextInput.Text = "";
 	    }
+
+        
 	}
 }
