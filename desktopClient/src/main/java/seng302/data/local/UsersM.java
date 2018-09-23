@@ -1,6 +1,7 @@
 package seng302.data.local;
 
 import javafx.scene.image.Image;
+import org.apache.http.client.HttpResponseException;
 import seng302.data.interfaces.UsersDAO;
 import seng302.generic.Debugger;
 import seng302.User.Attribute.Organ;
@@ -16,11 +17,6 @@ public class UsersM implements UsersDAO {
 
     public UsersM() {
         this.users = new ArrayList<>();
-    }
-
-    @Override
-    public int getUserId(String username, String token) {
-        return 0;
     }
 
     /**
@@ -458,5 +454,10 @@ public class UsersM implements UsersDAO {
     @Override
     public int count(String token){
         return users.size();
+    }
+
+    @Override
+    public void updateAccount(long id, String username, String email, String password, String token) throws HttpResponseException {
+
     }
 }

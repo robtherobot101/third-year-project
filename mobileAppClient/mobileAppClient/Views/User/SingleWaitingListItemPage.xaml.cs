@@ -137,7 +137,6 @@ namespace mobileAppClient
                             "Server error",
                             "OK");
                 }
-
             }
             catch (HttpRequestException e)
             {

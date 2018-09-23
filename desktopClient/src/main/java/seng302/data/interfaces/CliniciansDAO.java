@@ -11,6 +11,8 @@ public interface CliniciansDAO {
 
     void updateClinician(Clinician clinician, String token) throws HttpResponseException;
 
+    void updateAccount(long id, String username, String password, String token) throws HttpResponseException;
+
     Collection<Clinician> getAllClinicians(String token) throws HttpResponseException;
 
     Clinician getClinician(long id, String token) throws HttpResponseException;

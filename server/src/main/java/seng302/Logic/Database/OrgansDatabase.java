@@ -39,7 +39,6 @@ public class OrgansDatabase extends DatabaseMethods {
         }
     }
 
-
     /**
      * gets all the organs from the database
      *
@@ -67,7 +66,8 @@ public class OrgansDatabase extends DatabaseMethods {
 
     private String buildOrganQuery(Map<String, String> params) {
         StringBuilder queryBuilder = new StringBuilder();
-        queryBuilder.append("SELECT * FROM DONATION_LIST_ITEM JOIN USER ON DONATION_LIST_ITEM.user_id = USER.id WHERE timeOfDeath IS NOT NULL ");
+        queryBuilder.append("SELECT * FROM DONATION_LIST_ITEM JOIN USER ON DONATION_LIST_ITEM.user_id = USER.id WHERE timeOfDeath IS NOT NULL " +
+                "AND NOT EXISTS (SELECT * FROM TRANSFERS WHERE TRANSFERS.OrganId = DONATION_LIST_ITEM.id) ");
         if (params.keySet().contains("userRegion")) {
             queryBuilder.append("AND USER.regionOfDeath = '").append(params.get("userRegion")).append("' ");
         }
@@ -162,12 +162,17 @@ public class OrgansDatabase extends DatabaseMethods {
         if (organResultSet.getInt("expired") == 0) {
             expired = false;
         }
+        boolean inTransfer = true;
+        if (organResultSet.getInt("inTransfer") == 0) {
+            inTransfer = false;
+        }
         return new DonatableOrgan(
                 //organResultSet.getTimestamp("timeOfDeath") != null ? organResultSet.getTimestamp("timeOfDeath" ).toLocalDateTime() : null,
                 LocalDateTime.ofEpochSecond(organResultSet.getLong("timeOfDeath"), 0, ZoneOffset.ofHours(+12)),
                 Organ.parse(organResultSet.getString("name")),
                 organResultSet.getLong("user_id"),
                 organResultSet.getInt("id"),
-                expired);
+                expired,
+                inTransfer);
     }
 }

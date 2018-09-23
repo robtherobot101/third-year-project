@@ -94,6 +94,16 @@ public class UserSettingsController implements Initializable {
                 "The changes made will not be saved to the server until you save.");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                WindowManager.getDataManager().getUsers().updateAccount(
+                        currentUser.getId(), usernameField.getText(), emailField.getText(), passwordField.getText(), userController.getToken());
+            } catch (HttpResponseException e) {
+                Debugger.error(e.getMessage());
+                e.printStackTrace();
+                WindowManager.createAlert(AlertType.ERROR, "Update failed!", "Failed to update account settings", "No changes were made to you account").showAndWait();
+                ((Stage) updateButton.getScene().getWindow()).close();
+                return;
+            }
             currentUser.setUsername(usernameField.getText());
             currentUser.setEmail(emailField.getText());
             currentUser.setPassword(passwordField.getText());

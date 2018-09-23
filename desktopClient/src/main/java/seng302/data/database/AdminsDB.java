@@ -48,6 +48,29 @@ public class AdminsDB implements AdminsDAO {
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
     }
 
+    /**
+     * Updates an admin's username, email and password
+     * @param id The id of the admin
+     * @param username The new username to update too
+     * @param password The new password
+     * @param token The login token
+     * @throws HttpResponseException If something goes wrong
+     */
+    @Override
+    public void updateAccount(long id, String username, String password, String token) throws HttpResponseException {
+        JsonObject jo = new JsonObject();
+        jo.addProperty("username", username);
+        jo.addProperty("password", password);
+
+        APIResponse response = server.patchRequest(jo, new HashMap<>(), token, admins, String.valueOf(id), "account");
+        if (response == null) {
+            throw new HttpResponseException(0, "Could not reach server");
+        }
+        if (response.getStatusCode() != 201) {
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+    }
+
     public Collection<Admin> getAllAdmins(String token) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, admins);
         if(response == null){
