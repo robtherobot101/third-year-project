@@ -44,9 +44,11 @@ namespace mobileAppClient
         private bool endOfUsers;
         private string searchQuery;
 
+        private List<int> activeConversations;
+
         public CustomObservableCollection<User> UserList { get; set; }
 
-        public CreateConversationPage()
+        public CreateConversationPage(List<int> activeConversations)
         {
             InitializeComponent();
             IsLoading = false;
@@ -59,6 +61,7 @@ namespace mobileAppClient
             UserSearchBar.TextChanged += UserSearchBar_TextChanged;
             Title = "New Conversation";
             UserListView.ItemAppearing += HitBottomOfList;
+            this.activeConversations = activeConversations;
         }
 
         private void HitBottomOfList(object sender, ItemVisibilityEventArgs e)
@@ -110,7 +113,10 @@ namespace mobileAppClient
             IsLoading = true;
 
             // This is where users will be populated from
-            UserList.AddRange(await getUsers(currentIndex, 20));
+            List<User> fetchedUsers = await getUsers(currentIndex, 20);
+            fetchedUsers.RemoveAll(user => activeConversations.Contains(user.id));
+
+            UserList.AddRange(fetchedUsers);
             currentIndex += 20;
 
             IsLoading = false;
@@ -196,9 +202,7 @@ namespace mobileAppClient
 
             User tappedUser = (User)e.Item;
             
-
-            // Create conversation here
-            
+            // Create conversation here 
             await CreateConversation(tappedUser.id);
         }
 
@@ -225,8 +229,8 @@ namespace mobileAppClient
                     if (newlyCreatedConversation != null)
                     {
                         newlyCreatedConversation.getParticipantNames(loggedInClinician.staffID);
-                        await Navigation.PushAsync(new ConversationPage(newlyCreatedConversation, localClincianId));
-                        
+                        activeConversations.Add(newlyCreatedConversation.externalId);
+                        await Navigation.PushAsync(new ConversationPage(newlyCreatedConversation, localClincianId));  
                     }
 
                     return;

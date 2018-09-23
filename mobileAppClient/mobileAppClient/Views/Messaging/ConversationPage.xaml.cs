@@ -44,6 +44,10 @@ namespace mobileAppClient
             MessagesListView.ItemsSource = conversationMessages;
 		    MessagesListView.ItemTapped += OnMessageTapped;
 
+            if (conversationMessages.Count > 0)
+            {
+                MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
+            }
         }
 
 

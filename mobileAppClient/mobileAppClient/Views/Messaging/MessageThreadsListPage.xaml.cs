@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using mobileAppClient.Models;
 using mobileAppClient.Models.CustomObjects;
 using mobileAppClient.odmsAPI;
+using mobileAppClient.Notifications;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -19,7 +20,10 @@ namespace mobileAppClient
 
         private bool isClinicianAccessing { get; set; }
 
+        private List<int> activeConversations;
+
         public CustomObservableCollection<Conversation> conversationList { get; set; }
+
 
         // Loading represents fetching more users at the bottom of the list
         private bool _IsLoading;
@@ -33,11 +37,13 @@ namespace mobileAppClient
                 {
                     LoadingIndicator.IsVisible = true;
                     LoadingIndicator.IsRunning = true;
+                    NewConversationButton.IsVisible = false;
                 }
                 else
                 {
                     LoadingIndicator.IsVisible = false;
                     LoadingIndicator.IsRunning = false;
+                    NewConversationButton.IsVisible = true;
                 }
             }
         }
@@ -53,7 +59,10 @@ namespace mobileAppClient
             CheckIfClinicianAccessing();
 
             conversationList = new CustomObservableCollection<Conversation>();
-            ConversationsListView.ItemsSource = conversationList;  
+            activeConversations = new List<int>();
+
+            ConversationsListView.ItemsSource = conversationList;
+            VSAppCenter.setConversationListController(this);
         }
 
         /// <summary>
@@ -68,7 +77,7 @@ namespace mobileAppClient
             {
                 localClinician = ClinicianController.Instance.LoggedInClinician;
                 await LoadClinicianConversations();
-                NewConversationButton.IsEnabled = true;
+                
             }
             else
             {
@@ -78,6 +87,7 @@ namespace mobileAppClient
             }
             IsLoading = false;
         }
+
 
         /// <summary>
         /// Checks whether the clinician is viewing this page, important for fetching the correct profiles of participants
@@ -102,6 +112,7 @@ namespace mobileAppClient
 
         private async Task LoadClinicianConversations()
         {
+            
             List<Conversation> rawConversations;
             MessagingAPI messagingApi = new MessagingAPI();
 
@@ -116,15 +127,18 @@ namespace mobileAppClient
                     return;
             }
 
+            activeConversations.Clear();
             foreach (Conversation currentConversation in rawConversations)
             {
                 currentConversation.getParticipantNames(localClinician.staffID);
+                activeConversations.Add(currentConversation.externalId);
                 conversationList.Add(currentConversation);
             }
         }
 
         private async Task LoadUserConversations()
         {
+            
             List<Conversation> rawConversations;
             MessagingAPI messagingApi = new MessagingAPI();
 
@@ -139,16 +153,23 @@ namespace mobileAppClient
                     return;
             }
 
+            activeConversations.Clear();
             foreach (Conversation currentConversation in rawConversations)
             {
                 currentConversation.getParticipantNames(localUser.id);
+                activeConversations.Add(currentConversation.externalId);
                 conversationList.Add(currentConversation);
             }
         }
 
         private async void NewConversationTapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CreateConversationPage());
+            await Navigation.PushAsync(new CreateConversationPage(activeConversations));
+        }
+
+        public async void refreshConversationsExternally()
+        {
+            OnAppearing();
         }
     }
 }

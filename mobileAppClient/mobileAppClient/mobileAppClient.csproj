@@ -129,7 +129,7 @@
     <EmbeddedResource Update="Views\Messaging\ConversationPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\Clinician\CreateConversationPage.xaml">
+    <EmbeddedResource Update="Views\Messaging\CreateConversationPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Clinician\SlideUpMenuView.xaml">

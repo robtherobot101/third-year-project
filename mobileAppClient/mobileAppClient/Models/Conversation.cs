@@ -18,6 +18,7 @@ namespace mobileAppClient.Models
 
         public string localName { get; set; }
         public string externalName { get; set; }
+        public int externalId { get; set; }
         public Dictionary<int, String> memberNames { get; set; }
 
         public string lastMessage
@@ -30,6 +31,8 @@ namespace mobileAppClient.Models
             // Gets the complement of the members list in respect to the local id -> the external participants id
             members.Remove(localId);
             localName = memberNames[localId];
+
+            externalId = members[0];
             externalName = memberNames[members[0]];
         } 
     }

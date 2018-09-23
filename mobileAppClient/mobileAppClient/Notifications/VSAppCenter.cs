@@ -11,8 +11,10 @@ using Xamarin.Forms;
 
 namespace mobileAppClient.Notifications
 {
-    class VSAppCenter
+    public static class VSAppCenter
     {
+        static MessageThreadsListPage messageThreadsListPageController;
+
         public async static void Setup()
         {
 
@@ -33,10 +35,10 @@ namespace mobileAppClient.Notifications
                         if (ConversationPage.currentConversation != null && ConversationPage.currentConversation.id == message.conversationId)
                         {
                             ConversationPage.currentConversation.messages.Add(message);
-                            
                         }
                         else
                         {
+                            messageThreadsListPageController?.refreshConversationsExternally();
                             DependencyService.Get<IToast>().ShortAlert("You have received a message");
                         }
                     }
@@ -48,7 +50,11 @@ namespace mobileAppClient.Notifications
                             typeof(Analytics), typeof(Crashes), typeof(Push));
             var id = await AppCenter.GetInstallIdAsync();
             System.Diagnostics.Debug.WriteLine(id.ToString());
+        }
 
+        public static void setConversationListController(MessageThreadsListPage messageThreadsListPageController)
+        {
+            VSAppCenter.messageThreadsListPageController = messageThreadsListPageController;
         }
     }
 }
