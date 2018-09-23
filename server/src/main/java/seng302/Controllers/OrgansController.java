@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import seng302.Logic.Database.OrgansDatabase;
 import seng302.Logic.OrganMatching;
+import seng302.Model.Attribute.Organ;
 import seng302.Model.DonatableOrgan;
+import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -72,14 +74,17 @@ public class OrgansController {
                     }
                 }
             } else {
+                System.out.println("brah2");
                 for(DonatableOrgan organ: allDonatableOrgans){
                     organ.setTopReceivers(organMatching.getTop5Matches(organ, ""));
                 }
+                System.out.println("brah3");
             }
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             String serializedOrgans = gson.toJson(allDonatableOrgans);
             response.type("application/json");
             response.status(200);
+            System.out.println("brah");
             return serializedOrgans;
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
@@ -105,6 +110,8 @@ public class OrgansController {
             try {
                 model.insertOrgan(organ);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification((int)organ.getDonorId(), "Organ added to donations.",
+                        Organ.capitalise(organ.getOrganType().toString()) + " was added to your organ donations.");
                 return "ORGAN INSERTED FOR USER ID: " + organ.getDonorId();
             } catch (SQLException e) {
                 response.status(500);
@@ -131,6 +138,8 @@ public class OrgansController {
             try {
                 model.removeOrgan(organ);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification((int)organ.getDonorId(), "Organ removed from donations.",
+                        Organ.capitalise(organ.getOrganType().toString()) + " was removed from your organ donations.");
                 return "ORGAN REMOVED FOR USER ID: " + organ.getDonorId();
             } catch (SQLException e) {
                 response.status(500);
@@ -157,6 +166,8 @@ public class OrgansController {
             try {
                 model.updateOrgan(organ);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification((int)organ.getDonorId(), "Organ donation updated.",
+                        Organ.capitalise(organ.getOrganType().toString()) + " from your organ donations was updated.");
                 return "ORGAN UPDATED FOR USER ID: " + organ.getDonorId();
             } catch (SQLException e) {
                 response.status(500);
@@ -164,6 +175,37 @@ public class OrgansController {
             }
 
         }
+    }
+
+    public String setInTransfer(Request request, Response response) {
+        int organId = Integer.parseInt(request.params(":id"));
+        int transferType = Integer.parseInt(request.params(":transferType"));
+        try {
+            model.inTransfer(organId, transferType);
+            response.status(201);
+            return "ORGAN  " + organId + " SET IN TRANSFER";
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
+    }
+
+    public String getUsersOrgans(Request request, Response response) {
+        int userId = Integer.parseInt(request.params(":id"));
+        List<DonatableOrgan> allDonatableOrgans;
+        try {
+            allDonatableOrgans = model.getSingUsersDonatableOrgans(userId);
+        } catch (SQLException e) {
+            Server.getInstance().log.error(e.getMessage());
+            response.status(500);
+            return e.getMessage();
+        }
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String serializedOrgans = gson.toJson(allDonatableOrgans);
+
+        response.type("application/json");
+        response.status(200);
+        return serializedOrgans;
     }
 
 }

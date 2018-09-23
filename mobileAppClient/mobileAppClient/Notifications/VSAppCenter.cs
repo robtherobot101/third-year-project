@@ -2,15 +2,20 @@
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
+using Plugin.Toasts;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Text;
+using mobileAppClient.Models;
 using Xamarin.Forms;
 
 namespace mobileAppClient.Notifications
 {
-    class VSAppCenter
+    public static class VSAppCenter
     {
+        static MessageThreadsListPage messageThreadsListPageController;
+
         public async static void Setup()
         {
 
@@ -20,34 +25,45 @@ namespace mobileAppClient.Notifications
             {
                 Push.PushNotificationReceived += (sender, e) =>
                 {
-                    // Add the notification message and title to the message
-                    var summary = $"Push notification received:" +
-                                        $"\n\tNotification title: {e.Title}" +
-                                        $"\n\tMessage: {e.Message}";
-
-                    // If there is custom data associated with the notification,
-                    // print the entries
-                    if (e.CustomData != null)
+                    // If the notification contains message data, handle it as such
+                    if (e.CustomData.ContainsKey("conversationId"))
                     {
-                        summary += "\n\tCustom data:\n";
-                        foreach (var key in e.CustomData.Keys)
+                        Message message = new Message();
+                        message.id = int.Parse(e.CustomData["id"]);
+                        message.conversationId = int.Parse(e.CustomData["conversationId"]);
+                        message.text = e.CustomData["text"];
+                        message.timestamp = new CustomDateTime(DateTime.Parse(e.CustomData["timestamp"]));
+                        if (ConversationPage.currentConversation != null && ConversationPage.currentConversation.id == message.conversationId)
                         {
-                            summary += $"\t\t{key} : {e.CustomData[key]}\n";
-                        }     
-                    }
+                            ConversationPage.currentConversation.messages.Add(message);
+                        }
+                        else
+                        {
+                            if (messageThreadsListPageController != null)
+                            {
+                                List<Conversation> localConversation = new List<Conversation>(messageThreadsListPageController.conversationList);
+                                localConversation.Find(conversation => conversation.id == message.conversationId)?.messages.Add(message);
 
-                    // Send the notification summary to debug output
-                    System.Diagnostics.Debug.WriteLine(summary);
+                                messageThreadsListPageController.conversationList.Clear();
+                                messageThreadsListPageController.conversationList.AddRange(localConversation);                              
+                            }
+                            
+                            DependencyService.Get<IToast>().ShortAlert("You have received a message");
+                        }
+                    }
                 };
             }
             AppCenter.LogLevel = LogLevel.Verbose;
-
             AppCenter.Start("android=95e48718-8158-4eef-ab58-fac02629e859;" +
                             "ios=14d06e7a-6ff3-4e01-8838-59cbb905dbc2;",
                             typeof(Analytics), typeof(Crashes), typeof(Push));
             var id = await AppCenter.GetInstallIdAsync();
             System.Diagnostics.Debug.WriteLine(id.ToString());
+        }
 
+        public static void setConversationListController(MessageThreadsListPage messageThreadsListPageController)
+        {
+            VSAppCenter.messageThreadsListPageController = messageThreadsListPageController;
         }
     }
 }

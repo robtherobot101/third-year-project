@@ -47,13 +47,16 @@ public class MapObjectModel extends DatabaseMethods {
 
         MapObject mapObject = new MapObject();
 
+        PreparedStatement organsStatement = null;
+        ResultSet organsResultSet = null;
+
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //Get all the organs donated for the dead user
             String organsQuery = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
-            PreparedStatement organsStatement = connection.prepareStatement(organsQuery);
+            organsStatement = connection.prepareStatement(organsQuery);
 
             organsStatement.setInt(1, mapObjectResultSet.getInt("id"));
-            ResultSet organsResultSet = organsStatement.executeQuery();
+            organsResultSet = organsStatement.executeQuery();
 
             mapObject.organs = new ArrayList<>();
 
@@ -70,28 +73,32 @@ public class MapObjectModel extends DatabaseMethods {
                         LocalDateTime.ofEpochSecond(organsResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
                         Organ.parse(organsResultSet.getString("name")),
                         mapObjectResultSet.getInt("id"),
-                        expired
+                        expired,
+                        organsResultSet.getInt("inTransfer")
 
                 );
+
+                organ.setId(organsResultSet.getInt("id"));
 
 
                 organ.setTopReceivers(organMatching.getTop5Matches(organ, ""));
 
                 mapObject.getOrgans().add(organ);
             }
+            mapObject.firstName = mapObjectResultSet.getString("first_name");
+            mapObject.middleName = mapObjectResultSet.getString("middle_names");
+            mapObject.lastName = mapObjectResultSet.getString("last_name");
+            mapObject.gender = mapObjectResultSet.getString("gender");
+            mapObject.id = mapObjectResultSet.getInt("id");
+            mapObject.currentAddress = mapObjectResultSet.getString("current_address");
+            mapObject.region = mapObjectResultSet.getString("region");
+            mapObject.cityOfDeath = mapObjectResultSet.getString("cityOfDeath");
+            mapObject.regionOfDeath = mapObjectResultSet.getString("regionOfDeath");
+            mapObject.countryOfDeath = mapObjectResultSet.getString("countryOfDeath");
+            mapObject.dateOfDeath = mapObjectResultSet.getTimestamp("date_of_death").toLocalDateTime();
+        } finally {
+            close(organsResultSet, organsStatement);
         }
-
-        mapObject.firstName = mapObjectResultSet.getString("first_name");
-        mapObject.middleName = mapObjectResultSet.getString("middle_names");
-        mapObject.lastName = mapObjectResultSet.getString("last_name");
-        mapObject.gender = mapObjectResultSet.getString("gender");
-        mapObject.id = mapObjectResultSet.getInt("id");
-        mapObject.currentAddress = mapObjectResultSet.getString("current_address");
-        mapObject.region = mapObjectResultSet.getString("region");
-        mapObject.cityOfDeath = mapObjectResultSet.getString("cityOfDeath");
-        mapObject.regionOfDeath = mapObjectResultSet.getString("regionOfDeath");
-        mapObject.countryOfDeath = mapObjectResultSet.getString("countryOfDeath");
-        mapObject.dateOfDeath = mapObjectResultSet.getTimestamp("date_of_death").toLocalDateTime();
 
         return mapObject;
 
@@ -108,8 +115,7 @@ public class MapObjectModel extends DatabaseMethods {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<OrganTransfer> allTransfers = new ArrayList<>();
             String query =
-                    "SELECT * FROM TRANSFERS " +
-                            "WHERE ArrivalTime > NOW()";
+                    "SELECT * FROM TRANSFERS ";
 
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
@@ -139,7 +145,7 @@ public class MapObjectModel extends DatabaseMethods {
             statement.setDouble(3, transfer.getEndLat());
             statement.setDouble(4, transfer.getEndLon());
             statement.setTimestamp(5, Timestamp.valueOf(transfer.getArrivalTime()));
-            statement.setInt(6, transfer.getOrganId());
+            statement.setInt(6, transfer.getId());
             statement.setLong(7, transfer.getReceiverId());
             statement.setString(8, transfer.getOrganType().toString());
 

@@ -28,15 +28,19 @@ namespace mobileAppClient.iOS
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel organNameLabel { get; set; }
+        public UIKit.UILabel organNameLabel { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UITableView potentialRecipientsTableView { get; set; }
+        public UIKit.UILabel potentialRecipientsLabel { get; set; }
 
         [Outlet]
         [GeneratedCode ("iOS Designer", "1.0")]
-        UIKit.UILabel timeRemainingLabel { get; set; }
+        public UIKit.UITableView potentialRecipientsTableView { get; set; }
+
+        [Outlet]
+        [GeneratedCode ("iOS Designer", "1.0")]
+        public UIKit.UILabel timeRemainingLabel { get; set; }
 
         void ReleaseDesignerOutlets ()
         {
@@ -58,6 +62,11 @@ namespace mobileAppClient.iOS
             if (organNameLabel != null) {
                 organNameLabel.Dispose ();
                 organNameLabel = null;
+            }
+
+            if (potentialRecipientsLabel != null) {
+                potentialRecipientsLabel.Dispose ();
+                potentialRecipientsLabel = null;
             }
 
             if (potentialRecipientsTableView != null) {

@@ -115,6 +115,58 @@ namespace mobileAppClient.odmsAPI
             return new Tuple<HttpStatusCode, List<Hospital>>(HttpStatusCode.OK, resultHospitals);
         }
 
+        /// <summary>
+        /// Fetches a single user with a given id
+        /// </summary>
+        /// <returns>
+        /// Tuple containing the HTTP return code and the User object
+        /// </returns>
+        public async Task<Tuple<HttpStatusCode, Clinician>> GetSingleClinician(string id)
+        {
+            // Check internet connection
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, Clinician>(HttpStatusCode.ServiceUnavailable, null);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            String queries = null;
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/clinicians/" + id);
+
+            if (ClinicianController.Instance.isLoggedIn())
+            {
+                request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+            }
+            else
+            {
+                request.Headers.Add("token", UserController.Instance.AuthToken);
+            }
+
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                return new Tuple<HttpStatusCode, Clinician>(HttpStatusCode.ServiceUnavailable, null);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, Clinician>(response.StatusCode, null);
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            Clinician resultUser = JsonConvert.DeserializeObject<Clinician>(responseContent);
+            return new Tuple<HttpStatusCode, Clinician>(HttpStatusCode.OK, resultUser);
+        }
+
         public async Task<HttpStatusCode> updateAccountSettings(Clinician clinician, string token, bool setPassword)
         {
             String url = ServerConfig.Instance.serverAddress;

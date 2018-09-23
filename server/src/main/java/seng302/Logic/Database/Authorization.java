@@ -98,7 +98,6 @@ public class Authorization extends DatabaseMethods {
         } finally {
             close(resultSet, statement);
         }
-
     }
 
 

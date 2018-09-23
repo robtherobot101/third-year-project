@@ -2,6 +2,7 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Disease;
+import seng302.NotificationManager.PushAPI;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -157,6 +158,8 @@ public class UserDiseases extends DatabaseMethods {
         //Upload all new diseases
         for (Disease disease : newDiseases) {
             insertDisease(disease, userId);
+            PushAPI.getInstance().sendTextNotification(userId, "Disease added.",
+                    "A new disease (" + disease.getName() + ") has been added to your profile.");
         }
     }
 }
