@@ -446,13 +446,20 @@ public class UserController {
     public String editAccount(Request request, Response response) {
         Map content = new Gson().fromJson(request.body(), Map.class);
         try {
-            if (!content.keySet().containsAll(Arrays.asList("username", "email", "password"))) {
+            if (!content.keySet().containsAll(Arrays.asList("username", "email"))) {
                 throw new JsonSyntaxException("Missing parameters from JSON body");
             }
-            model.updateAccount(Long.parseLong(request.params().get(":id")),
-                    (String) content.get("username"),
-                    (String) content.get("email"),
-                    (String) content.get("password"));
+            if(content.keySet().contains("password")) {
+                model.updateAccount(Long.parseLong(request.params().get(":id")),
+                        (String) content.get("username"),
+                        (String) content.get("email"),
+                        (String) content.get("password"));
+            } else {
+                model.updateAccount(Long.parseLong(request.params().get(":id")),
+                        (String) content.get("username"),
+                        (String) content.get("email"));
+            }
+
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
             response.status(500);

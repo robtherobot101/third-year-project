@@ -178,12 +178,18 @@ public class ClinicianController {
     public String editAccount(Request request, Response response) {
         Map content = new Gson().fromJson(request.body(), Map.class);
         try {
-            if (!content.keySet().containsAll(Arrays.asList("username", "password"))) {
+            if (!content.keySet().containsAll(Arrays.asList("username"))) {
                 throw new JsonSyntaxException("Missing parameters from JSON body");
             }
-            model.updateAccount(Long.parseLong(request.params().get(":id")),
-                    (String) content.get("username"),
-                    (String) content.get("password"));
+            if(content.keySet().contains("password")){
+                model.updateAccount(Long.parseLong(request.params().get(":id")),
+                        (String) content.get("username"),
+                        (String) content.get("password"));
+
+            } else {
+                model.updateAccount(Long.parseLong(request.params().get(":id")),
+                        (String) content.get("username"));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             Server.getInstance().log.error(e.getMessage());
