@@ -172,8 +172,7 @@ CREATE TABLE IF NOT EXISTS `MESSAGE` (
   `conversation_id` int(11) NOT NULL,
   `text` text NOT NULL,
   `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_id` int(11) NOT NULL,
-  `access_level` int(11) NOT NULL
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -185,8 +184,7 @@ CREATE TABLE IF NOT EXISTS `MESSAGE` (
 DROP TABLE IF EXISTS `CONVERSATION_MEMBER`;
 CREATE TABLE IF NOT EXISTS `CONVERSATION_MEMBER` (
   `conversation_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `access_level` int(11) NOT NULL
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -353,7 +351,7 @@ ALTER TABLE `CONVERSATION`
 -- Indexes for table `CONVERSATION_MEMBER`
 --
 ALTER TABLE `CONVERSATION_MEMBER`
-  ADD UNIQUE KEY `unique_index` (`user_id`,`conversation_id`,`access_level`),
+  ADD UNIQUE KEY `unique_index` (`user_id`,`conversation_id`),
   ADD KEY `User_id_foreign_key8` (`conversation_id`);
 
 --
