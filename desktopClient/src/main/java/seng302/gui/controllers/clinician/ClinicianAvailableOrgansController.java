@@ -18,12 +18,9 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import org.apache.http.client.HttpResponseException;
 import org.json.JSONObject;
+import seng302.User.*;
 import seng302.User.Attribute.NZRegion;
 import seng302.User.Attribute.Organ;
-import seng302.User.DonatableOrgan;
-import seng302.User.Hospital;
-import seng302.User.OrganTransfer;
-import seng302.User.User;
 import seng302.generic.Country;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
@@ -279,6 +276,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
      */
     public void updateOrgans() {
         try {
+            ClinicianTransferOrgansController clinicianTransferOrgansController = new ClinicianTransferOrgansController();
+            clinicianTransferOrgansController.checkForFinishedTransfers();
+
             HashMap filterParams = new HashMap();
 
             if(countryComboBox.getValue() != null && !countryComboBox.getValue().toString().equals("All Countries")) {
@@ -453,6 +453,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
     }
 
     private void transferOrgan(DonatableOrgan organ, User receiver) throws HttpResponseException, UnirestException{
+
+        WindowManager.getDataManager().getGeneral().setTransferType(token, 1, organ.getId());
+
         User donor = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
         JSONObject donorLocation = WindowManager.getDataManager().getGeneral().getPosition(donor.getCityOfDeath() +", " + donor.getRegionOfDeath() + ", " + donor.getCountryOfDeath());
         List<Hospital> hospitals = WindowManager.getDataManager().getGeneral().getHospitals(token);

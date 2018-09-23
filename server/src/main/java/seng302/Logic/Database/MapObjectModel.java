@@ -111,8 +111,7 @@ public class MapObjectModel extends DatabaseMethods {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<OrganTransfer> allTransfers = new ArrayList<>();
             String query =
-                    "SELECT * FROM TRANSFERS " +
-                            "WHERE ArrivalTime > NOW()";
+                    "SELECT * FROM TRANSFERS ";
 
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();

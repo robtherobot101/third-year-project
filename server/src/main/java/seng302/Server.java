@@ -274,10 +274,11 @@ public class Server {
 
             path("/organs", () -> {
                 get("",         organsController::queryOrgans);
+                get("/:id",     organsController::getUsersOrgans);
                 post("",        organsController::insertOrgan);
                 delete("",      organsController::removeOrgan);
                 patch("",       organsController::updateOrgan);
-                patch("/:id",   organsController::setInTransfer);
+                patch("/:id/:transferType",   organsController::setInTransfer);
             });
 
             path("/hospitals", () -> {

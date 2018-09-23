@@ -177,13 +177,13 @@ namespace mobileAppClient.odmsAPI
             var response = await client.SendAsync(request);
         }
 
-        public async void SetInTransfer(int organId)
+        public async void SetInTransfer(int organId, int transferNum)
         {
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
 
-            var request = new HttpRequestMessage(new HttpMethod("patch"), url + "/organs/" + organId);
+            var request = new HttpRequestMessage(new HttpMethod("patch"), url + "/organs/" + organId + "/" + transferNum);
             request.Headers.Add("token", ClinicianController.Instance.AuthToken);
 
             var response = await client.SendAsync(request);
@@ -256,6 +256,36 @@ namespace mobileAppClient.odmsAPI
             {
                 Console.WriteLine(e.Message);
                 return 0;
+
+            }
+        }
+
+        public async Task<List<DonatableOrgan>> GetSingleUsersDonatableOrgans(int userId)
+        {
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/organs/" + userId);
+            request.Headers.Add("token", ClinicianController.Instance.AuthToken);
+
+            var response = await client.SendAsync(request);
+            string body = await response.Content.ReadAsStringAsync();
+
+            try
+            {
+                //return JsonConvert.DeserializeObject<List<OrganTransfer>>(body);
+                 return JsonConvert.DeserializeObject<List<DonatableOrgan>>(body);
+            }
+            catch (JsonSerializationException jse)
+            {
+                Console.WriteLine(jse.Message);
+                return new List<DonatableOrgan>();
+            }
+            catch (JsonReaderException e)
+            {
+                Console.WriteLine(e.Message);
+                return new List<DonatableOrgan>();
 
             }
         }

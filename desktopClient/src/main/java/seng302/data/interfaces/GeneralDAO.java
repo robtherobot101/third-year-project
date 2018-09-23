@@ -3,6 +3,7 @@ package seng302.data.interfaces;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.http.client.HttpResponseException;
 import org.json.JSONObject;
+import seng302.User.Attribute.Organ;
 import seng302.User.Hospital;
 import seng302.User.OrganTransfer;
 import seng302.generic.Country;
@@ -46,4 +47,14 @@ public interface GeneralDAO {
     void insertTransfer(OrganTransfer transfer, String token) throws HttpResponseException;
 
     List<OrganTransfer> getAllOrganTransfers(String token) throws HttpResponseException;
+
+    void setTransferType(String token, int type, int organ) throws HttpResponseException;
+
+    void deleteWaitingListItem(String token, long userId, int organ) throws HttpResponseException;
+
+    int getSingleWaitingListItem(String token, long userId, Organ organ) throws HttpResponseException;
+
+    void deleteTransfer(String token, int organ) throws HttpResponseException;
+
+    List<DonatableOrgan> getSingleUsersDonatableOrgans(String token, long userId) throws HttpResponseException;
 }

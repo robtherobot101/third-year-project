@@ -479,16 +479,24 @@ namespace mobileAppClient.Views.Clinician
 
             foreach (OrganTransfer transfer in transfers)
             {
-                int waitingListId = await transplantListAPI.GetWaitingListId( (int)transfer.receiverId, transfer.organType);
+                int waitingListId = await transplantListAPI.GetWaitingListId((int)transfer.receiverId, transfer.organType);
 
-                AddHelicopter(
-                    GetCurrentPoint(transfer),
-                    new Position(transfer.endLat, transfer.endLon),
-                    transfer.organType,
-                    (int) transfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds,
-                    transfer.receiverId,
-                    waitingListId,
-                    transfer.id);
+                if (transfer.arrivalTime.ToDateTimeWithSeconds() < DateTime.Now)
+                {
+                    HelicopterFinished(transfer.receiverId, waitingListId, transfer.id);
+                }
+                else
+                {
+
+                    AddHelicopter(
+                        GetCurrentPoint(transfer),
+                        new Position(transfer.endLat, transfer.endLon),
+                        transfer.organType,
+                        (int)transfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds,
+                        transfer.receiverId,
+                        waitingListId,
+                        transfer.id);
+                }
             }
         }
 
@@ -591,7 +599,7 @@ namespace mobileAppClient.Views.Clinician
             TransplantListAPI transplantListAPI = new TransplantListAPI();
             transplantListAPI.DeleteTransfer(organId);
             transplantListAPI.DeleteWaitingListItem(userId, waitingListItemId);
-            transplantListAPI.SetInTransfer(organId);
+            transplantListAPI.SetInTransfer(organId, 2);
 
         }
 

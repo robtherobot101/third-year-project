@@ -262,7 +262,7 @@ public class WaitingListController {
     public String getWaitingListId(Request request, Response response) {
         int userId = Integer.parseInt(request.params(":id"));
         Organ organType = Organ.parse(request.params(":organType"));
-
+        System.out.println(organType);
         int queriedWaitingListId;
         try {
             queriedWaitingListId = model.getWaitingListId(userId, organType);

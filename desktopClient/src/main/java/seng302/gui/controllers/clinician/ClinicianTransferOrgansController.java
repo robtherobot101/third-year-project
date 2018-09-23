@@ -112,10 +112,11 @@ public class ClinicianTransferOrgansController implements Initializable{
     }
 
     public void updateOrgans() {
-        System.out.println("Got here");
         try{
+            checkForFinishedTransfers();
+
             List<OrganTransfer> transferList = WindowManager.getDataManager().getGeneral().getAllOrganTransfers(token);
-            System.out.println("Number of transfers: " + transferList.size());
+            Debugger.log("Number of transfers: " + transferList.size());
             for(OrganTransfer organTransfer : transferList) {
                 addDetails(organTransfer);
             }
@@ -233,5 +234,19 @@ public class ClinicianTransferOrgansController implements Initializable{
             }
         }
         focused = false;
+    }
+
+    public void checkForFinishedTransfers() throws HttpResponseException{
+        List<OrganTransfer> allOrganTransfers =  WindowManager.getDataManager().getGeneral().getAllOrganTransfers(token);
+        for (OrganTransfer transfer : allOrganTransfers) {
+            if (transfer.getArrivalTime().isBefore(LocalDateTime.now())) {
+                System.out.println(transfer.getReceiverId());
+                System.out.println(transfer.getOrganType());
+                int organId = WindowManager.getDataManager().getGeneral().getSingleWaitingListItem(token, transfer.getReceiverId(), transfer.getOrganType());
+                WindowManager.getDataManager().getGeneral().setTransferType(token, 2, transfer.getOrganId());
+                WindowManager.getDataManager().getGeneral().deleteWaitingListItem(token, transfer.getReceiverId(), organId);
+                WindowManager.getDataManager().getGeneral().deleteTransfer(token, transfer.getOrganId());
+            }
+        }
     }
 }

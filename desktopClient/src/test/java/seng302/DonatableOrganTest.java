@@ -16,8 +16,8 @@ public class DonatableOrganTest {
 
     @Before
     public void setup() {
-        test1 = new DonatableOrgan(LocalDateTime.now(), Organ.BONE, 1, 0);
-        test2 = new DonatableOrgan(LocalDateTime.now(), Organ.INTESTINE, 4, 1, 0);
+        test1 = new DonatableOrgan(LocalDateTime.now(), Organ.BONE, 1, false, 0);
+        test2 = new DonatableOrgan(LocalDateTime.now(), Organ.INTESTINE, 4, 1, false, 0);
         test2.setReceiverDeathRegion("Canterbury");
     }
 

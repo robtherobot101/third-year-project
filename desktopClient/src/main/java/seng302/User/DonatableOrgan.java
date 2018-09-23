@@ -21,20 +21,23 @@ public class DonatableOrgan {
     private String receiverDeathRegion;
     private double timePercent;
     private List<User> topReceivers;
+    private boolean expired;
     private int inTransfer;
 
-    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id, int inTransfer){
+    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int id, boolean expired, int inTransfer){
         this.timeOfDeath = timeOfExpiry;
         this.donorId = donorId;
         this.organType = organType;
         this.id = id;
+        this.expired = expired;
         this.inTransfer = inTransfer;
     }
 
-    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, int inTransfer){
+    public DonatableOrgan(LocalDateTime timeOfExpiry, Organ organType, long donorId, boolean expired, int inTransfer){
         this.timeOfDeath = timeOfExpiry;
         this.donorId = donorId;
         this.organType = organType;
+        this.expired = expired;
         this.inTransfer = inTransfer;
     }
 
@@ -88,6 +91,10 @@ public class DonatableOrgan {
 
     public int getInTransfer() {
         return inTransfer;
+    }
+
+    public boolean isExpired() {
+        return expired;
     }
 
     public void setTimeLeft(Duration time) {

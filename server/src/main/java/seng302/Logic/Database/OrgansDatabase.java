@@ -4,6 +4,7 @@ import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
 import seng302.Model.DonatableOrgan;
 import seng302.Model.User;
+import seng302.Server;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -39,6 +40,24 @@ public class OrgansDatabase extends DatabaseMethods {
         }
     }
 
+    public List<DonatableOrgan> getSingUsersDonatableOrgans(int userId) throws SQLException {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            List<DonatableOrgan> allOrgans = new ArrayList<>();
+            String query = "SELECT * FROM DONATION_LIST_ITEM WHERE user_id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                allOrgans.add(getOrganFromResultSet(resultSet));
+            }
+            return allOrgans;
+        } finally {
+            close(resultSet, statement);
+        }
+    }
+
     /**
      * gets all the organs from the database
      *
@@ -52,7 +71,7 @@ public class OrgansDatabase extends DatabaseMethods {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             List<DonatableOrgan> allOrgans = new ArrayList<>();
             String query = buildOrganQuery(params);
-            System.out.println(query);
+            Server.getInstance().log.debug(query);
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -177,16 +196,17 @@ public class OrgansDatabase extends DatabaseMethods {
      * @param organId the donatable organ to change
      * @throws SQLException throws if cannot reach the database
      */
-    public void inTransfer(int organId) throws SQLException{
+    public void inTransfer(int organId, int transferType) throws SQLException{
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "UPDATE DONATION_LIST_ITEM SET inTransfer = 1 WHERE id = ?";
+            String query = "UPDATE DONATION_LIST_ITEM SET inTransfer = ? WHERE id = ?";
             statement = connection.prepareStatement(query);
-            statement.setInt(1, organId);
+            statement.setInt(1, transferType);
+            statement.setInt(2, organId);
 
             statement.executeUpdate();
 
-            System.out.println("Update of Organ with id = " + organId + " set inTransfer to 1");
+            System.out.println("Update of Organ with id = " + organId + " set inTransfer to " + transferType);
         } finally {
             close(statement);
         }
