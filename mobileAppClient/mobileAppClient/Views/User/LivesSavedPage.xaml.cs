@@ -172,11 +172,11 @@ namespace mobileAppClient
             {
                 await Navigation.PushAsync(new OrgansPage());
             }
-            else if(tappedRecommendation == "You could add a profile photo")
+            else if(e.Item == "Add a profile photo")
             {
-                await Navigation.PushAsync(new PhotoSettingsPage());
+                await Navigation.PushAsync(new PhotoSettingsPage(false));
             }
-            else if (tappedRecommendation == "You could add in more details about yourself")
+            else if (e.Item == "Add in more details about yourself")
             {
                 await Navigation.PushAsync(new AttributesPage());
             }

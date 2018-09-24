@@ -17,7 +17,7 @@ namespace mobileAppClient
 
         async void Handle_Tapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new PhotoSettingsPage());
+            await Navigation.PushAsync(new PhotoSettingsPage(false));
         }
 
 

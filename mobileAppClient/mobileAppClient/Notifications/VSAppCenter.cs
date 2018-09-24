@@ -51,12 +51,11 @@ namespace mobileAppClient.Notifications
                                 List<Conversation> localConversation = new List<Conversation>(messageThreadsListPageController.conversationList);
                                 localConversation.Find(conversation => conversation.id == notifiedMessage.conversationId)?.messages.Add(notifiedMessage);
 
-                                messageThreadsListPageController.conversationList.Clear();
-                                messageThreadsListPageController.conversationList.AddRange(localConversation);                              
-                            }
-                            
-                            DependencyService.Get<IToast>().ShortAlert("You have received a message");
+                            messageThreadsListPageController.conversationList.Clear();
+                            messageThreadsListPageController.conversationList.AddRange(localConversation);                              
                         }
+                            
+                        DependencyService.Get<IToast>().ShortAlert("You have received a message");
                     }
                 };
             }
