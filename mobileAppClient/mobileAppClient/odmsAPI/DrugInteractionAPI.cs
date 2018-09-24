@@ -39,7 +39,7 @@ namespace mobileAppClient.odmsAPI
             try
             {
                 response = await client.GetAsync(apiEndpoint + query);
-            } catch (HttpRequestException e) {
+            } catch (HttpRequestException) {
                 return new DrugInteractionResult(false, HttpStatusCode.BadRequest);
             }
 

@@ -49,7 +49,7 @@ namespace mobileAppClient.odmsAPI
                 }
                 return itemss;
             }
-            catch (JsonSerializationException jse)
+            catch (JsonSerializationException)
             {
                 return new List<WaitingListItem>();
             }
@@ -129,7 +129,7 @@ namespace mobileAppClient.odmsAPI
                 }
                 return itemss;
             }
-            catch (JsonSerializationException jse)
+            catch (JsonSerializationException)
             {
                 return new List<WaitingListItem>();
             }
@@ -213,7 +213,7 @@ namespace mobileAppClient.odmsAPI
                 }
                 return itemss;
             }
-            catch (JsonSerializationException jse)
+            catch (JsonSerializationException)
             {
                 return new List<OrganTransfer>();
             }
@@ -337,7 +337,7 @@ namespace mobileAppClient.odmsAPI
                     return response.StatusCode;
                 }
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }

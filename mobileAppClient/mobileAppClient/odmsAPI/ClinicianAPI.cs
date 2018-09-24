@@ -99,7 +99,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return new Tuple<HttpStatusCode, List<Hospital>>(HttpStatusCode.ServiceUnavailable, resultHospitals);
             }
@@ -134,8 +134,6 @@ namespace mobileAppClient.odmsAPI
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
-            String queries = null;
-
             HttpResponseMessage response;
             var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/clinicians/" + id);
 
@@ -153,7 +151,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return new Tuple<HttpStatusCode, Clinician>(HttpStatusCode.ServiceUnavailable, null);
             }

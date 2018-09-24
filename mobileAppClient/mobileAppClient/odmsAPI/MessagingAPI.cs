@@ -38,8 +38,15 @@ namespace mobileAppClient.odmsAPI
                     ? ClinicianController.Instance.AuthToken
                     : UserController.Instance.AuthToken);
 
-
-            var response = await client.SendAsync(request);
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException)
+            {
+                return new Tuple<HttpStatusCode, List<Conversation>>(HttpStatusCode.ServiceUnavailable, new List<Conversation>());
+            }
             string body = await response.Content.ReadAsStringAsync();
 
             try
@@ -47,7 +54,7 @@ namespace mobileAppClient.odmsAPI
                 return new Tuple<HttpStatusCode, List<Conversation>>
                     (response.StatusCode, JsonConvert.DeserializeObject<List<Conversation>>(body));
             }
-            catch (JsonSerializationException jse)
+            catch (JsonSerializationException)
             {
                 return null;
             }
@@ -81,7 +88,15 @@ namespace mobileAppClient.odmsAPI
                     : UserController.Instance.AuthToken);
 
 
-            var response = await client.SendAsync(request);
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException)
+            {
+                return new Tuple<HttpStatusCode, Conversation>(HttpStatusCode.ServiceUnavailable, null);
+            }
             string body = await response.Content.ReadAsStringAsync();
 
             try
@@ -89,7 +104,7 @@ namespace mobileAppClient.odmsAPI
                 return new Tuple<HttpStatusCode, Conversation>
                     (response.StatusCode, JsonConvert.DeserializeObject<Conversation>(body));
             }
-            catch (JsonSerializationException jse)
+            catch (JsonSerializationException)
             {
                 return null;
             }
@@ -123,15 +138,25 @@ namespace mobileAppClient.odmsAPI
                     ? ClinicianController.Instance.AuthToken
                     : UserController.Instance.AuthToken);
 
-            return (await client.SendAsync(request)).StatusCode;
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+            return response.StatusCode;
         }
 
         public async Task<Tuple<HttpStatusCode, int>> CreateConversation(int localUserId, List<int> participants)
         {
+            int conversationId = -1;
             // Check connection
             if (!ServerConfig.Instance.IsConnectedToInternet())
             {
-                return new Tuple<HttpStatusCode, int>(HttpStatusCode.ServiceUnavailable, -1);
+                return new Tuple<HttpStatusCode, int>(HttpStatusCode.ServiceUnavailable, conversationId);
             }
 
             String url = ServerConfig.Instance.serverAddress;
@@ -150,8 +175,17 @@ namespace mobileAppClient.odmsAPI
                     ? ClinicianController.Instance.AuthToken
                     : UserController.Instance.AuthToken);
 
-            int conversationId = -1;
-            var response = await client.SendAsync(request);
+            
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException)
+            {
+                return new Tuple<HttpStatusCode, int>(HttpStatusCode.ServiceUnavailable, conversationId);
+            }
+
             if (response.StatusCode == HttpStatusCode.Created)
             {
                 conversationId = Int32.Parse(await response.Content.ReadAsStringAsync());

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SlideOverKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
@@ -9,14 +8,13 @@ using System.Threading.Tasks;
 using mobileAppClient.odmsAPI;
 using System.Net;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using mobileAppClient.Maps;
 using mobileAppClient.Models;
 
 namespace mobileAppClient.Views.Clinician
 {
-	public class ClinicianMapPage : MenuContainerPage
+    public class ClinicianMapPage : MenuContainerPage
 	{
 
         List<CustomMapObject> users;
@@ -31,7 +29,7 @@ namespace mobileAppClient.Views.Clinician
             this.SlideMenu = new SlideUpMenuView();
         }
 
-        public async void displayBottomSheet(CustomPin pin, CustomMap map) {
+        public void displayBottomSheet(CustomPin pin, CustomMap map) {
 
             DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin, map);
         }

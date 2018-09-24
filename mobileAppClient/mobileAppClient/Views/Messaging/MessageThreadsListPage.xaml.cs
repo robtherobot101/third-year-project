@@ -173,10 +173,5 @@ namespace mobileAppClient
         {
             await Navigation.PushAsync(new CreateConversationPage(activeConversations));
         }
-
-        public async void refreshConversationsExternally()
-        {
-            OnAppearing();
-        }
     }
 }

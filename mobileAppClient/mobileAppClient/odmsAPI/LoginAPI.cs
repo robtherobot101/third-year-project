@@ -48,7 +48,7 @@ namespace mobileAppClient.odmsAPI
             try
             {
                 response = await client.PostAsync(url + "/login" + queries, content);
-            } catch (HttpRequestException e)
+            } catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -131,7 +131,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }

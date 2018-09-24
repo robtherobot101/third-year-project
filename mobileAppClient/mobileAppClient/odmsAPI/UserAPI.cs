@@ -47,7 +47,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -101,7 +101,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return new Tuple<HttpStatusCode, string>(HttpStatusCode.ServiceUnavailable, "");
             }
@@ -175,7 +175,7 @@ namespace mobileAppClient.odmsAPI
                     return response.StatusCode;
                 }
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -223,7 +223,7 @@ namespace mobileAppClient.odmsAPI
                     return response.StatusCode;
                 }
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -257,7 +257,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -315,7 +315,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.ServiceUnavailable, resultUsers);
             }
@@ -380,7 +380,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return new Tuple<HttpStatusCode, int>(HttpStatusCode.ServiceUnavailable, 0);
             }
@@ -425,7 +425,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return new Tuple<HttpStatusCode, bool>(HttpStatusCode.ServiceUnavailable, isUnique);
             }
@@ -470,7 +470,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return new Tuple<HttpStatusCode, List<CustomMapObject>>(HttpStatusCode.ServiceUnavailable, resultMapObjects);
             }
@@ -503,8 +503,6 @@ namespace mobileAppClient.odmsAPI
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
 
-            String queries = null;
-
             HttpResponseMessage response;
             var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users/" + id);
             request.Headers.Add("token", ClinicianController.Instance.AuthToken);
@@ -513,7 +511,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return new Tuple<HttpStatusCode, User>(HttpStatusCode.ServiceUnavailable, null);
             }
@@ -545,7 +543,7 @@ namespace mobileAppClient.odmsAPI
             {
                 return JsonConvert.DeserializeObject<User>(body);
             }
-            catch (JsonSerializationException jse)
+            catch (JsonSerializationException)
             {
                 return null;
             }

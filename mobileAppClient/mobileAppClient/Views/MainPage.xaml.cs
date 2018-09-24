@@ -232,11 +232,10 @@ namespace mobileAppClient
         private void updateUserProfileBar()
         {
             // Update for a logged in user
-            string profileImagePath;
             if (UserController.Instance.ProfilePhotoSource == null)
             {
                 // No photo provided, use default
-                profileImagePath = "default_user_photo.png";
+                //string profileImagePath = "default_user_photo.png";
             }
             else
             {

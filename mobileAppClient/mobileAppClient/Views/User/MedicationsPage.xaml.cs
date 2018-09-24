@@ -124,7 +124,7 @@ namespace mobileAppClient
         /*
          * Handles the compare button being pressed, opening up the compare medications page.
          */ 
-        async void Handle_CompareButtonPressed(object sender, System.EventArgs e)
+        async void Handle_CompareButtonPressed(object sender, EventArgs e)
         {
             if (e == null)
             {
@@ -144,7 +144,7 @@ namespace mobileAppClient
             }
         }
 
-        async void Handle_MoveToClicked(object sender, System.EventArgs e)
+        async void Handle_MoveToClicked(object sender, EventArgs e)
         {
             var mi = ((MenuItem)sender);
             Medication selectedMedication = mi.CommandParameter as Medication;
@@ -210,7 +210,7 @@ namespace mobileAppClient
 
         }
 
-        async void Handle_DeleteClicked(object sender, System.EventArgs e)
+        async void Handle_DeleteClicked(object sender, EventArgs e)
         {
             var mi = ((MenuItem)sender);
             Medication selectedMedication = mi.CommandParameter as Medication;
