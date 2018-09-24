@@ -180,6 +180,7 @@ public class ProfileUtils extends DatabaseMethods {
             statement = connection.prepareStatement(query);
             statement.setString(1, apiId);
             statement.setInt(2, userId);
+            statement.execute();
         } finally {
             close(statement);
         }
