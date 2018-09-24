@@ -7,6 +7,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.apache.http.client.HttpResponseException;
 import org.json.JSONObject;
+import seng302.User.Attribute.Organ;
 import seng302.data.interfaces.GeneralDAO;
 import seng302.generic.APIResponse;
 import seng302.generic.APIServer;
@@ -257,10 +258,80 @@ public class GeneralDB implements GeneralDAO {
         JsonObject jsonTransfer = jp.parse(new Gson().toJson(transfer)).getAsJsonObject();
         APIResponse response = server.postRequest(jsonTransfer, new HashMap<>(), token, "transfer");
         if (response == null) {
-            Debugger.log(response.getStatusCode());
+            throw new HttpResponseException(0, "Could not reach server");
         }
         if (response.getStatusCode() != 201){
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+    }
+
+    @Override
+    public List<OrganTransfer> getAllOrganTransfers(String token) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "transfer");
+        if (response == null) {
+            return new ArrayList<>();
+        }
+        if (response.getStatusCode() != 200){
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+        if (response.isValidJson()) {
+            List<OrganTransfer> transfers = new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<OrganTransfer>>(){}.getType());
+            return transfers;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public void setTransferType(String token, int type, int organ) throws HttpResponseException {
+        APIResponse response = server.patchRequest(new JsonObject(), new HashMap<>(), token, "organs/" + organ + "/" + type);
+        if (response.getStatusCode() != 201){
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+    }
+
+    @Override
+    public void successfullyTransplantWaitingListItem(String token, int organ) throws HttpResponseException {
+        APIResponse response = server.patchRequest(new JsonObject(), new HashMap<>(), token, "waitingListItems/" + organ);
+        if (response.getStatusCode() != 201){
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+    }
+
+    @Override
+    public void deleteTransfer(String token, int organ) throws HttpResponseException {
+        APIResponse response = server.deleteRequest(new HashMap<>(), token, "transfer/" + organ);
+        if (response.getStatusCode() != 201){
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+    }
+
+    @Override
+    public int getSingleWaitingListItem(String token, long userId, Organ organ) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "users/"+ userId +"/waitingListOrgan/" + organ);
+        if (response == null) {
+            throw new HttpResponseException(0, "Could not reach server");
+        }
+        if (response.getStatusCode() != 200){
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+        return Integer.parseInt(response.getAsString());
+    }
+
+    @Override
+    public List<DonatableOrgan> getSingleUsersDonatableOrgans(String token, long userId) throws HttpResponseException {
+        APIResponse response = server.getRequest(new HashMap<>(), token, "organs/" + userId);
+        if (response == null) {
+            return new ArrayList<>();
+        }
+        if (response.getStatusCode() != 200) {
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+        if (response.isValidJson()) {
+            return new Gson().fromJson(response.getAsJsonArray(), new TypeToken<List<DonatableOrgan>>(){}.getType());
+
+        } else {
+            return new ArrayList<>();
         }
     }
 }

@@ -207,7 +207,7 @@
                               </Button>
                      </children>
                   </GridPane>
-                  <GridPane layoutX="-14.0" layoutY="187.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <GridPane layoutX="-14.0" layoutY="187.0" prefHeight="226.0" prefWidth="180.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                     <columnConstraints>
                       <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                     </columnConstraints>
@@ -215,6 +215,7 @@
                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
                       <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                               <Button fx:id="homeButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#showMainPane" stylesheets="@../../css/selectedmenubutton.css" text="Home" textAlignment="CENTER">
@@ -232,7 +233,13 @@
                                  <Font size="13.0" />
                              </font>
                          </Button>
-                        <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="🏠">
+                         <Button fx:id="transferListButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#organsTransfer" stylesheets="@../../css/menubutton.css" text="Transfers" textAlignment="CENTER" GridPane.rowIndex="3">
+                             <font>
+                                 <Font size="13.0" />
+                             </font>
+                         </Button>
+
+                         <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="🏠">
                            <font>
                               <Font size="31.0" />
                            </font>
@@ -256,6 +263,14 @@
                                  <Insets bottom="6.0" left="18.0" />
                              </GridPane.margin>
                          </Label>
+                        <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="✈" GridPane.rowIndex="3">
+                           <font>
+                              <Font size="35.0" />
+                           </font>
+                           <GridPane.margin>
+                              <Insets bottom="6.0" left="18.0" />
+                           </GridPane.margin>
+                        </Label>
                      </children>
                   </GridPane>
                     </children>
@@ -270,6 +285,13 @@
                         <fx:include fx:id="availableOrgans" source="clinicianAvailableOrgans.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                     </children>
                 </AnchorPane>
+
+                <AnchorPane fx:id="transfersPane" prefHeight="200.0" prefWidth="200.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <children>
+                        <fx:include fx:id="transferOrgans" source="clinicianTransferOrgans.fxml" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                    </children>
+                </AnchorPane>
+
             </children>
         </AnchorPane>
         <AnchorPane style="-fx-background-color: #2b506e;" GridPane.rowIndex="1">

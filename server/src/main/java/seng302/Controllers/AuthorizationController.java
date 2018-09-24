@@ -42,7 +42,7 @@ public class AuthorizationController {
                 matchedPassword = SaltHash.checkHash(password, hash);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
         }
         if (!foundUser) {
             try {
@@ -51,7 +51,7 @@ public class AuthorizationController {
                     matchedPassword = SaltHash.checkHash(password, hash);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
         }
         if (matchedPassword) {
@@ -86,47 +86,41 @@ public class AuthorizationController {
 
         // Check for a user match
         try {
-            currentUser = model.loginUser(usernameEmail);
+            currentUser = model.loginUser(usernameEmail, password);
             if (currentUser != null) {
-                if (SaltHash.checkHash(password, currentUser.getPassword())) {
-                    loginToken = model.generateToken((int) currentUser.getId(), 0);
-                    typeMatched = ProfileType.USER;
-                    System.out.println("LoginController: Logging in as user...");
-                }
+                loginToken = model.generateToken((int) currentUser.getId(), 0);
+                typeMatched = ProfileType.USER;
+                System.out.println("LoginController: Logging in as user...");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
         }
 
         if (loginToken == null) { //if user login was unsuccessful
             // Check for a clinician match
             try {
-                currentClinician = model.loginClinician(usernameEmail);
+                currentClinician = model.loginClinician(usernameEmail, password);
                 if (currentClinician != null) {
-                    if (SaltHash.checkHash(password, currentClinician.getPassword())) {
-                        loginToken = model.generateToken((int) currentClinician.getStaffID(), 1);
-                        typeMatched = ProfileType.CLINICIAN;
-                        System.out.println("LoginController: Logging in as clinician...");
-                    }
+                    loginToken = model.generateToken((int) currentClinician.getStaffID(), 1);
+                    typeMatched = ProfileType.CLINICIAN;
+                    System.out.println("LoginController: Logging in as clinician...");
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
         }
 
         if (loginToken == null) { //if user login and clinician login was unsuccessful
             // Check for an admin match
             try {
-                currentAdmin = model.loginAdmin(usernameEmail);
+                currentAdmin = model.loginAdmin(usernameEmail, password);
                 if (currentAdmin != null) {
-                    if (SaltHash.checkHash(password, currentAdmin.getPassword())) {
-                        loginToken = model.generateToken((int) currentAdmin.getStaffID(), 2);
-                        typeMatched = ProfileType.ADMIN;
-                        System.out.println("LoginController: Logging in as admin...");
-                    }
+                    loginToken = model.generateToken((int) currentAdmin.getStaffID(), 2);
+                    typeMatched = ProfileType.ADMIN;
+                    System.out.println("LoginController: Logging in as admin...");
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
         }
 
@@ -136,7 +130,7 @@ public class AuthorizationController {
                 notifications.register(request.headers("device_id"), loginToken);
             } catch (SQLException e) {
                 Server.getInstance().log.error("Could not register device!");
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
             switch (typeMatched) {
                 case ADMIN:

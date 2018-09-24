@@ -17,6 +17,7 @@ using Plugin.CurrentActivity;
 using Firebase.Messaging;
 using Firebase.Iid;
 using Android.Util;
+using Plugin.Toasts;
 
 namespace mobileAppClient.Droid
 {

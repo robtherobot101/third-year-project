@@ -301,7 +301,7 @@ namespace CustomRenderer.Droid
             Android.Widget.RelativeLayout parent = view.Parent as Android.Widget.RelativeLayout;
 
             String organString = customPin.donatableOrgans.ToJson();
-            
+
             Intent intent = new Intent(mainActivity.BaseContext, typeof(BottomSheetListActivity));
             intent.PutExtra("name", customPin.Label);
             intent.PutExtra("address", customPin.Address);
@@ -466,44 +466,43 @@ namespace CustomRenderer.Droid
                 }
                 if (organFrame != null)
                 {
-                    
-                    
-                    foreach (DonatableOrgan organ in customPin.donatableOrgans)
+                    var organs = customPin.Url.Split(',');
+                    foreach (var organ in organs)
                     {
                         var organImage = new ImageView(Context.ApplicationContext);
-                        switch (organ.organType.ToLower())
+                        switch (organ)
                         {
-                            case "bone":
+                            case "bone_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.bone_icon);
                                 break;
-                            case "ear":
+                            case "ear_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.ear_icon);
                                 break;
-                            case "cornea":
+                            case "cornea_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.eye_icon);
                                 break;
-                            case "heart":
+                            case "heart_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.heart_icon);
                                 break;
-                            case "intestine":
+                            case "intestine_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.intestines_icon);
                                 break;
-                            case "kidney":
+                            case "kidney_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.kidney_icon);
                                 break;
-                            case "liver":
+                            case "liver_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.liver_icon);
                                 break;
-                            case "lung":
+                            case "lung_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.lungs_icon);
                                 break;
-                            case "pancreas":
+                            case "pancreas_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.pancreas_icon);
                                 break;
-                            case "skin":
+                            case "skin_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.skin_icon);
                                 break;
-                            case "tissue":
+                            case "tissue_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.tissue_icon);
                                 break;
                         }
@@ -522,9 +521,9 @@ namespace CustomRenderer.Droid
         }
 
         public Android.Views.View GetInfoWindow(Marker marker)
-                {
-                    return null;
-                }
+        {
+            return null;
+        }
 
         /// <summary>
         /// Gets custom pin based on a marker

@@ -5,6 +5,7 @@ import seng302.Model.*;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
 import seng302.Model.Attribute.Organ;
+import seng302.Server;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -133,7 +134,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Created", "This profile was created"), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -147,7 +148,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -158,7 +159,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -174,7 +175,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -184,7 +185,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -194,7 +195,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -292,7 +293,7 @@ public class CommandLineInterface {
             try {
                 return new CommandLineResponse(true, sqlSanitation.executeQuery(query).getResponse());
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
         }
         return new CommandLineResponse(false, result);
@@ -313,9 +314,8 @@ public class CommandLineInterface {
                     User insertUser = new User(nextCommand[4].replace("\"", ""), dob);
                     insertUser.setUsername(nextCommand[1]);
                     insertUser.setNhi(nextCommand[2]);
-                    insertUser.setPassword(SaltHash.createHash(nextCommand[3]));
-                    new GeneralUser().insertUser(insertUser);
-                    return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername()).getId());
+                    new GeneralUser().insertUser(insertUser, SaltHash.createHash(nextCommand[3]));
+                    return new CommandLineResponse(true, "New user created.", new Authorization().loginUser(insertUser.getUsername(), nextCommand[3]).getId());
                 } else {
                     return new CommandLineResponse(false, "Date of birth must not be in the future.");
                 }

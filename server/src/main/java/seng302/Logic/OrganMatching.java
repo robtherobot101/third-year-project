@@ -4,6 +4,8 @@ import com.sun.javafx.scene.web.Debugger;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Model.DonatableOrgan;
 import seng302.Model.User;
+import seng302.Server;
+
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -117,28 +119,12 @@ public class OrganMatching {
             List<User> topMatches = new ArrayList<>();
             for (User user : matches){
                 if(user.getName() != null && user.getName().toLowerCase().contains(receiverNameQuery.toLowerCase())){
-                    User u = new User("", user.getDateOfBirth());
-                    u.setName(user.getName());
-                    u.setRegion(user.getRegion());
-                    u.setId(user.getId());
-                    u.setBloodType(user.getBloodType());
-                    u.setGender(user.getGender());
-                    u.setCurrentAddress(user.getCurrentAddress());
-                    topMatches.add(u);
-                } else if(user.getName() == null && user.getName().equals("")){
-                    User u = new User("", user.getDateOfBirth());
-                    u.setName(user.getName());
-                    u.setRegion(user.getRegion());
-                    u.setId(user.getId());
-                    u.setBloodType(user.getBloodType());
-                    u.setGender(user.getGender());
-                    u.setCurrentAddress(user.getCurrentAddress());
-                    topMatches.add(u);
+                    topMatches.add(user);
                 }
             }
             return topMatches;
         } catch (SQLException e){
-            System.out.println("Error communicating with the database");
+            Server.getInstance().log.debug("Error communicating with the database");
             return new ArrayList<>();
         }
     }

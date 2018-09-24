@@ -29,6 +29,7 @@ namespace mobileAppClient.Models
                 case "middle ear": return Organ.EAR;
                 case "middle-ear": return Organ.EAR;
                 case "skin": return Organ.SKIN;
+                case "bone": return Organ.BONE;
                 case "bone marrow": return Organ.BONE;
                 case "bone-marrow": return Organ.BONE;
                 case "tissue": return Organ.TISSUE;

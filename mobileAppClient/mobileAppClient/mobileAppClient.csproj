@@ -9,10 +9,13 @@
 
   <ItemGroup>
     <Compile Remove="Fragments\**" />
+    <Compile Remove="Messaging\**" />
     <Compile Remove="NewFolder1\**" />
     <EmbeddedResource Remove="Fragments\**" />
+    <EmbeddedResource Remove="Messaging\**" />
     <EmbeddedResource Remove="NewFolder1\**" />
     <None Remove="Fragments\**" />
+    <None Remove="Messaging\**" />
     <None Remove="NewFolder1\**" />
     <Compile Remove="Views\Clinician\ClinicianMapPage.xaml.cs" />
     <Compile Remove="Views\Diseases\DiseasesPage.xaml.cs" />
@@ -26,6 +29,7 @@
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="1.9.0" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="1.9.0" />
     <PackageReference Include="Microsoft.AppCenter.Push" Version="1.9.0" />
+    <PackageReference Include="Toasts.Forms.Plugin" Version="3.3.2" />
     <PackageReference Include="Xam.Plugins.Forms.ImageCircle" Version="3.0.0.5" />
     <PackageReference Include="Xamarin.Essentials" Version="0.10.0-preview" />
     <PackageReference Include="CarouselView.FormsPlugin" Version="5.2.0" />
@@ -37,16 +41,16 @@
     <PackageReference Include="Xamarin.Forms.Maps" Version="3.2.0.839982" />
     <PackageReference Include="Xam.Plugin.Geolocator" Version="4.5.0.6" />
     <PackageReference Include="Xamarin.Forms.GoogleMaps" Version="3.0.3" />
+    <PackageReference Include="Xamarin.Forms" Version="3.2.0.839982" />
+    <PackageReference Include="Xamarin.Forms.GoogleMaps" Version="3.0.3" />
     <PackageReference Include="SlideOverKit" Version="2.1.6.2" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Fragments\" />
     <Folder Include="MenuItems\" />
     <Folder Include="PhotoAccess\" />
     <Folder Include="Facebook\" />
     <Folder Include="Google\" />
     <Folder Include="Maps\" />
-    <Folder Include="Messaging\" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Remove="Views\AttributesPage %28copy%29.xaml" />
@@ -71,6 +75,9 @@
     <Reference Include="Xamarin.iOS">
       <HintPath>..\..\..\..\..\..\..\..\..\Library\Frameworks\Xamarin.iOS.framework\Versions\Current\lib\mono\Xamarin.iOS\Xamarin.iOS.dll</HintPath>
     </Reference>
+    <Reference Include="Xamarin.Forms.Core">
+      <HintPath>..\..\..\..\..\.nuget\packages\xamarin.forms\3.1.0.697729\lib\Xamarin.iOS10\Xamarin.Forms.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -81,8 +88,11 @@
     <Compile Update="Views\Clinician\AttributesPageClinician.xaml.cs">
       <DependentUpon>AttributesPageClinician.xaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\Clinician\SlideUpMenuView.xaml.cs">
-      <DependentUpon>SlideUpMenuView.xaml</DependentUpon>
+    <Compile Update="Views\Messaging\MessageThreadsListPage.xaml.cs">
+      <DependentUpon>MessageThreadsListPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Messaging\ConversationPage.xaml.cs">
+      <DependentUpon>ConversationPage.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -117,6 +127,12 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Clinician\ClinicianOverviewPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Messaging\ConversationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Messaging\CreateConversationPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Clinician\SlideUpMenuView.xaml">
