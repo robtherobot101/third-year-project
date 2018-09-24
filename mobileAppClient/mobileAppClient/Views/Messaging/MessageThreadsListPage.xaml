@@ -14,11 +14,11 @@
                         <StackLayout Orientation="Horizontal" Padding="15,0,10,0">
                             <StackLayout Orientation="Vertical" Spacing="0">
                                 <Label Text="{Binding externalName}" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Start"/>
-                                <Label Text="{Binding lastMessage}" FontSize="Small" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
+                                <Label Text="{Binding lastMessage}" FontSize="Small" TextColor="Gray" HorizontalOptions="Start" VerticalOptions="Center"/>
                             </StackLayout>
                             <StackLayout Orientation="Vertical" HorizontalOptions="EndAndExpand" Spacing="0">
-                                <Label Text="{Binding lastMessageReceiveTime}" FontSize="Small" TextColor="Black" HorizontalOptions="EndAndExpand" VerticalOptions="Start"/>
-                                <controls:TintedImage Source="arrow_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25" VerticalOptions="Center"/>
+                                <Label Text="{Binding lastMessageReceiveTime}" FontSize="Small" TextColor="Gray" HorizontalOptions="EndAndExpand" VerticalOptions="Start"/>
+                                <controls:TintedImage Source="arrow_icon.png" TintColor="Gray" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25" VerticalOptions="Center"/>
                             </StackLayout>
                         </StackLayout>
                         
