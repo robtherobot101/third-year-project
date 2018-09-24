@@ -61,31 +61,6 @@ namespace mobileAppClient.Droid
             }
 
 
-            
-            
-
-
-          
-
-            //if (((ViewGroup)view != lastClicked))
-            //{
-            //    if (lastAdded != null)
-            //    {
-            //        ViewGroup parent = ((ViewGroup)view.Parent);
-            //        parent.RemoveView(lastAdded);
-            //    }
-            //    for (int index = 0; index < ((ViewGroup)view).ChildCount; ++index)
-            //    {
-            //        View nextChild = ((ViewGroup)view).GetChildAt(index);
-            //        if (nextChild.GetType() == typeof(TextView))
-            //        {
-            //            organText = ((TextView)nextChild).Text;
-            //            transferOrgan(organs, organText, rowIndex);
-            //            lastClicked = view;
-            //            break;
-            //        }
-            //    }
-            //}
         }
   
         
@@ -139,9 +114,7 @@ namespace mobileAppClient.Droid
                 TextView organTimer = new TextView(this);
                 ImageView organImage = new ImageView(this);
                 String organName = organ.organType;
-                //  ViewGroup.LayoutParams textParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
-                //  organText.LayoutParameters = textParameters;
-
+                //ViewGroup.LayoutParams textParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
 
                 organText.Text = char.ToUpper(organ.organType[0]) + organ.organType.Substring(1).ToLower();
                 switch (organ.organType.ToLower())
@@ -181,17 +154,32 @@ namespace mobileAppClient.Droid
                         break;
                 }
                 organText.SetTextAppearance(this, Android.Resource.Style.TextAppearanceMedium);
-                
+
                 organImage.SetAdjustViewBounds(true);
+
+
                 organImage.SetMaxHeight(80);
-                organImage.SetMaxWidth(80);
-                organImage.SetPadding(5, 0, 20, 0);
+                organImage.SetMaxWidth(10);
+                organImage.SetPadding(0, 0, 0, 0);
+                //organImage.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 0.2f);
+                //organTable.ShrinkAllColumns = true;
+                organTable.SetColumnShrinkable(0, true);
+
 
                 string countdownDetail = "";
                 if (organ.expired)
                 {
                     countdownDetail = "EXPIRED";
                     organTimer.SetTextColor(Android.Graphics.Color.Red);
+                } else if (organ.inTransfer == 1)
+                {
+                    countdownDetail = "IN TRANSFER";
+                    organTimer.SetTextColor(Android.Graphics.Color.Orange);
+                }
+                else if (organ.inTransfer == 2)
+                {
+                    countdownDetail = "SUCCESSFULLY TRANSFERRED";
+                    organTimer.SetTextColor(Android.Graphics.Color.Green);
                 }
                 else
                 {
@@ -231,10 +219,10 @@ namespace mobileAppClient.Droid
            
                 }
 
+                //organText.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 0.4f);
+                //organTimer.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 0.4f);
 
-
-
-
+                organText.SetPadding(0,0,2,0);
                 organRow.AddView(organImage);
                 organRow.AddView(organText);
                 organRow.AddView(organTimer);

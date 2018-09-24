@@ -64,11 +64,12 @@
 			android:paddingTop="40dp"
 			android:id="@+id/ReceiverTableLayout">
 			<TableRow
-				android:id="@+id/transferText"
+				android:id="@+id/transferTextRow"
 				android:layout_marginLeft="3dp"
 				android:padding="8dp"
 				android:layout_height="21.0dp">
 				<TextView
+					android:id="@+id/transferText"
 					android:paddingBottom = "10dp"
 					android:text="Tap on a receiver to begin transfer."/>
 			</TableRow>
