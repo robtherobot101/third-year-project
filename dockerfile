@@ -1,4 +1,4 @@
-FROM airdock/oracle-jdk-maven
+FROM team300_app
 
 RUN ln -sf /usr/share/zoneinfo/Pacific/Auckland /etc/localtime
 RUN rm -r /code/*

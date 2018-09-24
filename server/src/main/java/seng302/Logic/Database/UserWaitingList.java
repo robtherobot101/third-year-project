@@ -3,6 +3,7 @@ package seng302.Logic.Database;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
 import seng302.Model.WaitingListItem;
+import seng302.NotificationManager.PushAPI;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -206,6 +207,20 @@ public class UserWaitingList extends DatabaseMethods {
         }
     }
 
+    public void transplantWaitingListItem(int waitingListItemId) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "UPDATE WAITING_LIST_ITEM SET organ_deregistered_date = ?, deregistered_code = ? WHERE id = ?";
+            statement = connection.prepareStatement(update);
+            statement.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+            statement.setInt(2, 4);
+            statement.setInt(3, waitingListItemId);
+            System.out.println("Successful trans plant of waiting list item with id: " + waitingListItemId);
+        } finally {
+            close(statement);
+        }
+    }
+
 
     /**
      * Replace a user's waiting list items on the database with a new set of waiting list items.
@@ -250,6 +265,31 @@ public class UserWaitingList extends DatabaseMethods {
         //Upload all new waiting list items
         for (WaitingListItem waitingListItem : newWaitingListItems) {
             insertWaitingListItem(waitingListItem, userId);
+            PushAPI.getInstance().sendTextNotification(userId, "Organ added to waiting list.",
+                    Organ.capitalise(waitingListItem.getOrganType().toString()) + " was added to your organ waiting list.");
+        }
+    }
+
+    public int getWaitingListId(int userId, Organ organ) throws SQLException {
+        ResultSet resultSet = null;
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT * FROM WAITING_LIST_ITEM WHERE organ_type = ? AND user_id = ?";
+            statement = connection.prepareStatement(query);
+
+            statement.setString(1, organ.toString());
+            statement.setInt(2, userId);
+            resultSet = statement.executeQuery();
+
+            //If response is empty then return null
+            if (!resultSet.next()) {
+                return 0;
+            } else {
+                //If response is not empty then return a indication that fields are not empty
+                return resultSet.getInt("id");
+            }
+        } finally {
+            close(resultSet, statement);
         }
     }
 }

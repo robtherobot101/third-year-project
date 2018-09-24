@@ -68,7 +68,6 @@ public class GeneralUser extends DatabaseMethods {
 
             String query = buildUserQuery(params);
             System.out.println(query);
-            System.out.println(query);
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {

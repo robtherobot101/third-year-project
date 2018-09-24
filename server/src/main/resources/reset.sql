@@ -109,7 +109,7 @@ CREATE TABLE IF NOT EXISTS `DONATION_LIST_ITEM` (
   `user_id` bigint(11) NOT NULL,
   `timeOfDeath` bigint(20) DEFAULT NULL,
   `expired` int(11) NOT NULL DEFAULT '0',
-  `inTransfer` tinyint(1) NOT NULL DEFAULT '0'
+  `inTransfer` tinyint(2) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -172,8 +172,7 @@ CREATE TABLE IF NOT EXISTS `MESSAGE` (
   `conversation_id` int(11) NOT NULL,
   `text` text NOT NULL,
   `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user_id` int(11) NOT NULL,
-  `access_level` int(11) NOT NULL
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -185,8 +184,7 @@ CREATE TABLE IF NOT EXISTS `MESSAGE` (
 DROP TABLE IF EXISTS `CONVERSATION_MEMBER`;
 CREATE TABLE IF NOT EXISTS `CONVERSATION_MEMBER` (
   `conversation_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `access_level` int(11) NOT NULL
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -316,9 +314,10 @@ CREATE TABLE IF NOT EXISTS `USER` (
 DROP TABLE IF EXISTS `ACCOUNT`;
 CREATE TABLE IF NOT EXISTS `ACCOUNT` (
   `id` bigint(11) NOT NULL,
-  `username` text NOT NULL,
-  `password` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `username` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `password` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+
 
 --
 -- Indexes for dumped tables
@@ -353,7 +352,7 @@ ALTER TABLE `CONVERSATION`
 -- Indexes for table `CONVERSATION_MEMBER`
 --
 ALTER TABLE `CONVERSATION_MEMBER`
-  ADD UNIQUE KEY `unique_index` (`user_id`,`conversation_id`,`access_level`),
+  ADD UNIQUE KEY `unique_index` (`user_id`,`conversation_id`),
   ADD KEY `User_id_foreign_key8` (`conversation_id`);
 
 --

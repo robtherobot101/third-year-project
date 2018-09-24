@@ -94,8 +94,6 @@ public class MedicationsController {
                 model.insertMedication(receivedMedication, requestedUserId);
                 response.status(201);
                 // Example push notification for new medication
-                PushAPI.getInstance().sendNotification(new Notification("New Medication",
-                        "A clinician has added a new medication" + receivedMedication.getName()), Integer.toString(requestedUserId));
                 return "MEDICATION INSERTED FOR USER ID: " + requestedUserId;
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -132,6 +130,8 @@ public class MedicationsController {
             try {
                 model.updateMedication(receivedMedication, requestedMedicationId, requestedUserId);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification(requestedUserId, "Medication edited.",
+                        "One of your medications (" + receivedMedication.getName() + ") has been edited.");
                 return "MEDICATION WITH ID: "+ requestedMedicationId +" FOR USER ID: "+ requestedUserId +" SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
                 response.status(500);
@@ -159,6 +159,8 @@ public class MedicationsController {
         try {
             model.removeMedication(requestedUserId, requestedMedicationId);
             response.status(201);
+            PushAPI.getInstance().sendTextNotification(requestedUserId, "Medication deleted.",
+                    "One of your medications (" + queriedMedication.getName() + ") has been deleted.");
             return "MEDICATION WITH ID: "+ requestedMedicationId +" FOR USER ID: "+ requestedUserId +" DELETED";
         } catch (SQLException e) {
             response.status(500);

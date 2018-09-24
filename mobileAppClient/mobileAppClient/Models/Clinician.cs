@@ -11,7 +11,7 @@ namespace mobileAppClient.Models
         public string region { get; set; }
         public string username { get; set; }
         public string password { get; set; }
-        public long staffID { get; set; }
+        public int staffID { get; set; }
         public string accountType { get; set; }
 
     }
