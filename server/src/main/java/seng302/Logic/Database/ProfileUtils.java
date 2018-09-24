@@ -21,33 +21,51 @@ import static spark.Spark.halt;
  */
 public class ProfileUtils extends DatabaseMethods {
 
-
     /**
-     * change an account to a 300 account type
+     * change a account to a team300 account
      * @param request the request received
      * @param response the response to send
      * @return String output for success
-     * @throws SQLException catch sql handling errors
      */
-    public String changeTo300Account(Request request, Response response) throws SQLException{
-        int id = Integer.parseInt(request.queryParams("id"));
-        String email = request.queryParams("email");
+    public String changeToTeam300(Request request, Response response) {
+        int userId = Integer.parseInt(request.queryParams("id"));
+        String username = request.queryParams("username");
         String password = request.queryParams("password");
 
-        password = SaltHash.createHash(password);
+        try {
+            changeToTeam300Account(userId, username, SaltHash.createHash(password));
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
+
+        response.status(200);
+        return "USER WITH ID: " + userId +" CHANGED TO FACEBOOK LOGIN SUCCESSFULLY";
+    }
+
+
+    /**
+     * change requested account to a team 300 account type
+     * @param userId the user id of the user to change
+     * @param username the new username of the user
+     * @param password the new password of the user
+     * @throws SQLException catch sql errors
+     */
+    public void changeToTeam300Account(int userId, String username, String password) throws SQLException {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "UPDATE USER SET email = ?, password = ?, is_facebook_acc = 0, is_300_acc = 1 WHERE id = ?";
+            String query = "UPDATE USER " +
+                    "SET acc_type = \"team300\", username = ?, password = ?" +
+                    "WHERE id = ?";
             statement = connection.prepareStatement(query);
-            statement.setString(1, email);
+            statement.setString(1, username);
             statement.setString(2, password);
-            statement.setInt(3, id);
-            statement.executeQuery();
+            statement.setInt(3, userId);
         } finally {
             close(statement);
         }
-        return "Success";
     }
+
 
     /**
      * change a account to a facebook account
@@ -57,7 +75,7 @@ public class ProfileUtils extends DatabaseMethods {
      */
     public String changeToFacebook(Request request, Response response) {
         int userId = Integer.parseInt(request.queryParams("id"));
-        String apiID - request.queryParams("api_id")
+        String apiID = request.queryParams("api_id");
 
         try {
             changeToFacebookAccount(userId, apiID);
@@ -71,21 +89,68 @@ public class ProfileUtils extends DatabaseMethods {
     }
 
 
-    public void changeToFacebookAccount(int userId, String ap) throws SQLException {
+    /**
+     * change account tot facebook type
+     * @param userId the id of the user to change
+     * @param apiId the api id of the account to now use
+     * @throws SQLException catch sql errors
+     */
+    public void changeToFacebookAccount(int userId, String apiId) throws SQLException {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "UPDATE USER " +
-                    "SET email = ?, password = ?, is_facebook_acc = 1, is_300_acc = 0" +
+                    "SET acc_type = \"facebook\", api_id = ?" +
                     "WHERE id = ?";
             statement = connection.prepareStatement(query);
-            statement.setString(1, email);
-            statement.setString(2, password);
-            statement.setInt(3, userId);
+            statement.setString(1, apiId);
+            statement.setInt(2, userId);
         } finally {
             close(statement);
         }
     }
 
+
+    /**
+     * change a account to a google account
+     * @param request the request received
+     * @param response the response to send
+     * @return String output for success
+     */
+    public String changeToGoogle(Request request, Response response) {
+        int userId = Integer.parseInt(request.queryParams("id"));
+        String apiID = request.queryParams("api_id");
+
+        try {
+            changeToGoogleAccount(userId, apiID);
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
+
+        response.status(200);
+        return "USER WITH ID: " + userId +" CHANGED TO FACEBOOK LOGIN SUCCESSFULLY";
+    }
+
+
+    /**
+     * change to google account
+     * @param userId the user id to change
+     * @param apiId the api id to set
+     * @throws SQLException catch sql errors
+     */
+    public void changeToGoogleAccount(int userId, String apiId) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "UPDATE USER " +
+                    "SET acc_type = \"google\", api_id = ?" +
+                    "WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, apiId);
+            statement.setInt(2, userId);
+        } finally {
+            close(statement);
+        }
+    }
 
     /**
      * Checks the authorisation level of a token.
