@@ -38,25 +38,27 @@ namespace mobileAppClient
 
 		    Title = conversation.externalName;
             conversationMessages = conversation.messages;
+            conversationMessages.CollectionChanged += ConversationMessages_CollectionChanged;
 
             MessagesListView.ItemsSource = conversationMessages;
 		    MessagesListView.ItemTapped += OnMessageTapped;
 
-            BounceToLatestMessage(conversationMessages.LastOrDefault());
+            MessagesListView.ScrollTo(conversationMessages.LastOrDefault(), ScrollToPosition.End, true);
             VSAppCenter.seConversationController(this);
+        }
+
+        private void ConversationMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems.Count == 0) {
+                return;
+            }
+            Message newMessage = (Message) e.NewItems[0];
+            //MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
         }
 
         protected override void OnDisappearing()
         {  
             VSAppCenter.seConversationController(null);
-        }
-
-        public void BounceToLatestMessage(Message newMessage)
-        {
-            if (conversationMessages.Count > 0)
-            {
-                MessagesListView.ScrollTo(newMessage, ScrollToPosition.MakeVisible, true);
-            }
         }
 
 
@@ -115,7 +117,6 @@ namespace mobileAppClient
             conversationMessages.Add(newMessage);
 	        chatTextInput.Text = "";
             chatTextInput.Keyboard = null;
-            BounceToLatestMessage(newMessage);
         }
 	}
 }

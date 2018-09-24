@@ -40,8 +40,9 @@ namespace mobileAppClient.Notifications
                             if (conversationController.conversation != null && conversationController.conversation.id == notifiedMessage.conversationId) 
                             {
                                 conversationController.conversation.messages.Add(notifiedMessage);
-                                conversationController.BounceToLatestMessage(notifiedMessage);
                             }
+
+                            DependencyService.Get<IToast>().ShortAlert("You have received a message");
                         }
                         else
                         {

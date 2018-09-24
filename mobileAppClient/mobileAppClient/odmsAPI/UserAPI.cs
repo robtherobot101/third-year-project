@@ -26,7 +26,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> GetUserPhoto()
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -83,7 +83,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<Tuple<HttpStatusCode, string>> GetUserPhotoForMapObjects(int id)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return new Tuple<HttpStatusCode, string>(HttpStatusCode.ServiceUnavailable, "");
             }
@@ -138,7 +138,7 @@ namespace mobileAppClient.odmsAPI
 
         public async Task<HttpStatusCode> UpdateUser(User user, String token)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -187,7 +187,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> UpdateUserPhoto()
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -236,7 +236,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> DeleteUserPhoto()
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -293,7 +293,7 @@ namespace mobileAppClient.odmsAPI
         {
             // Check internet connection
             List<User> resultUsers = new List<User>();
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return new Tuple<HttpStatusCode, List<User>>(HttpStatusCode.ServiceUnavailable, resultUsers);
             }
@@ -363,7 +363,7 @@ namespace mobileAppClient.odmsAPI
         /// </returns>
         public async Task<Tuple<HttpStatusCode, int>> GetUserCount()
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return new Tuple<HttpStatusCode, int>(HttpStatusCode.ServiceUnavailable, 0);
             }
@@ -407,7 +407,7 @@ namespace mobileAppClient.odmsAPI
             bool isUnique = false;
             // Check internet connection
             List<User> resultUsers = new List<User>();
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return new Tuple<HttpStatusCode, bool>(HttpStatusCode.ServiceUnavailable, isUnique);
             }
@@ -453,7 +453,7 @@ namespace mobileAppClient.odmsAPI
         {
             // Check internet connection
             List<CustomMapObject> resultMapObjects = new List<CustomMapObject>();
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return new Tuple<HttpStatusCode, List<CustomMapObject>>(HttpStatusCode.ServiceUnavailable, resultMapObjects);
             }
@@ -494,7 +494,7 @@ namespace mobileAppClient.odmsAPI
         public async Task<Tuple<HttpStatusCode, User>> GetSingleUser(string id)
         {
             // Check internet connection
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return new Tuple<HttpStatusCode, User>(HttpStatusCode.ServiceUnavailable, null);
             }

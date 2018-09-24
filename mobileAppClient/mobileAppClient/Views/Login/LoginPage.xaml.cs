@@ -314,7 +314,7 @@ namespace mobileAppClient
         async void Handle_LoginWithFacebookClicked(object sender, System.EventArgs e)
         {
             rememberLogin = RememberMeSwitch.IsToggled;
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 await DisplayAlert(
                 "Failed to Login",
@@ -330,7 +330,7 @@ namespace mobileAppClient
         async void Handle_LoginWithGoogleClicked(object sender, System.EventArgs e)
         {
             rememberLogin = RememberMeSwitch.IsToggled;
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 await DisplayAlert(
                     "Failed to Login",

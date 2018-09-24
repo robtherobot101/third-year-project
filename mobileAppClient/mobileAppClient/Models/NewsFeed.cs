@@ -80,7 +80,7 @@ namespace mobileAppClient
          */
         private async void fillFeed(IEnumerable<string> feeds)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return;
             }

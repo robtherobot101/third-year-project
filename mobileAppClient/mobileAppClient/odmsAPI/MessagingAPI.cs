@@ -14,7 +14,7 @@ namespace mobileAppClient.odmsAPI
         public async Task<Tuple<HttpStatusCode, List<Conversation>>> GetConversations(int localUserId, bool isClinicianFetching)
         {
             // Check connection
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return new Tuple<HttpStatusCode, List<Conversation>>(HttpStatusCode.ServiceUnavailable, new List<Conversation>());
             }
@@ -56,7 +56,7 @@ namespace mobileAppClient.odmsAPI
         public async Task<Tuple<HttpStatusCode, Conversation>> GetConversation(int localUserId, int conversationId, bool isClinicianFetching)
         {
             // Check connection
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return new Tuple<HttpStatusCode, Conversation>(HttpStatusCode.ServiceUnavailable, null);
             }
@@ -98,7 +98,7 @@ namespace mobileAppClient.odmsAPI
         public async Task<HttpStatusCode> SendMessage(int localUserId, int conversationId, string messageContents, bool isClinicianFetching) 
         {
             // Check connection
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -129,7 +129,7 @@ namespace mobileAppClient.odmsAPI
         public async Task<Tuple<HttpStatusCode, int>> CreateConversation(int localUserId, List<int> participants)
         {
             // Check connection
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return new Tuple<HttpStatusCode, int>(HttpStatusCode.ServiceUnavailable, -1);
             }
