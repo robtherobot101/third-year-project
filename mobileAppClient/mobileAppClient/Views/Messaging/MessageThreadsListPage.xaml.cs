@@ -43,7 +43,11 @@ namespace mobileAppClient
                 {
                     LoadingIndicator.IsVisible = false;
                     LoadingIndicator.IsRunning = false;
-                    NewConversationButton.IsVisible = true;
+
+                    if (isClinicianAccessing)
+                    {
+                        NewConversationButton.IsVisible = true;
+                    }      
                 }
             }
         }
