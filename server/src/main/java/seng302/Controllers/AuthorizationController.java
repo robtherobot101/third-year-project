@@ -2,8 +2,13 @@ package seng302.Controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.util.Pair;
+import org.json.JSONException;
+import org.json.JSONObject;
 import seng302.Logic.Database.Authorization;
+import seng302.Logic.Database.GeneralUser;
 import seng302.Logic.Database.ProfileUtils;
 import seng302.Logic.SaltHash;
 import seng302.Logic.Database.Notifications;
@@ -85,16 +90,6 @@ public class AuthorizationController {
 
         // Check for a user match
         try {
-            // If we are given an app id, log in with that
-            if (request.queryParams("api_id") != null) {
-                Pair<String, String> pair = new ProfileUtils().loginFromId(request.queryParams("api_id"));
-                usernameEmail = pair.getKey();
-                password = pair.getValue();
-            } else if (usernameEmail == null || password == null) {
-                response.status(400);
-                return "Missing Parameters";
-            }
-
             currentUser = model.loginUser(usernameEmail, password);
             if (currentUser != null) {
                 loginToken = model.generateToken((int) currentUser.getId(), 0);
@@ -102,9 +97,30 @@ public class AuthorizationController {
                 System.out.println("LoginController: Logging in as user...");
             }
         } catch (SQLException e) {
-            response.status(500);
-            Server.getInstance().log.error(e.getMessage());
-            return "Failed to login";
+            e.printStackTrace();
+        }
+
+        if(loginToken == null){
+            try {
+                // If we are given an app id, log in with that
+                if (request.queryParams("api_id") != null/* && request.queryParams("api_access_token") != null && request.queryParams("acc_type") != null*/) {
+                    //validateAccessToken(request.queryParams("api_access_token"), request.queryParams("acc_type"));
+                    currentUser = new Authorization().loginUser(request.queryParams("api_id"));
+                } else if (usernameEmail == null || password == null) {
+                    response.status(400);
+                    return "Missing Parameters";
+                }
+
+                if (currentUser != null) {
+                    loginToken = model.generateToken((int) currentUser.getId(), 0);
+                    typeMatched = ProfileType.USER;
+                    System.out.println("LoginController: Logging in as user...");
+                }
+            } catch (SQLException e) {
+                response.status(500);
+                Server.getInstance().log.error(e.getMessage());
+                return "Failed to login";
+            }
         }
 
         if (loginToken == null) { //if user login was unsuccessful
@@ -174,6 +190,31 @@ public class AuthorizationController {
         response.status(500);
         return "Server Failure";
     }
+
+/*
+    public boolean validateAccessToken(String apiToken, String developerToken, String accType) {
+        if(accType.equals("GOOGLE")) {
+            return validateGoogleAccessToken(apiToken, developerToken);
+        } else if (accType.equals("FACEBOOK")) {
+            return validateFacebookAccessToken(apiToken, developerToken);
+        }
+        return false;
+    }
+
+    public boolean validateFacebookAccessToken(String apiToken, String facebookUserId) {
+        try {
+            String url = String.format("graph.facebook.com/debug_token" +
+                    "?input_token=%s" +
+                    "&access_token=%s", apiToken, "971327199740898");
+            JSONObject response = new JSONObject(Unirest.get(url).asString().getBody());
+            return response.getJSONObject("data").getString("user_id").equals(facebookUserId);
+        } catch (UnirestException | JSONException e) {
+            return false;
+        }
+    }
+*/
+
+    public boolean validateGoogleAccessToken;
 
     /**
      * method to handle logging out a user
