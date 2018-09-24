@@ -53,11 +53,11 @@ public class ConfigParser {
         } catch (FileNotFoundException e) {
             Alert a = new Alert(Alert.AlertType.ERROR, "Could not find or create config file");
             a.showAndWait();
-            e.printStackTrace();
+            Debugger.error(e.getMessage());
         } catch (IOException e) {
             Alert a = new Alert(Alert.AlertType.ERROR, "An error occurred while loading configuration file.");
             a.showAndWait();
-            e.printStackTrace();
+            Debugger.error(e.getMessage());
         }
 
     }

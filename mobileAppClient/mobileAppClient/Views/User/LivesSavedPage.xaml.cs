@@ -168,15 +168,15 @@ namespace mobileAppClient
             //deselect item
             ((ListView)sender).SelectedItem = null;
 
-            if(e.Item == "You could donate more organs")
+            if(e.Item == "Donate more organs")
             {
                 await Navigation.PushAsync(new OrgansPage());
             }
-            else if(e.Item == "You could add a profile photo")
+            else if(e.Item == "Add a profile photo")
             {
-                await Navigation.PushAsync(new PhotoSettingsPage());
+                await Navigation.PushAsync(new PhotoSettingsPage(false));
             }
-            else if (e.Item == "You could add in more details about yourself")
+            else if (e.Item == "Add in more details about yourself")
             {
                 await Navigation.PushAsync(new AttributesPage());
             }

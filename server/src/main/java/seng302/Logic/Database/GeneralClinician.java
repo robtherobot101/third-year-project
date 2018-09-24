@@ -199,4 +199,22 @@ public class GeneralClinician extends DatabaseMethods {
             close(statement);
         }
     }
+
+    /**
+     * Update account details
+     * @param id The id of the account
+     * @param username The new username to associate with the account
+     */
+    public void updateAccount(long id, String username) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "UPDATE ACCOUNT SET username = ? WHERE id = ? ";
+            statement = connection.prepareStatement(update);
+            statement.setString(1, username);
+            statement.setLong(2, id);
+            statement.executeUpdate();
+        } finally {
+            close(statement);
+        }
+    }
 }

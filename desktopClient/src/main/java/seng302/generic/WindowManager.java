@@ -608,12 +608,12 @@ public class WindowManager extends Application {
                 stage.show();
 
             } catch (URISyntaxException e) {
-                System.err.println("Unable to read jar path. Please run from a directory with a simpler path.");
-                e.printStackTrace();
+                Debugger.error("Unable to read jar path. Please run from a directory with a simpler path.");
+                Debugger.error(e.getMessage());
                 stop();
             } catch (IOException e) {
-                System.err.println("Unable to load fxml or save file.");
-                e.printStackTrace();
+                Debugger.error("Unable to load fxml or save file.");
+                Debugger.error(e.getMessage());
                 stop();
             }
 
@@ -664,8 +664,8 @@ public class WindowManager extends Application {
                 createUserController.setEnterEvent();
             }
         } catch (IOException e) {
-            System.err.println("Unable to load fxml or save file.");
-            e.printStackTrace();
+            Debugger.error("Unable to load fxml or save file.");
+            Debugger.error(e.getMessage());
         }
     }
 

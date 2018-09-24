@@ -18,7 +18,7 @@ namespace mobileAppClient
 
         async void Handle_PhotoSettingsTapped(object sender, System.EventArgs e)
         {
-            await Navigation.PushAsync(new PhotoSettingsPage());
+            await Navigation.PushAsync(new PhotoSettingsPage(false));
         }
 
         async void Handle_FacebookSettingsTapped(object sender, System.EventArgs e)

@@ -46,8 +46,6 @@ abstract class TestFXTest extends ApplicationTest {
                 mainGUI.start(stage);
 
                 WindowManager.getDataManager().getGeneral().reset("masterToken");
-                WindowManager.getDataManager().getClinicians().insertClinician(new Clinician("default", "default", "default"), "masterToken");
-                WindowManager.getDataManager().getAdmins().insertAdmin(new Admin("admin", "default", "default_admin"), "masterToken");
             } catch (HttpResponseException e) {
                 e.printStackTrace();
             }

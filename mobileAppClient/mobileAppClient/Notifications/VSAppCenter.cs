@@ -33,23 +33,17 @@ namespace mobileAppClient.Notifications
                         message.conversationId = int.Parse(e.CustomData["conversationId"]);
                         message.text = e.CustomData["text"];
                         message.timestamp = new CustomDateTime(DateTime.Parse(e.CustomData["timestamp"]));
-                        if (ConversationPage.currentConversation != null && ConversationPage.currentConversation.id == message.conversationId)
-                        {
-                            ConversationPage.currentConversation.messages.Add(message);
-                        }
-                        else
-                        {
-                            if (messageThreadsListPageController != null)
-                            {
-                                List<Conversation> localConversation = new List<Conversation>(messageThreadsListPageController.conversationList);
-                                localConversation.Find(conversation => conversation.id == message.conversationId)?.messages.Add(message);
 
-                                messageThreadsListPageController.conversationList.Clear();
-                                messageThreadsListPageController.conversationList.AddRange(localConversation);                              
-                            }
-                            
-                            DependencyService.Get<IToast>().ShortAlert("You have received a message");
+                        if (messageThreadsListPageController != null)
+                        {
+                            List<Conversation> localConversation = new List<Conversation>(messageThreadsListPageController.conversationList);
+                            localConversation.Find(conversation => conversation.id == message.conversationId)?.messages.Add(message);
+
+                            messageThreadsListPageController.conversationList.Clear();
+                            messageThreadsListPageController.conversationList.AddRange(localConversation);                              
                         }
+                            
+                        DependencyService.Get<IToast>().ShortAlert("You have received a message");
                     }
                 };
             }
