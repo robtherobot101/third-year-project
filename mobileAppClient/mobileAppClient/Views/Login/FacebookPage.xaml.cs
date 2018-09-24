@@ -15,6 +15,7 @@ namespace mobileAppClient
     {
         private LoginPage parentLoginPage;
         private FacebookServices facebookServices;
+        private int userId;
         private User accountBeingChanged;
         public FacebookPage(LoginPage loginPage)
         {
@@ -32,11 +33,11 @@ namespace mobileAppClient
             Content = webView;
         }
 
-        public FacebookPage(User user)
+        public FacebookPage(int userId)
         {
             InitializeComponent();
             facebookServices = new FacebookServices();
-
+            this.userId = userId;
             var webView = new WebView
             {
                 Source = facebookServices.apiRequest,
@@ -45,18 +46,17 @@ namespace mobileAppClient
 
             webView.Navigated += ChangeLoginMethodOnNavigate;
             Content = webView;
-
         }
 
         private async void ChangeLoginMethodOnNavigate(object sender, WebNavigatedEventArgs e)
         {
+            //Console.WriteLine("User ID is: " + userId);
             var accessToken = facebookServices.ExtractAccessTokenFromUrl(e.Url);
-
             if (accessToken != "")
             {
                 FacebookProfile facebookProfile = await facebookServices.GetFacebookProfileAsync(accessToken);
 
-                HttpStatusCode facebookRegisterStatus = await new LoginAPI().FacebookRegisterUser(accountBeingChanged.id, facebookProfile.Id);
+                HttpStatusCode facebookRegisterStatus = await new LoginAPI().FacebookRegisterUser(userId, facebookProfile.Id);
 
                 switch (facebookRegisterStatus)
                 {
@@ -87,10 +87,7 @@ namespace mobileAppClient
                         break;
                 }
             }
-            else
-            {
-
-            }
+            await Navigation.PopModalAsync();
         }
 
         async void Handle_CancelClicked(object sender, System.EventArgs e)
@@ -167,20 +164,23 @@ namespace mobileAppClient
                     facebookProfile.Birthday = UserController.Instance.FacebookDateOfBirth;
                     facebookProfile.NHI = UserController.Instance.NHI;
 
-                    User inputUser = new User();
-                    inputUser.name = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
-                    inputUser.preferredName = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
-                    inputUser.email = facebookProfile.Email;
-                    inputUser.username = facebookProfile.Id;
-                    inputUser.password = password;
-                    inputUser.dateOfBirth = new CustomDate(DateTime.Parse(facebookProfile.Birthday));
-                    inputUser.creationTime = new CustomDateTime(DateTime.Now);
-                    inputUser.gender = facebookProfile.Gender.ToUpper();
-                    inputUser.region = facebookProfile.Location.Name;
+                    User inputUser = new User
+                    {
+                        name = new List<string> {facebookProfile.FirstName, "", facebookProfile.LastName},
+                        preferredName = new List<string> {facebookProfile.FirstName, "", facebookProfile.LastName},
+                        email = facebookProfile.Email,
+                        username = facebookProfile.Email,
+                        password = password,
+                        dateOfBirth = new CustomDate(DateTime.Parse(facebookProfile.Birthday)),
+                        creationTime = new CustomDateTime(DateTime.Now),
+                        gender = facebookProfile.Gender.ToUpper(),
+                        region = facebookProfile.Location.Name,
+                        organs = new List<Organ>(),
+                        userHistory = new List<HistoryItem>(),
+                        nhi = facebookProfile.NHI
+                    };
+
                     //Server requires to initialise the organs and user history items on creation
-                    inputUser.organs = new List<Organ>();
-                    inputUser.userHistory = new List<HistoryItem>();
-                    inputUser.nhi = facebookProfile.NHI;
 
                     HttpStatusCode registerUserResult = await loginAPI.RegisterUser(inputUser);
                     

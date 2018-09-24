@@ -154,7 +154,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BottomSheetFragment.cs" />
     <Compile Include="BottomSheetListActivity.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Notifications\AndroidToast.cs" />
@@ -163,6 +162,7 @@
     <Compile Include="AndroidCamera.cs" />
     <Compile Include="CustomMapRenderer.cs" />
     <Compile Include="MapActivity.cs" />
+    <Compile Include="AndroidForceKeyboardDismissalService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />

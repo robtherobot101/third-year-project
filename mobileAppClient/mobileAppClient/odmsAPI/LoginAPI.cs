@@ -26,7 +26,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> LoginUser(String usernameEmail, String password)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -50,7 +50,7 @@ namespace mobileAppClient.odmsAPI
             try
             {
                 response = await client.PostAsync(url + "/login" + queries, content);
-            } catch (HttpRequestException e)
+            } catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -108,7 +108,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> LoginUser(String api_id)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -191,7 +191,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> Logout(bool isClinician)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -215,7 +215,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -293,7 +293,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> RegisterUser(User user)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -326,7 +326,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> FacebookRegisterUser(int userId, String api_id)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -357,9 +357,9 @@ namespace mobileAppClient.odmsAPI
         /*
          * Returns response status code of the attempted user registration
          */
-        public async Task<HttpStatusCode> GoogleRegisterUser(User user, String api_id)
+        public async Task<HttpStatusCode> GoogleRegisterUser(int userId, String api_id)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -372,10 +372,10 @@ namespace mobileAppClient.odmsAPI
             HttpClient client = ServerConfig.Instance.client;
 
             HttpContent body = new StringContent("");
-            String queries = $"?api_id={api_id}&id={user.id}";
+            String queries = $"?api_id={api_id}&id={userId}";
             var response = await client.PostAsync(url + "/googleaccount" + queries, body);
 
-            if (response.StatusCode == HttpStatusCode.Created)
+            if (response.StatusCode == HttpStatusCode.OK)
             {
                 Console.WriteLine("Success on editing user");
             }

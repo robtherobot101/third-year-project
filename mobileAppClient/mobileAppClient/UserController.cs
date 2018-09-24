@@ -19,6 +19,7 @@ namespace mobileAppClient
         public ImageSource ProfilePhotoSource { get; set; }
         public MainPage mainPageController { get; set; }
         public LoginPage loginPageController { get; set; }
+        public UserSettings userSettingsController { get; set; }
 
         //All fields used for when a user has incomplete login
         public string FacebookEmail { get; set; }
@@ -51,13 +52,7 @@ namespace mobileAppClient
         public void Login(User loggedInUser, string authToken)
         {
             this.LoggedInUser = loggedInUser;
-            this.AuthToken = authToken;
-
-            if (Instance.loginPageController.rememberLogin)
-            {
-                SecureStorage.SetAsync("usernameEmail", loggedInUser.email);
-                SecureStorage.SetAsync("password", loggedInUser.password);
-            }           
+            this.AuthToken = authToken;           
         }
 
         /// <summary>
@@ -68,6 +63,16 @@ namespace mobileAppClient
         public async Task PassControlToLoginPage(string code)
         {
             await loginPageController.Handle_RedirectUriCaught(code);
+        }
+
+        /// <summary>
+        /// Used to return control to the user settings page after a Google account login
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public async Task PassControlToUserSettings(string code)
+        {
+            await userSettingsController.Handle_RedirectUriCaught(code);
         }
 
         private UserController()

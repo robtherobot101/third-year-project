@@ -27,7 +27,11 @@ namespace mobileAppClient.Views
             InitializeComponent();
             this.item = item;
             this.parentWaitingListItemPage = parentWaitingListItemPage;
-            setupPage();
+        }
+
+        protected override async void OnAppearing()
+        {
+            await setupPage();
         }
 
         /*
@@ -50,7 +54,7 @@ namespace mobileAppClient.Views
                 DeathDatePicker.MinimumDate = user.dateOfBirth.ToDateTime();
                 DeathDatePicker.MaximumDate = DateTime.Now;
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 await DisplayAlert("Connection Error",
                                    "Failed to reach the server",
@@ -112,7 +116,7 @@ namespace mobileAppClient.Views
                 await parentWaitingListItemPage.Navigation.PopAsync();
                 MessagingCenter.Send<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS");
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 await DisplayAlert("Connection Error",
                                    "Failed to reach the server",

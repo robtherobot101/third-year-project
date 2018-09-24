@@ -24,15 +24,16 @@ namespace mobileAppClient
          */ 
         public WaitingListItemsPage()
         {
-            InitializeComponent();
-            MessagingCenter.Subscribe<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS", (sender) => {
-                setupPage();
-            });
+            InitializeComponent(); 
         }
 
         protected override async void OnAppearing()
         {
             await setupPage();
+
+            MessagingCenter.Subscribe<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS", async (sender) => {
+                await setupPage();
+            });
         }
 
         public async Task setupPage()
