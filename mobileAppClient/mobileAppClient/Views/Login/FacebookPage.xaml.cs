@@ -39,7 +39,6 @@ namespace mobileAppClient
 
         private async void WebViewOnNavigated(object sender, WebNavigatedEventArgs e)
         {
-
             var accessToken = facebookServices.ExtractAccessTokenFromUrl(e.Url);
 
             if (accessToken != "")

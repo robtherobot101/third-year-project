@@ -118,6 +118,12 @@ namespace mobileAppClient
 
         private async void Button_OnClicked(object sender, EventArgs e)
         {
+            if (!InputValidation.IsValidNhiInput(NHIEntry.Text))
+            {
+                await DisplayAlert("", "Please enter a valid NHI number", "OK");
+                return;
+            }
+
             if (BirthGenderInput.SelectedItem == null)
             {
                 await DisplayAlert("", "Please enter a gender", "OK");
@@ -156,6 +162,7 @@ namespace mobileAppClient
                 }
             }
 
+            googleUser.nhi = NHIEntry.Text;
             googleUser.gender = BirthGenderInput.SelectedItem.ToString().ToUpper();
             googleUser.dateOfBirth = new CustomDate(dobInput.Date);
             await RegisterNewUser();

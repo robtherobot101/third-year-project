@@ -22,11 +22,9 @@ namespace mobileAppClient.Views.UserSettings
             confirmPasswordInput.IsVisible = false;
 
             ChangePasswordMenuItemViewCell.Height = dummyCell.Height;
-            Console.WriteLine("RenderHeight: " + dummyCell.RenderHeight);
-            Console.WriteLine("Height: " + dummyCell.Height);
             UsernameEntry.Text = UserController.Instance.LoggedInUser.username;
             EmailEntry.Text = UserController.Instance.LoggedInUser.email;
-            Console.WriteLine("Got hereSSSSSSSSh!");
+            
         }
 
         async void Handle_ChangePasswordTapped(object sender, System.EventArgs e)

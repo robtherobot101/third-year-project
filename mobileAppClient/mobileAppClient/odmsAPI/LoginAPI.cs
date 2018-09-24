@@ -9,9 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Android;
 using CarouselView.FormsPlugin.Abstractions;
-using Java.Lang;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using String = System.String;
@@ -213,7 +211,6 @@ namespace mobileAppClient.odmsAPI
                 request.Headers.Add("token", UserController.Instance.AuthToken);
             }
 
-
             try
             {
                 response = await client.SendAsync(request);
@@ -315,7 +312,7 @@ namespace mobileAppClient.odmsAPI
             if (response.StatusCode == HttpStatusCode.Created)
             {
                 Console.WriteLine("Success on creating user");
-                user.id = Integer.ParseInt((String)response.Headers.GetValues("id").GetItem(0));
+                user.id = Int32.Parse((String)response.Headers.GetValues("id").GetItem(0));
             }
             else
             {
@@ -344,6 +341,39 @@ namespace mobileAppClient.odmsAPI
             HttpContent body = new StringContent("");
             String queries = $"?api_id={api_id}&id={user.id}";
             var response = await client.PostAsync(url + "/facebookaccount" + queries, body);
+
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                Console.WriteLine("Success on editing user");
+            }
+            else
+            {
+                Console.WriteLine($"Failed register ({response.StatusCode})");
+            }
+            return response.StatusCode;
+        }
+
+
+        /*
+         * Returns response status code of the attempted user registration
+         */
+        public async Task<HttpStatusCode> GoogleRegisterUser(User user, String api_id)
+        {
+            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            // Get the single userController instance
+            UserController userController = UserController.Instance;
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpContent body = new StringContent("");
+            String queries = $"?api_id={api_id}&id={user.id}";
+            var response = await client.PostAsync(url + "/googleaccount" + queries, body);
 
             if (response.StatusCode == HttpStatusCode.Created)
             {
