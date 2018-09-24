@@ -314,9 +314,10 @@ CREATE TABLE IF NOT EXISTS `USER` (
 DROP TABLE IF EXISTS `ACCOUNT`;
 CREATE TABLE IF NOT EXISTS `ACCOUNT` (
   `id` bigint(11) NOT NULL,
-  `username` text NOT NULL,
-  `password` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `username` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `password` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+
 
 --
 -- Indexes for dumped tables

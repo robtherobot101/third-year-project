@@ -98,6 +98,7 @@ public class GeneralClinician extends DatabaseMethods {
             statement.setString(1, clinician.getUsername());
             statement.setString(2, clinician.getPassword());
             statement.executeUpdate();
+            statement.close();
             String insert = "INSERT INTO CLINICIAN(name, work_address, region, staff_id) VALUES(?, ?, ?, (SELECT id FROM ACCOUNT WHERE username = ?))";
             statement = connection.prepareStatement(insert);
 
@@ -193,6 +194,24 @@ public class GeneralClinician extends DatabaseMethods {
             statement.setString(1, username);
             statement.setString(2, password);
             statement.setLong(3, id);
+            statement.executeUpdate();
+        } finally {
+            close(statement);
+        }
+    }
+
+    /**
+     * Update account details
+     * @param id The id of the account
+     * @param username The new username to associate with the account
+     */
+    public void updateAccount(long id, String username) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "UPDATE ACCOUNT SET username = ? WHERE id = ? ";
+            statement = connection.prepareStatement(update);
+            statement.setString(1, username);
+            statement.setLong(2, id);
             statement.executeUpdate();
         } finally {
             close(statement);

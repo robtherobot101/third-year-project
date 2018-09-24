@@ -30,27 +30,30 @@ public class ProfileUtils extends DatabaseMethods {
     public int checkToken(String token) throws SQLException {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
+        PreparedStatement statement1 = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // Check all tokens for time expiry
             statement = connection.prepareStatement(
                     "DELETE FROM TOKEN WHERE token != 'masterToken' AND date_time < DATE_SUB(NOW(), INTERVAL 1 DAY)");
             statement.execute();
+            statement.close();
 
             statement = connection.prepareStatement(
                     "SELECT access_level FROM TOKEN WHERE token = ?");
             statement.setString(1, token);
             resultSet = statement.executeQuery();
+
             if (resultSet.next()) {
-                statement = connection.prepareStatement(
+                statement1 = connection.prepareStatement(
                         "UPDATE TOKEN SET date_time = NOW() WHERE token = ?");
-                statement.setString(1, token);
-                statement.execute();
+                statement1.setString(1, token);
+                statement1.execute();
                 return resultSet.getInt("access_level");
             } else {
                 return -1;
             }
         } finally {
-            close(resultSet, statement);
+            close(resultSet, statement, statement1);
         }
     }
 

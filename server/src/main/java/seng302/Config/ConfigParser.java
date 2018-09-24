@@ -53,10 +53,10 @@ public class ConfigParser {
             properties.load(new FileInputStream(file));
         } catch (FileNotFoundException e) {
             Server.getInstance().log.warn("Could not load or create config file");
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
         } catch (IOException e) {
-            //Server.getInstance().log.warn("An unexpected error occurred while reading config files.");
-            e.printStackTrace();
+            Server.getInstance().log.warn("An unexpected error occurred while reading config files.");
+            Server.getInstance().log.error(e.getMessage());
         }
     }
 

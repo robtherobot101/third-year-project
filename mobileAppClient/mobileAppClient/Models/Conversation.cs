@@ -26,6 +26,11 @@ namespace mobileAppClient.Models
             get { return messages.Count > 0 ? messages.Last().text : ""; }
         }
 
+        public string lastMessageReceiveTime
+        {
+            get { return messages.Count > 0 ? messages.Last().timestampDateTime.ToString() : ""; }
+        }
+
         public void getParticipantNames(int localId)
         {
             // Gets the complement of the members list in respect to the local id -> the external participants id

@@ -112,7 +112,7 @@ public class ConversationsController {
                 return "Missing participant information";
             }
         } catch (JsonSyntaxException jse) {
-            jse.printStackTrace();
+            Server.getInstance().log.error(jse.getMessage());
             Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
             response.status(400);
             return "Bad Request";
@@ -218,7 +218,7 @@ public class ConversationsController {
                 participants.add(userId);
             }
         } catch (JsonSyntaxException jse) {
-            jse.printStackTrace();
+            Server.getInstance().log.error(jse.getMessage());
             Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
             response.status(400);
             return "Bad Request";

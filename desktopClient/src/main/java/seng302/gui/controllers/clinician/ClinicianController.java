@@ -365,7 +365,7 @@ public class ClinicianController implements Initializable {
                 WindowManager.updateAvailableOrgans();
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to fetch admin with id: " + clinician.getStaffID());
-                e.printStackTrace();
+                Debugger.error(e.getMessage());
                 alert.close();
                 alert = WindowManager.createAlert(Alert.AlertType.ERROR, "Refresh Failed", "Refresh failed",
                         "Clinician data could not be refreshed because there was an error contacting the server.");
@@ -438,7 +438,7 @@ public class ClinicianController implements Initializable {
                 try {
                     flag = WindowManager.getDataManager().getGeneral().checkPassword(password, clinician.getStaffID());
                 } catch (HttpResponseException e) {
-                    e.printStackTrace();
+                    Debugger.error(e.getMessage());
                 }
                 if (flag) {
                     try {
