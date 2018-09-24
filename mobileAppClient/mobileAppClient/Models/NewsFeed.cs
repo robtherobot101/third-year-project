@@ -70,7 +70,6 @@ namespace mobileAppClient
                     element.ImageUrl = element.ExtraImageUrl;
                 }
                 rss.Add(element);
-                Console.WriteLine(element.PublishDate);
             }
             rss.OrderByDescending(r => r.PublishDate);
         }
