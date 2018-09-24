@@ -189,7 +189,6 @@
       <DependentUpon>PotentialMatchesBottomSheetViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="RecipientsTableSource.cs" />
-    <InterfaceDefinition Include="Messaging\ChatViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -340,6 +339,7 @@
     <BundleResource Include="Resources\other.png" />
     <BundleResource Include="Resources\users_icon.png" />
     <BundleResource Include="Resources\add_icon.png" />
+    <BundleResource Include="Resources\messages_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\score_icon.png" />

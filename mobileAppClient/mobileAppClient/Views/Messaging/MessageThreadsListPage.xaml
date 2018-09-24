@@ -1,14 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             x:Class="mobileAppClient.MessageThreadsListPage">
+             x:Class="mobileAppClient.MessageThreadsListPage"
+             xmlns:controls="clr-namespace:Plugin.CrossPlatformTintedImage.Abstractions;assembly=Plugin.CrossPlatformTintedImage.Abstractions">
     <StackLayout>
         <ActivityIndicator x:Name="LoadingIndicator" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,0,-1,-1" VerticalOptions="Center" HorizontalOptions="Center"/>
         <ListView x:Name="ConversationsListView"
                   ItemTapped="Handle_Conversation_Tapped">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding externalName}" Detail="{Binding lastMessage}"/>
+                    <!--<TextCell Text="{Binding externalName}" Detail="{Binding lastMessage}"/>-->
+                    <ViewCell>
+                        <StackLayout Orientation="Horizontal" Padding="15,0,10,0">
+                            <StackLayout Orientation="Vertical" Spacing="0">
+                                <Label Text="{Binding externalName}" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Start"/>
+                                <Label Text="{Binding lastMessage}" FontSize="Small" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
+                            </StackLayout>
+                            <StackLayout Orientation="Vertical" HorizontalOptions="EndAndExpand" Spacing="0">
+                                <Label Text="{Binding lastMessageReceiveTime}" FontSize="Small" TextColor="Black" HorizontalOptions="EndAndExpand" VerticalOptions="Start"/>
+                                <controls:TintedImage Source="arrow_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25" VerticalOptions="Center"/>
+                            </StackLayout>
+                        </StackLayout>
+                        
+
+                    </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
