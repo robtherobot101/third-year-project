@@ -15,7 +15,7 @@ namespace mobileAppClient
     {
         private LoginPage parentLoginPage;
         private FacebookServices facebookServices;
-
+        private User accountBeingChanged;
         public FacebookPage(LoginPage loginPage)
         {
             InitializeComponent();
@@ -30,6 +30,67 @@ namespace mobileAppClient
 
             webView.Navigated += WebViewOnNavigated;
             Content = webView;
+        }
+
+        public FacebookPage(User user)
+        {
+            InitializeComponent();
+            facebookServices = new FacebookServices();
+
+            var webView = new WebView
+            {
+                Source = facebookServices.apiRequest,
+                HeightRequest = 1
+            };
+
+            webView.Navigated += ChangeLoginMethodOnNavigate;
+            Content = webView;
+
+        }
+
+        private async void ChangeLoginMethodOnNavigate(object sender, WebNavigatedEventArgs e)
+        {
+            var accessToken = facebookServices.ExtractAccessTokenFromUrl(e.Url);
+
+            if (accessToken != "")
+            {
+                FacebookProfile facebookProfile = await facebookServices.GetFacebookProfileAsync(accessToken);
+
+                HttpStatusCode facebookRegisterStatus = await new LoginAPI().FacebookRegisterUser(accountBeingChanged.id, facebookProfile.Id);
+
+                switch (facebookRegisterStatus)
+                {
+                    case HttpStatusCode.Created:
+                        await DisplayAlert("",
+                        "Login method changed to Facebook",
+                        "OK");
+                        break;
+                    case HttpStatusCode.BadRequest:
+                        await DisplayAlert("",
+                        "Failed to change login method (400)",
+                        "OK");
+                        break;
+                    case HttpStatusCode.ServiceUnavailable:
+                        await DisplayAlert("",
+                        "Server unavailable, check connection",
+                        "OK");
+                        break;
+                    case HttpStatusCode.Unauthorized:
+                        await DisplayAlert("",
+                        "Unauthorised to modify profile",
+                        "OK");
+                        break;
+                    case HttpStatusCode.InternalServerError:
+                        await DisplayAlert("",
+                        "Server error, please try again (500)",
+                        "OK");
+                        break;
+                }
+            }
+            else
+            {
+
+            }
         }
 
         async void Handle_CancelClicked(object sender, System.EventArgs e)
@@ -56,6 +117,7 @@ namespace mobileAppClient
                     Console.WriteLine("Failed to connect to server for checking of unique email");
                 }
 
+                //This account already exists
                 if (isUniqueEmailResult.Item2 == false)
                 {
                     HttpStatusCode statusCode = await loginAPI.LoginUser(facebookProfile.Id);
@@ -88,7 +150,7 @@ namespace mobileAppClient
                             break;
                     }
                 }
-                else
+                else //Create new account
                 {
 
                     var waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
@@ -126,7 +188,7 @@ namespace mobileAppClient
                     {
                         case HttpStatusCode.Created:
                             HttpStatusCode registerFacebookUserResult =
-                                await loginAPI.FacebookRegisterUser(inputUser, facebookProfile.Id);
+                                await loginAPI.FacebookRegisterUser(inputUser.id, facebookProfile.Id);
 
                             //Set the local profile picture to the picture object
 

@@ -24,12 +24,17 @@ namespace mobileAppClient
         async void Handle_FacebookSettingsTapped(object sender, System.EventArgs e)
         {
             //Do a thing
+            await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(UserController.Instance.LoggedInUser)));
         }
 
 
         async void Handle_GoogleSettingsTapped(object sender, System.EventArgs e)
         {
             //Do a thing
+
+            //await Navigation.PushModalAsync(new NavigationPage(new GooglePage(this, true)));
+
+
         }
 
         async void Handle_AccountSettingsTapped(object sender, System.EventArgs e)
