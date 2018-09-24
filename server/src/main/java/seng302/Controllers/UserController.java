@@ -58,7 +58,7 @@ public class UserController {
                 params.put(param,request.queryParams(param));
             }
         }
-        System.out.println("Params: "+params);
+        Server.getInstance().log.debug("Params: "+params);
         List<User> queriedUsers;
         try {
             queriedUsers = model.getUsers(params);
@@ -342,7 +342,7 @@ public class UserController {
     public String importUsers(Request request, Response response) {
         Gson gson = new Gson();
         List<User> receivedUsers;
-        System.out.println("IMPORTING USERS");
+        Server.getInstance().log.debug("IMPORTING USERS");
         // Attempt to executeFile received JSON
         try {
              receivedUsers = gson.fromJson(request.body(), UserCSVStorer.class).getUsers();
@@ -351,7 +351,7 @@ public class UserController {
             response.status(400);
             return "Bad Request";
         }
-        System.out.println("Got " + receivedUsers.size() + " entries");
+        Server.getInstance().log.debug("Got " + receivedUsers.size() + " entries");
         if (receivedUsers.size() > 0) {
             for (User user: receivedUsers) {
                 if (!checkNhi(user.getNhi())) {
@@ -581,10 +581,10 @@ public class UserController {
                         "Your profile photo has been changed.");
                 return "PHOTO SUCCESSFULLY SAVED";
             }  catch (IOException e) {
-                System.out.println(e);
+                Server.getInstance().log.error(e.getMessage());
                 return "Internal Server Error";
             } catch (URISyntaxException el) {
-                el.printStackTrace();
+                Server.getInstance().log.error(el.getMessage());
                 return "URI Error";
             }
         }
