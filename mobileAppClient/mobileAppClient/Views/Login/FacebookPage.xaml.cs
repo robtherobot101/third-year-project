@@ -72,7 +72,7 @@ namespace mobileAppClient
                         case HttpStatusCode.Unauthorized:
                             await DisplayAlert(
                                 "Failed to Login",
-                                "Incorrect username/password",
+                                "Incorrect username/password :P",
                                 "OK");
                             break;
                         case HttpStatusCode.ServiceUnavailable:
@@ -110,7 +110,7 @@ namespace mobileAppClient
                     inputUser.name = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
                     inputUser.preferredName = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
                     inputUser.email = facebookProfile.Email;
-                    inputUser.username = facebookProfile.Email;
+                    inputUser.username = facebookProfile.Id;
                     inputUser.password = password;
                     inputUser.dateOfBirth = new CustomDate(DateTime.Parse(facebookProfile.Birthday));
                     inputUser.creationTime = new CustomDateTime(DateTime.Now);

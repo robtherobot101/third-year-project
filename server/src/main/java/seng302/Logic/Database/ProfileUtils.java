@@ -3,6 +3,7 @@ package seng302.Logic.Database;
 import org.apache.commons.dbutils.DbUtils;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Logic.Database.DatabaseMethods;
+import seng302.Logic.SaltHash;
 import seng302.Model.Attribute.ProfileType;
 import seng302.Server;
 import spark.Request;
@@ -19,6 +20,71 @@ import static spark.Spark.halt;
  * Utility class for profiles
  */
 public class ProfileUtils extends DatabaseMethods {
+
+
+    /**
+     * change an account to a 300 account type
+     * @param request the request received
+     * @param response the response to send
+     * @return String output for success
+     * @throws SQLException catch sql handling errors
+     */
+    public String changeTo300Account(Request request, Response response) throws SQLException{
+        int id = Integer.parseInt(request.queryParams("id"));
+        String email = request.queryParams("email");
+        String password = request.queryParams("password");
+
+        password = SaltHash.createHash(password);
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "UPDATE USER SET email = ?, password = ?, is_facebook_acc = 0, is_300_acc = 1 WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            statement.setString(2, password);
+            statement.setInt(3, id);
+            statement.executeQuery();
+        } finally {
+            close(statement);
+        }
+        return "Success";
+    }
+
+    /**
+     * change a account to a facebook account
+     * @param request the request received
+     * @param response the response to send
+     * @return String output for success
+     */
+    public String changeToFacebook(Request request, Response response) {
+        int userId = Integer.parseInt(request.queryParams("id"));
+        String apiID - request.queryParams("api_id")
+
+        try {
+            changeToFacebookAccount(userId, apiID);
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
+
+        response.status(200);
+        return "USER WITH ID: " + userId +" CHANGED TO FACEBOOK LOGIN SUCCESSFULLY";
+    }
+
+
+    public void changeToFacebookAccount(int userId, String ap) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "UPDATE USER " +
+                    "SET email = ?, password = ?, is_facebook_acc = 1, is_300_acc = 0" +
+                    "WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, email);
+            statement.setString(2, password);
+            statement.setInt(3, userId);
+        } finally {
+            close(statement);
+        }
+    }
 
 
     /**
