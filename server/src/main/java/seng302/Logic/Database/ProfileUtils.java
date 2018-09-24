@@ -1,5 +1,6 @@
 package seng302.Logic.Database;
 
+import javafx.util.Pair;
 import org.apache.commons.dbutils.DbUtils;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Logic.Database.DatabaseMethods;
@@ -9,6 +10,7 @@ import seng302.Server;
 import spark.Request;
 import spark.Response;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,6 +22,29 @@ import static spark.Spark.halt;
  * Utility class for profiles
  */
 public class ProfileUtils extends DatabaseMethods {
+
+    /**
+     * Gets required information to log in with just an app_id
+     * @param app_id The user's app_id
+     * @return A Pair containing the
+     * @throws SQLException When something goes wrong
+     */
+    public Pair<String, String> loginFromId(String app_id) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT username, password FROM ACCOUNT JOIN USER ON USER.id = ACCOUNT.id WHERE app_id = ? AND account_type IN ('facebook', 'google') ";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, app_id);
+            resultSet = statement.executeQuery();
+            resultSet.next();
+            return new Pair<>(resultSet.getString(1), resultSet.getString(2));
+        }
+        finally {
+            close(statement, resultSet);
+        }
+    }
+
 
     /**
      * change a account to a team300 account

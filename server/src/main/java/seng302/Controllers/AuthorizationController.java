@@ -2,7 +2,9 @@ package seng302.Controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import javafx.util.Pair;
 import seng302.Logic.Database.Authorization;
+import seng302.Logic.Database.ProfileUtils;
 import seng302.Logic.SaltHash;
 import seng302.Logic.Database.Notifications;
 import seng302.Model.Admin;
@@ -64,7 +66,8 @@ public class AuthorizationController {
 
     /**
      * method to handle the login requests
-     * @param request Java request object, used to invoke correct methods
+     *
+     * @param request  Java request object, used to invoke correct methods
      * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return JSON object containing the information of the user logging in or a message saying why it failed, very nice
      */
@@ -72,10 +75,6 @@ public class AuthorizationController {
 
         String usernameEmail = request.queryParams("usernameEmail");
         String password = request.queryParams("password");
-        if(usernameEmail == null || password == null) {
-            response.status(400);
-            return "Missing Parameters";
-        }
 
         ProfileType typeMatched = null;
         String loginToken = null;
@@ -86,6 +85,16 @@ public class AuthorizationController {
 
         // Check for a user match
         try {
+            // If we are given an app id, log in with that
+            if (request.queryParams("api_id") != null) {
+                Pair<String, String> pair = new ProfileUtils().loginFromId(request.queryParams("api_id"));
+                usernameEmail = pair.getKey();
+                password = pair.getValue();
+            } else if (usernameEmail == null || password == null) {
+                response.status(400);
+                return "Missing Parameters";
+            }
+
             currentUser = model.loginUser(usernameEmail, password);
             if (currentUser != null) {
                 loginToken = model.generateToken((int) currentUser.getId(), 0);
@@ -166,7 +175,8 @@ public class AuthorizationController {
 
     /**
      * method to handle logging out a user
-     * @param request Java request object, used to invoke correct methods
+     *
+     * @param request  Java request object, used to invoke correct methods
      * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return String containing information whether the logout was successful
      */
