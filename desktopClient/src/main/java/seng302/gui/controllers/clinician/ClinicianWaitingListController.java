@@ -89,7 +89,9 @@ public class ClinicianWaitingListController implements Initializable {
                 if(c.getValid())
                     validCountries.add(c.getCountryName());
             }
-            countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
+            if (validCountries != null) {
+                countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
+            }
             countryComboBox.getItems().add("All Countries");
         } catch (HttpResponseException e) {
             Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
@@ -137,6 +139,9 @@ public class ClinicianWaitingListController implements Initializable {
      * @param regionField The TextField for regions outside of New Zealand
      */
     public void setRegion(String value, ComboBox countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
+        if(countryComboBox.getValue() == null) {
+            return;
+        }
         String country = countryComboBox.getValue().toString();
         boolean useCombo = false;
         if (country != null) {
@@ -194,11 +199,11 @@ public class ClinicianWaitingListController implements Initializable {
      */
     public void countryChanged() {
         String currentRegion = getRegion(countryComboBox, regionComboBox, regionSearchTextField);
-        setRegionControls(currentRegion, countryComboBox.getValue().toString(), regionComboBox, regionSearchTextField);
+        setRegionControls(currentRegion, countryComboBox.getValue() == null ? null : countryComboBox.getValue().toString(), regionComboBox, regionSearchTextField);
         String region = getRegion(countryComboBox, regionComboBox, regionSearchTextField);
+        if(countryComboBox.getValue() == null) return;
         updateFoundUsersWithFiltering(countryComboBox.getValue().toString(), region, organSearchComboBox.getValue().toString());
     }
-
 
 
     /**

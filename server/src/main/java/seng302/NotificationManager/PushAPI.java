@@ -110,7 +110,7 @@ public class PushAPI {
             return notificationsDatabase.getDevices(user_ids);
         } catch (SQLException e) {
             Server.getInstance().log.info("Failed to get devices");
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
             return new ArrayList<>();
         }
     }

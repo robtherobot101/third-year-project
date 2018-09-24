@@ -180,6 +180,7 @@ public class ClinicianController implements Initializable {
      * @param regionField The TextField for regions outside of New Zealand
      */
     public void setRegion(String value, ComboBox countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
+        if(countryComboBox.getValue() == null) return;
         String country = countryComboBox.getValue().toString();
         boolean useCombo = false;
         if (country != null) {
@@ -237,7 +238,7 @@ public class ClinicianController implements Initializable {
      */
     public void countryChanged() {
         String currentRegion = getRegion(countryComboBox, regionComboBox, clinicianRegionField);
-        setRegionControls(currentRegion, countryComboBox.getValue().toString(), regionComboBox, clinicianRegionField);
+        setRegionControls(currentRegion, countryComboBox.getValue() == null ? null : countryComboBox.getValue().toString(), regionComboBox, clinicianRegionField);
         updateFoundUsers(resultsPerPage,false);
     }
 
@@ -277,12 +278,13 @@ public class ClinicianController implements Initializable {
 
         try {
             List<String> validCountries = new ArrayList<>();
-            List<Country> allCountries = WindowManager.getDataManager().getGeneral().getAllCountries(token);
-            for(Country c : allCountries) {
+            for(Country c : WindowManager.getDataManager().getGeneral().getAllCountries(token)) {
                 if(c.getValid())
                     validCountries.add(c.getCountryName());
             }
-            countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
+            if (validCountries != null) {
+                countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
+            }
             countryComboBox.getItems().add("All Countries");
         } catch (HttpResponseException e) {
             Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
@@ -365,7 +367,7 @@ public class ClinicianController implements Initializable {
                 WindowManager.updateAvailableOrgans();
             } catch (HttpResponseException e) {
                 Debugger.error("Failed to fetch admin with id: " + clinician.getStaffID());
-                e.printStackTrace();
+                Debugger.error(e.getMessage());
                 alert.close();
                 alert = WindowManager.createAlert(Alert.AlertType.ERROR, "Refresh Failed", "Refresh failed",
                         "Clinician data could not be refreshed because there was an error contacting the server.");
@@ -438,7 +440,7 @@ public class ClinicianController implements Initializable {
                 try {
                     flag = WindowManager.getDataManager().getGeneral().checkPassword(password, clinician.getStaffID());
                 } catch (HttpResponseException e) {
-                    e.printStackTrace();
+                    Debugger.error(e.getMessage());
                 }
                 if (flag) {
                     try {
@@ -645,7 +647,7 @@ public class ClinicianController implements Initializable {
 
         //Add in check for country
 
-        if (!countryComboBox.getValue().toString().equals("All Countries")) {
+        if (countryComboBox.getValue() != null && !countryComboBox.getValue().toString().equals("All Countries")) {
             searchMap.put("country", countryComboBox.getValue().toString());
         }
 

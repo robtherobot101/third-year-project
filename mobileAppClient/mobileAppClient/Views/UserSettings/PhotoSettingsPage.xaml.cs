@@ -11,7 +11,7 @@ namespace mobileAppClient
     {
         public string photoBase64String { get; set; }
 
-        public PhotoSettingsPage()
+        public PhotoSettingsPage(bool FromMainMenu)
         {
             InitializeComponent();
             if(UserController.Instance.ProfilePhotoSource != null) {
@@ -32,6 +32,12 @@ namespace mobileAppClient
                     save();
                 });
             });
+            if(FromMainMenu){
+                ToolbarItems.Add(new ToolbarItem("Back", null, () =>
+                {
+                    Navigation.PopModalAsync();
+                }));
+            }
         }
 
         public async void SelectImageClicked(object sender, EventArgs args)
@@ -100,13 +106,13 @@ namespace mobileAppClient
             Photo uploadedPhoto = new Photo(photoBase64String);
             UserController.Instance.photoObject = uploadedPhoto;
             UserAPI userAPI = new UserAPI();
+            DeletePhotoCell.IsEnabled = true;
+            NoPhotoLabel.IsVisible = false;
             HttpStatusCode photoUpdated = await userAPI.UpdateUserPhoto();
 
             switch (photoUpdated)
             {
                 case HttpStatusCode.OK:
-                    DeletePhotoCell.IsEnabled = true;
-                    NoPhotoLabel.IsVisible = false;
                     UserController.Instance.ProfilePhotoSource = imageView.Source;
                     UserController.Instance.mainPageController.updateMenuPhoto();
                     await DisplayAlert("",
@@ -114,21 +120,29 @@ namespace mobileAppClient
                     "OK");
                     break;
                 case HttpStatusCode.BadRequest:
+                    DeletePhotoCell.IsEnabled = false;
+                    NoPhotoLabel.IsVisible = true;
                     await DisplayAlert("",
                     "User photo update failed (400)",
                     "OK");
                     break;
                 case HttpStatusCode.ServiceUnavailable:
+                    DeletePhotoCell.IsEnabled = false;
+                    NoPhotoLabel.IsVisible = true;
                     await DisplayAlert("",
                     "Server unavailable, check connection",
                     "OK");
                     break;
                 case HttpStatusCode.Unauthorized:
+                    DeletePhotoCell.IsEnabled = false;
+                    NoPhotoLabel.IsVisible = true;
                     await DisplayAlert("",
                     "Unauthorised to modify photo",
                     "OK");
                     break;
                 case HttpStatusCode.InternalServerError:
+                    DeletePhotoCell.IsEnabled = false;
+                    NoPhotoLabel.IsVisible = true;
                     await DisplayAlert("",
                     "Server error, please try again (500)",
                     "OK");
@@ -147,6 +161,7 @@ namespace mobileAppClient
                     DeletePhotoCell.IsEnabled = false;
                     NoPhotoLabel.IsVisible = true;
                     imageView.Source = null;
+                    UserController.Instance.ProfilePhotoSource = null;
                     UserController.Instance.mainPageController.updateMenuPhoto();
                     await DisplayAlert("",
                     "User photo successfully deleted",
