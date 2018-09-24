@@ -59,7 +59,7 @@ namespace mobileAppClient
 
                 if (isUniqueEmailResult.Item2 == false)
                 {
-                    HttpStatusCode statusCode = await loginAPI.LoginUser(facebookProfile.Email, password);
+                    HttpStatusCode statusCode = await loginAPI.LoginUser(facebookProfile.Id);
                     switch (statusCode)
                     {
                         case HttpStatusCode.OK:
@@ -122,10 +122,13 @@ namespace mobileAppClient
                     inputUser.nhi = facebookProfile.NHI;
 
                     HttpStatusCode registerUserResult = await loginAPI.RegisterUser(inputUser);
-
+                    
                     switch (registerUserResult)
                     {
                         case HttpStatusCode.Created:
+                            HttpStatusCode registerFacebookUserResult =
+                                await loginAPI.FacebookRegisterUser(inputUser, facebookProfile.Id);
+
                             //Set the local profile picture to the picture object
 
                             HttpClient client = ServerConfig.Instance.client;
@@ -140,7 +143,7 @@ namespace mobileAppClient
 
                             userController.ProfilePhotoSource = source;
 
-                            HttpStatusCode loginUserResult = await loginAPI.LoginUser(facebookProfile.Email, password);
+                            HttpStatusCode loginUserResult = await loginAPI.LoginUser(facebookProfile.Id);
                             switch (loginUserResult)
                             {
                                 case HttpStatusCode.OK:

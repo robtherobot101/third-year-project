@@ -25,20 +25,21 @@ public class ProfileUtils extends DatabaseMethods {
 
     /**
      * Gets required information to log in with just an app_id
-     * @param app_id The user's app_id
+     * @param api_id The user's app_id
      * @return A Pair containing the
      * @throws SQLException When something goes wrong
      */
-    public Pair<String, String> loginFromId(String app_id) throws SQLException {
+    public Pair<String, String> loginFromId(String api_id) throws SQLException {
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT username, password FROM ACCOUNT JOIN USER ON USER.id = ACCOUNT.id WHERE app_id = ? AND account_type IN ('facebook', 'google') ";
+            String query = "SELECT username, password FROM ACCOUNT JOIN USER ON USER.id = ACCOUNT.id WHERE api_id = ? AND acc_type IN ('facebook', 'google') ";
             statement = connection.prepareStatement(query);
-            statement.setString(1, app_id);
+            statement.setString(1, api_id);
             resultSet = statement.executeQuery();
             resultSet.next();
-            return new Pair<>(resultSet.getString(1), resultSet.getString(2));
+            Pair<String, String> pair = new Pair<>(resultSet.getString(1), resultSet.getString(2));
+            return pair;
         }
         finally {
             close(statement, resultSet);
@@ -80,12 +81,17 @@ public class ProfileUtils extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "UPDATE USER " +
-                    "SET acc_type = \"team300\", username = ?, password = ?" +
-                    "WHERE id = ?";
+                    "SET acc_type = \"team300\" WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            statement.close();
+            query = "UPDATE ACCOUNT " +
+                    "SET username = ?, password = ? WHERE id = ?";
             statement = connection.prepareStatement(query);
             statement.setString(1, username);
-            statement.setString(2, password);
+            statement.setString(2,password);
             statement.setInt(3, userId);
+
         } finally {
             close(statement);
         }
@@ -101,7 +107,6 @@ public class ProfileUtils extends DatabaseMethods {
     public String changeToFacebook(Request request, Response response) {
         int userId = Integer.parseInt(request.queryParams("id"));
         String apiID = request.queryParams("api_id");
-
         try {
             changeToFacebookAccount(userId, apiID);
         } catch (SQLException e) {
@@ -109,7 +114,8 @@ public class ProfileUtils extends DatabaseMethods {
             return "Internal Server Error";
         }
 
-        response.status(200);
+        response.status(201);
+        System.out.println(userId);
         return "USER WITH ID: " + userId +" CHANGED TO FACEBOOK LOGIN SUCCESSFULLY";
     }
 
@@ -124,11 +130,13 @@ public class ProfileUtils extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "UPDATE USER " +
-                    "SET acc_type = \"facebook\", api_id = ?" +
+                    "SET acc_type = ?, api_id = ?" +
                     "WHERE id = ?";
             statement = connection.prepareStatement(query);
-            statement.setString(1, apiId);
-            statement.setInt(2, userId);
+            statement.setString(1, "facebook");
+            statement.setString(2, apiId);
+            statement.setInt(3, userId);
+            statement.execute();
         } finally {
             close(statement);
         }

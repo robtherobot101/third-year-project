@@ -317,8 +317,9 @@ public class UserController {
             if (checkNhi(receivedUser.getNhi())) {
                 try {
                     String passwordHash = SaltHash.createHash((String) gson.fromJson(request.body(), Map.class).get("password"));
-                    model.insertUser(receivedUser, passwordHash);
+                    int id = model.insertUser(receivedUser, passwordHash);
                     response.status(201);
+                    response.header("id", String.valueOf(id));
                     return "Success";
                 } catch (SQLException e) {
                     Server.getInstance().log.error(e.getMessage());

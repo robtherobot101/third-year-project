@@ -102,7 +102,9 @@ public class AuthorizationController {
                 System.out.println("LoginController: Logging in as user...");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            response.status(500);
+            Server.getInstance().log.error(e.getMessage());
+            return "Failed to login";
         }
 
         if (loginToken == null) { //if user login was unsuccessful

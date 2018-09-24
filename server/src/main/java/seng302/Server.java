@@ -264,9 +264,9 @@ public class Server {
                 get("",      userController::countUsers);
             });
 
-            path("/300Account", () -> patch("", profileUtils::changeToTeam300));
-            path("/facebookaccount", () -> patch("",      profileUtils::changeToFacebook));
-            path("/googleaccount", () -> patch("", profileUtils::changeToGoogle));
+            path("/300Account", () -> post("", profileUtils::changeToTeam300));
+            path("/facebookaccount", () -> post("",      profileUtils::changeToFacebook));
+            path("/googleaccount", () -> post("", profileUtils::changeToGoogle));
 
             path("/countries", () -> {
                 get("", countriesController::getCountries);
@@ -304,7 +304,7 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        INSTANCE.testing = false;
+        INSTANCE.testing = true;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){
             try{
