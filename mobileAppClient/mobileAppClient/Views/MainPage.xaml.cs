@@ -222,9 +222,9 @@ namespace mobileAppClient
 
         private void updateUserViewerProfileBar()
         {
+            ProfilePhotoImage.Source = ImageSource.FromFile("viewing_user_photo.png");
             BindingContext = new
             {
-                ProfileImage = "viewing_user_photo.png",
                 FullName = "Viewing User: " + UserController.Instance.LoggedInUser.FullName,
                 BorderColor = "White"
             };
@@ -232,32 +232,37 @@ namespace mobileAppClient
         private void updateUserProfileBar()
         {
             // Update for a logged in user
-            string profileImagePath;
             if (UserController.Instance.ProfilePhotoSource == null)
             {
                 // No photo provided, use default
-                profileImagePath = "default_user_photo.png";
+                ProfilePhotoImage.Source = ImageSource.FromFile("default_user_photo.png");
+                BindingContext = new
+                {
+                    FullName = UserController.Instance.LoggedInUser.FullName,
+                    BorderColor = "White",
+                };
             }
             else
             {
                 // Use photo from server
                 ProfilePhotoImage.Source = UserController.Instance.ProfilePhotoSource;
+                BindingContext = new
+                {
+                    FullName = UserController.Instance.LoggedInUser.FullName,
+                    BorderColor = "White"
+                };
             }
 
-            BindingContext = new
-            {
-                FullName = UserController.Instance.LoggedInUser.FullName,
-                BorderColor = "White"
-            };
+
             
         }
 
         private void updateClinicianProfileBar()
         {
             // Update for a logged in clinician
+            ProfilePhotoImage.Source = ImageSource.FromFile("default_user_photo.png");
             BindingContext = new
             {
-                ProfileImage = "default_clinician_photo.png",
                 FullName = "Clinician: " + ClinicianController.Instance.LoggedInClinician.name,
                 BorderColor = "White"
             };
@@ -276,7 +281,7 @@ namespace mobileAppClient
                 return;
             }
 
-            await Navigation.PushModalAsync(new NavigationPage(new PhotoSettingsPage()));
+            await Navigation.PushModalAsync(new NavigationPage(new PhotoSettingsPage(true)));
         }
     }
 }
