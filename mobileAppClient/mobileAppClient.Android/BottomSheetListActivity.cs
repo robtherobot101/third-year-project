@@ -41,12 +41,15 @@ namespace mobileAppClient.Droid
         {
             int rowIndex = view.Id;
             String organName = null;
+            String organTimeLeft = null;
+            int organTimeLeftColour = 0;
             Android.Views.View nextChild = ((ViewGroup)view).GetChildAt(1);
-            
+
             organName = ((TextView)nextChild).Text;
 
-           
-            
+            string donorLat = Intent.GetStringExtra("donorLat");
+            string donorLong = Intent.GetStringExtra("donorLong");
+
             foreach (DonatableOrgan organ in organs)
             {
                 if (organName.ToLower().Equals(organ.organType.ToLower()))
@@ -55,6 +58,8 @@ namespace mobileAppClient.Droid
 
                     Intent intent = new Intent(this, typeof(OrganTransferActivity));
                     intent.PutExtra("organ", OrganString);
+                    intent.PutExtra("donorLat", donorLat);
+                    intent.PutExtra("donorLong", donorLong);
                     this.StartActivity(intent);
                     break;
                 }
@@ -166,19 +171,19 @@ namespace mobileAppClient.Droid
                 organTable.SetColumnShrinkable(0, true);
 
 
-                string countdownDetail = "";
+               
                 if (organ.expired)
                 {
-                    countdownDetail = "EXPIRED";
+                    organTimer.Text = "EXPIRED";
                     organTimer.SetTextColor(Android.Graphics.Color.Red);
                 } else if (organ.inTransfer == 1)
                 {
-                    countdownDetail = "IN TRANSFER";
+                    organTimer.Text = "IN TRANSIT";
                     organTimer.SetTextColor(Android.Graphics.Color.Orange);
                 }
                 else if (organ.inTransfer == 2)
                 {
-                    countdownDetail = "SUCCESSFULLY TRANSFERRED";
+                    organTimer.Text = "SUCCESSFULLY TRANSFERRED";
                     organTimer.SetTextColor(Android.Graphics.Color.Green);
                 }
                 else
@@ -294,6 +299,13 @@ namespace mobileAppClient.Droid
                 {
                     string detailString = ((TextView)(row.GetChildAt(2))).Text;
                     if (detailString.Equals("EXPIRED"))
+                    {
+                        continue;
+                    } else if(detailString.Equals("IN TRANSIT"))
+                    {
+                        continue;
+                    }
+                    else if (detailString.Equals("SUCCESSFULLY TRANSFERRED"))
                     {
                         continue;
                     }

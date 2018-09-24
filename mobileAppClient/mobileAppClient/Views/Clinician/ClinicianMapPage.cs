@@ -310,7 +310,7 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
-        private async Task InitialiseHospitals()
+        public async Task InitialiseHospitals()
         {
 
             ClinicianAPI clinicianApi = new ClinicianAPI();
@@ -578,6 +578,68 @@ namespace mobileAppClient.Views.Clinician
                           waitingListId,
                           newOrganTransfer.id
                           );
+        }
+
+        public async void NewTransferWithoutAddingHelicpoter(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition)
+        {
+            await InitialiseHospitalsWithoutAddingToMap();
+
+            OrganTransfer newOrganTransfer = new OrganTransfer();
+            newOrganTransfer.id = currentOrgan.id;
+            newOrganTransfer.receiverId = selectedRecipient.id;
+
+            //Find the position of the donor
+            newOrganTransfer.startLat = donorPosition.Latitude;
+            newOrganTransfer.startLon = donorPosition.Longitude;
+
+            Hospital receiverHospital = null;
+            foreach (Hospital hospital in hospitals)
+            {
+                if (hospital.region.Equals(selectedRecipient.region))
+                {
+                    receiverHospital = hospital;
+                }
+            }
+
+            //Find the nearest hospital
+            newOrganTransfer.endLat = receiverHospital.latitude;
+            newOrganTransfer.endLon = receiverHospital.longitude;
+
+            newOrganTransfer.organType = OrganExtensions.ToOrgan(currentOrgan.organType);
+
+            Position HospitalPosition = new Position(receiverHospital.latitude, receiverHospital.longitude);
+
+            newOrganTransfer.arrivalTime = new CustomDateTime(DateTime.Now.AddSeconds(distance(donorPosition.Latitude, HospitalPosition.Latitude,
+                                                                                               donorPosition.Longitude, HospitalPosition.Longitude, 0, 0) / 70));
+
+            TransplantListAPI transplantListAPI = new TransplantListAPI();
+            await transplantListAPI.InsertTransfer(newOrganTransfer);
+            transplantListAPI.SetInTransfer(currentOrgan.id, 1);
+        }
+
+        public async Task InitialiseHospitalsWithoutAddingToMap()
+        {
+
+            ClinicianAPI clinicianApi = new ClinicianAPI();
+            Tuple<HttpStatusCode, List<Hospital>> tuple = await clinicianApi.GetHospitals();
+            switch (tuple.Item1)
+            {
+                case HttpStatusCode.OK:
+                    Console.WriteLine("Organ map hospitals retrieved successfully");
+                    hospitals = tuple.Item2;
+
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    await DisplayAlert("",
+                    "Server unavailable, check connection",
+                    "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert("",
+                    "Server error retrieving hospitals, please try again (500)",
+                    "OK");
+                    break;
+            }
         }
 
         public double distance(double lat1, double lat2, double lon1,

@@ -12,6 +12,10 @@ using Android.Widget;
 using mobileAppClient.odmsAPI;
 using ServiceStack;
 using Xamarin.Forms;
+using Xamarin.Forms.Maps;
+using mobileAppClient.Models;
+using mobileAppClient.Views.Clinician;
+
 namespace mobileAppClient.Droid
 {
     [Activity(Label = "OrganTransferActivity")]
@@ -19,6 +23,11 @@ namespace mobileAppClient.Droid
     {
         DonatableOrgan organ;
         private List<TableRow> allRecipientRows;
+        TextView organTimerText;
+        TextView transferText;
+        TableLayout receiverTable;
+        Timer timer;
+
 
         protected override void OnCreate(Bundle savedInstanceState)
         {
@@ -26,10 +35,12 @@ namespace mobileAppClient.Droid
             SetContentView(Resource.Layout.OrganTransfer);
             var organString = Intent.GetStringExtra("organ");
             organ = organString.FromJson<DonatableOrgan>();
+        
             prepareList();
         }
 
-        public void OnClick(Android.Views.View view)
+
+        public async void OnClick(Android.Views.View view)
         {
             int rowIndex = view.Id;
             String recipientName = null;
@@ -47,17 +58,50 @@ namespace mobileAppClient.Droid
                 }
             }
 
-            //Begin trasnfer process
+            AlertDialog.Builder alert = new AlertDialog.Builder(this);
+            alert.SetTitle("Confirm Transfer");
+            alert.SetMessage("Are you sure you want to transfer " + organ.organType + " to " + selectedReceiver.FullName + "?");
+            alert.SetPositiveButton("Yes", async (senderAlert, args) => {
+                Toast.MakeText(this, "Transfer process started.", ToastLength.Short).Show();
+                Console.WriteLine("LET US BEGIN");
+
+                //Update bottom sheet to show In transfer - empty table and update countdown
+
+                organTimerText.Text = "IN TRANSIT";
+                organTimerText.SetTextColor(Android.Graphics.Color.Orange);
+
+                transferText.Text = "This organ is currently in transit.";
+                receiverTable.RemoveAllViews();
+
+                //Update map to get rid of overlays and recipients 
+                timer.Dispose();
+                timer = null;
+                organ.inTransfer = 1;
+
+                //Insert transfer into database and add new helicopter.
+                ClinicianMapPage clinicianMapPage = new ClinicianMapPage();
+                double donorLat = Convert.ToDouble(Intent.GetStringExtra("donorLat"));
+                double donorLong = Convert.ToDouble(Intent.GetStringExtra("donorLong"));
+                Position pos = new Position(donorLat, donorLong);
+                clinicianMapPage.NewTransferWithoutAddingHelicpoter(organ, selectedReceiver, pos);
+            });
+
+            alert.SetNegativeButton("No", (senderAlert, args) => {
+                Toast.MakeText(this, "Transfer Cancelled!", ToastLength.Short).Show();
+            });
+
+            Dialog dialog = alert.Create();
+            dialog.Show();
+
         }
 
         private async void prepareList()
         { 
-            var receiverTable = FindViewById<TableLayout>(Resource.Id.ReceiverTableLayout);
+            receiverTable = FindViewById<TableLayout>(Resource.Id.ReceiverTableLayout);
             var organText = FindViewById<TextView>(Resource.Id.Organ_Name);
-            var organTimerText = FindViewById<TextView>(Resource.Id.Time_Left);
-            var organDonor = FindViewById<TextView>(Resource.Id.UserName);
+            organTimerText = FindViewById<TextView>(Resource.Id.Time_Left);
             var organImage = FindViewById<ImageView>(Resource.Id.Organ_Picture);
-            var transferText = FindViewById<TextView>(Resource.Id.transferText);
+            transferText = FindViewById<TextView>(Resource.Id.transferText);
 
             switch (organ.organType.ToLower())
             {
@@ -107,9 +151,43 @@ namespace mobileAppClient.Droid
                     break;
             }
 
-            //Set the time left to be thetext of the previous page
 
             //Set the user donor string
+
+            Tuple<string, long> timeRemainingTuple = organ.getTimeRemaining();
+            organTimerText.Text = timeRemainingTuple.Item1;
+            //Change colour based on severity
+            long timeRemaining = timeRemainingTuple.Item2;
+            if (timeRemaining <= 3600)
+            {
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 65, 65));
+            }
+            else if (timeRemaining <= 10800)
+            {
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 130, 65));
+            }
+            else if (timeRemaining <= 21600)
+            {
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 190, 65));
+            }
+            else if (timeRemaining <= 43200)
+            {
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 241, 65));
+            }
+            else if (timeRemaining <= 86400)
+            {
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(208, 244, 65));
+            }
+            else if (timeRemaining <= 172800)
+            {
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(160, 244, 65));
+            }
+            else
+            {
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(76, 244, 65));
+            }
+
+
 
             //-----------------------------------------------------------------------------------------------
             //Bottom Card
@@ -156,10 +234,10 @@ namespace mobileAppClient.Droid
 
                     recipientImage.SetAdjustViewBounds(true);
                     recipientImage.SetMaxHeight(80);
-                    recipientImage.SetMaxWidth(80);
-                    recipientImage.SetPadding(5, 0, 20, 0);
+                    recipientImage.SetMaxWidth(10);
+                    //receiverTable.SetColumnShrinkable(0, true);
 
-                    recipientAddress.Text = recipient.currentAddress + ", " + recipient.region;
+                    recipientAddress.Text = recipient?.currentAddress + ", " + recipient?.region;
 
                     recipientRow.AddView(recipientImage);
                     recipientRow.AddView(recipientName);
@@ -172,52 +250,56 @@ namespace mobileAppClient.Droid
 
 
                 }
-                //StartTickingTimer(1000);
             }
-
-
+            StartTickingTimer(1000);
 
         }
 
         public void StartTickingTimer(int interval)
         {
-            Timer timer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
+            timer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
         }
 
         public void RefreshCountdownsInTableView(object o)
         {
             Device.BeginInvokeOnMainThread(() =>
             {
-                foreach (TableRow row in allRecipientRows)
+
+                if (organTimerText.Text.Equals("EXPIRED"))
                 {
-                    string detailString = ((TextView)(row.GetChildAt(2))).Text;
-                    if (detailString.Equals("EXPIRED"))
+                    return;
+                } else if (organTimerText.Text.Equals("IN TRANSIT"))
+                {
+                    return;
+                }
+                else if (organTimerText.Text.Equals("SUCCESSFULLY TRANSFERRED"))
+                {
+                    return;
+                }
+                
+                else
+                {
+                    string timeLeftString = organTimerText.Text.Substring(16);
+                    string timeString = timeLeftString.Remove(timeLeftString.Length - 5);
+
+                    TimeSpan timeLeft = TimeSpan.Parse(timeString);
+                    if (timeLeft.Equals(new TimeSpan(0, 0, 0)))
                     {
-                        continue;
+                        organTimerText.Text = "EXPIRED";
+                        organTimerText.SetTextColor(Android.Graphics.Color.Red);
+                        //Update the Organ object to be expired
                     }
                     else
                     {
-                        string timeLeftString = detailString.Substring(16);
-                        string timeString = timeLeftString.Remove(timeLeftString.Length - 5);
+                        timeLeft = timeLeft.Subtract(new TimeSpan(0, 0, 1));
+                        organTimerText.Text = organTimerText.Text.Substring(0, 16) + timeLeft.ToString(@"dd\:hh\:mm\:ss") + " days";
 
-                        TimeSpan timeLeft = TimeSpan.Parse(timeString);
-                        if (timeLeft.Equals(new TimeSpan(0, 0, 0)))
-                        {
-                            detailString = "EXPIRED";
-                            ((TextView)(row.GetChildAt(2))).SetTextColor(Android.Graphics.Color.Red);
-                            //Update the Organ object to be expired
-                        }
-                        else
-                        {
-                            timeLeft = timeLeft.Subtract(new TimeSpan(0, 0, 1));
-                            detailString = detailString.Substring(0, 16) + timeLeft.ToString(@"dd\:hh\:mm\:ss") + " days";
-
-                        }
-                        ((TextView)(row.GetChildAt(2))).Text = detailString;
                     }
-
-
+                    
                 }
+
+
+                
 
             });
         }

@@ -307,6 +307,8 @@ namespace CustomRenderer.Droid
             intent.PutExtra("address", customPin.Address);
             intent.PutExtra("profilePicture", customPin.userPhoto);
             intent.PutExtra("organs", organString);
+            intent.PutExtra("donorLat", customPin.Position.Latitude.ToString());
+            intent.PutExtra("donorLong", customPin.Position.Longitude.ToString());
             mainActivity.StartActivity(intent);
         }
 

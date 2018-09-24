@@ -34,13 +34,6 @@
 				android:scaleType="fitCenter"/>
 		</TableRow>
 		<TableRow
-			android:id="@+id/tableRow4">
-			<TextView
-				android:id="@+id/UserName"
-				android:text="Registered to User X"
-				android:textColor="#333333" />
-		</TableRow>
-		<TableRow
 			android:id="@+id/tableRow3">
 			<TextView
 				android:id="@+id/Time_Left"
