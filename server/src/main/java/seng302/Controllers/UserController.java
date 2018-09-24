@@ -364,7 +364,7 @@ public class UserController {
         try {
             model.importUsers(receivedUsers);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
             Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return "Internal Server Error";
@@ -424,7 +424,7 @@ public class UserController {
                     return "USER SUCCESSFULLY UPDATED";
                 } catch (SQLException e) {
 
-                    e.printStackTrace();
+                    Server.getInstance().log.error(e.getMessage());
                     Server.getInstance().log.error(e.getMessage());
                     response.status(500);
                     return "Internal Server Error";

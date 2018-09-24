@@ -416,7 +416,7 @@ public class UserController implements Initializable {
             try {
                 WindowManager.getDataManager().getUsers().updateUser(currentUser, token);
             } catch (HttpResponseException e ){
-                e.printStackTrace();
+                Debugger.error(e.getMessage());
                 Debugger.error("Failed to save user with id:" + currentUser.getId() + " to the database.");
             }
 
@@ -425,7 +425,7 @@ public class UserController implements Initializable {
             titleBar.setTitle(currentUser.getPreferredName(), "user");
             statusIndicator.setStatus("Saved", false);
 
-            System.out.println("Haven't fetched all users");
+            Debugger.log("Haven't fetched all users");
             WindowManager.updateFoundClinicianUsers();
             WindowManager.updateTransplantWaitingList();
         }
@@ -531,7 +531,7 @@ public class UserController implements Initializable {
                 try {
                     flag = WindowManager.getDataManager().getGeneral().checkPassword(password, currentUser.getId());
                 } catch (HttpResponseException e) {
-                    e.printStackTrace();
+                    Debugger.error(e.getMessage());
                 }
                 if (flag) {
                     try {
@@ -551,7 +551,7 @@ public class UserController implements Initializable {
                         stage.showAndWait();
 
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Debugger.error(e.getMessage());
                     }
                 } else { // Password incorrect
                     WindowManager.createAlert(AlertType.INFORMATION, "Incorrect", "Incorrect password. ", "Please enter the correct password to view " +

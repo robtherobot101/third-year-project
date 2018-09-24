@@ -117,7 +117,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
             // Set time remaining
             //calculate the initial value of time remaining (if lower than 100 hours left)
             Duration timeLeft = Duration.between(now, expiryDate);
-            System.out.println(timeLeft);
+            Debugger.log(timeLeft);
             organ.setTimeLeft(timeLeft);
             //Either the organ shouldn't be displaying, or it should display <4 days or something
         }
@@ -389,7 +389,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
             organsTreeTable.setRoot(root);
             updated = true;
         } catch (HttpResponseException e) {
-            e.printStackTrace();
+            Debugger.error(e.getMessage());
             Debugger.error("Failed to update organs table...");
         }
     }
@@ -638,7 +638,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
                 User user = (User) organsTreeTable.getSelectionModel().getSelectedItem().getValue();
                 // No need to check for default user
                 if (organ != null) {
-                    System.out.println(organ);
+                    Debugger.log(organ);
                     transferOrgan.setText("Transfer " + organ.getOrganType() + " to " + user.getName());
                     profileMenu.show(organsTreeTable, event.getScreenX(), event.getScreenY());
                 }
