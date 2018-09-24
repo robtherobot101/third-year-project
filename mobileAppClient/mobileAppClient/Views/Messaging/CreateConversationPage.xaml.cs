@@ -254,27 +254,5 @@ namespace mobileAppClient
                     return null;         
             }
         }
-
-        // TODO
-        async Task RefreshCurrentConversations()
-        {
-            MessagingAPI messagingApi = new MessagingAPI();
-            int localClincianId = ClinicianController.Instance.LoggedInClinician.staffID;
-
-            Tuple<HttpStatusCode, List<Conversation>> returnStatus = await messagingApi.GetConversations(localClincianId, true);
-
-            switch (returnStatus.Item1)
-            {
-                case HttpStatusCode.BadRequest:
-                    await DisplayAlert("", "Bad Request", "OK");
-                    return;
-                case HttpStatusCode.InternalServerError:
-                    await DisplayAlert("", "Server error, please try again", "OK");
-                    return;
-                case HttpStatusCode.Created:
-                    // JUMP INTO CONVO
-                    return;
-            }
-        }
     }
 }

@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using mobileAppClient.Models;
 using Xamarin.Forms;
+using mobileAppClient.Notifications;
 using Xamarin.Forms.Xaml;
 using mobileAppClient.Models.CustomObjects;
 using mobileAppClient.odmsAPI;
@@ -22,10 +23,7 @@ namespace mobileAppClient
 
         private bool isClinicianAccessing { get; set; }
 
-	    private Conversation conversation;
-
-        // The current conversation being displayed
-        public static Conversation currentConversation = null;
+	    public Conversation conversation;
 
         private CustomObservableCollection<Message> conversationMessages;
 
@@ -44,17 +42,28 @@ namespace mobileAppClient
             MessagesListView.ItemsSource = conversationMessages;
 		    MessagesListView.ItemTapped += OnMessageTapped;
 
+            BounceToLatestMessage(conversationMessages.LastOrDefault());
+            VSAppCenter.seConversationController(this);
+        }
+
+        protected override void OnDisappearing()
+        {  
+            VSAppCenter.seConversationController(null);
+        }
+
+        public void BounceToLatestMessage(Message newMessage)
+        {
             if (conversationMessages.Count > 0)
             {
-                MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
+                MessagesListView.ScrollTo(newMessage, ScrollToPosition.MakeVisible, true);
             }
         }
 
 
-	    /// <summary>
+        /// <summary>
         /// Checks whether the clinician is viewing this page, important for fetching the correct profiles of participants
         /// </summary>
-	    private void CheckIfClinicianAccessing()
+        private void CheckIfClinicianAccessing()
 	    {
 	        if (ClinicianController.Instance.isLoggedIn())
 	        {
@@ -104,10 +113,9 @@ namespace mobileAppClient
 	        };
 
             conversationMessages.Add(newMessage);
-            MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
 	        chatTextInput.Text = "";
-	    }
-
-        
+            chatTextInput.Keyboard = null;
+            BounceToLatestMessage(newMessage);
+        }
 	}
 }
