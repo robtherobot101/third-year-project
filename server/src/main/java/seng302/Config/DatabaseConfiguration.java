@@ -40,7 +40,7 @@ public class DatabaseConfiguration {
         } catch (PropertyVetoException e) {
             e.printStackTrace();
         }
-        cpds.setJdbcUrl(url + "/" + connectDatabase);
+        cpds.setJdbcUrl(url + "/" + connectDatabase + "?useUnicode=yes&characterEncoding=UTF-8");
         cpds.setUser(username);
         cpds.setPassword(password);
         cpds.setMaxPoolSize(100);

@@ -115,11 +115,15 @@ namespace mobileAppClient
 
             public static bool IsValidNhiInput(string nhi)
         {
+            if(String.IsNullOrEmpty(nhi)) {
+                return false;
+            }
+
             nhi = nhi.ToLower();
             // Every third letter has ASCII value divisible by three
             if ((int)nhi.ToCharArray()[0] % 3 == 0)
             {
-                return Regex.IsMatch(nhi, "[a-z][a-z][a-z]\\d\\d\\d\\d");
+                return Regex.IsMatch(nhi, "[a-zA-Z][a-zA-Z][a-zA-Z]\\d\\d\\d\\d");
             }
             else return false;
         }

@@ -1,5 +1,7 @@
 package seng302.gui.controllers.clinician;
 
+import com.google.gson.JsonObject;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.animation.FadeTransition;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
@@ -8,19 +10,24 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import org.apache.http.client.HttpResponseException;
+import org.json.JSONObject;
+import seng302.User.*;
 import seng302.User.Attribute.NZRegion;
 import seng302.User.Attribute.Organ;
-import seng302.User.DonatableOrgan;
-import seng302.User.User;
 import seng302.generic.Country;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
 import seng302.gui.StatusIndicator;
 import seng302.gui.TitleBar;
 
+import javax.xml.soap.Text;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -110,6 +117,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
             // Set time remaining
             //calculate the initial value of time remaining (if lower than 100 hours left)
             Duration timeLeft = Duration.between(now, expiryDate);
+            System.out.println(timeLeft);
             organ.setTimeLeft(timeLeft);
             //Either the organ shouldn't be displaying, or it should display <4 days or something
         }
@@ -269,6 +277,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
      */
     public void updateOrgans() {
         try {
+            ClinicianTransferOrgansController clinicianTransferOrgansController = new ClinicianTransferOrgansController();
+            clinicianTransferOrgansController.checkForFinishedTransfers();
+
             HashMap filterParams = new HashMap();
 
             if(countryComboBox.getValue() != null && !countryComboBox.getValue().toString().equals("All Countries")) {
@@ -375,9 +386,6 @@ public class ClinicianAvailableOrgansController implements Initializable{
                     }
             );
 
-
-
-
             organsTreeTable.setRoot(root);
             updated = true;
         } catch (HttpResponseException e) {
@@ -423,6 +431,128 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
     }
 
+    private boolean checkGetToReceievrInTime(DonatableOrgan organ, User receiver) throws HttpResponseException, UnirestException, NullPointerException{
+
+        User donor = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
+        JSONObject donorLocation = WindowManager.getDataManager().getGeneral().getPosition(donor.getCityOfDeath() +", " + donor.getRegionOfDeath() + ", " + donor.getCountryOfDeath());
+        double startLat = donorLocation.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+        double startLon = donorLocation.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+
+        List<Hospital> hospitals = WindowManager.getDataManager().getGeneral().getHospitals(token);
+        Hospital receiverHospital = null;
+
+        for (Hospital hospital : hospitals) {
+            if (hospital.getRegion().equals(receiver.getRegion())){
+                receiverHospital = hospital;
+            }
+        }
+        assert receiverHospital != null;
+        double dist = distance(
+                startLat,
+                receiverHospital.getLatitude(),
+                startLon,
+                receiverHospital.getLongitude(), 0, 0);
+
+        LocalDateTime arrivalTime = LocalDateTime.now().plusSeconds((long) (dist/69.444444));
+
+        return arrivalTime.isBefore(LocalDateTime.now().plusSeconds(organ.getTimeLeft().getSeconds()));
+    }
+
+
+    /**
+     *Opens a dialog and asks user who they wish to transfer the organ to
+     * @param organ the organ to transfer
+     * @throws HttpResponseException Throws if cannot connect to server
+     */
+    private void transferOrganDialog(DonatableOrgan organ, User user) throws HttpResponseException, UnirestException, NullPointerException{
+        if (!checkGetToReceievrInTime(organ, user)) {
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Transfer Organ Error");
+            dialog.setHeaderText("Cannot transfer " + organ.getOrganType() + " to " + user.getName());
+            dialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+            Label label = new Label("Cannot transfer " + WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token).getName() + "'s " + organ.getOrganType() + " to " + user.getName() + " as it will expire before it arrives");
+            label.setWrapText(true);
+            dialog.getDialogPane().setContent(new VBox(8, label));
+            WindowManager.setIconAndStyle(dialog.getDialogPane());
+
+            dialog.showAndWait();
+        } else {
+
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Transfer Organ");
+            dialog.setHeaderText("Transfer " + WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token).getName() + "'s " + organ.getOrganType());
+            ButtonType transferButton = new ButtonType("Confirm", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(transferButton, ButtonType.CANCEL);
+            Label label = new Label("Are you sure you want to transfer " + WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token).getName() + "'s " + organ.getOrganType() + " to " + user.getName());
+            label.setWrapText(true);
+            dialog.getDialogPane().setContent(new VBox(8, label));
+            WindowManager.setIconAndStyle(dialog.getDialogPane());
+
+            Optional<ButtonType> result = dialog.showAndWait();
+            if (result.isPresent() && result.get() == transferButton) {
+                transferOrgan(organ, user);
+            }
+        }
+    }
+
+    private void transferOrgan(DonatableOrgan organ, User receiver) throws HttpResponseException, UnirestException, NullPointerException{
+
+        User donor = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
+        JSONObject donorLocation = WindowManager.getDataManager().getGeneral().getPosition(donor.getCityOfDeath() +", " + donor.getRegionOfDeath() + ", " + donor.getCountryOfDeath());
+        List<Hospital> hospitals = WindowManager.getDataManager().getGeneral().getHospitals(token);
+        Hospital receiverHospital = null;
+        for (Hospital hospital : hospitals) {
+            if (hospital.getRegion().equals(receiver.getRegion())){
+                receiverHospital = hospital;
+            }
+        }
+        double startLat = donorLocation.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+        double startLon = donorLocation.getJSONArray("results").getJSONObject(0).getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+        assert receiverHospital != null;
+        double dist = distance(
+                startLat,
+                receiverHospital.getLatitude(),
+                startLon,
+                receiverHospital.getLongitude(), 0, 0);
+
+        LocalDateTime arrivalTime = LocalDateTime.now().plusSeconds((long) (dist/69.444444));
+
+        WindowManager.getDataManager().getGeneral().setTransferType(token, 1, organ.getId());
+        WindowManager.getDataManager().getGeneral().insertTransfer(
+                new OrganTransfer(
+                        startLat,
+                        startLon,
+                        receiverHospital.getLatitude(),
+                        receiverHospital.getLongitude(),
+                        arrivalTime,
+                        organ.getId(),
+                        receiver.getId(),
+                        organ.getOrganType()), token);
+
+        updateOrgans();
+    }
+
+    public double distance(double lat1, double lat2, double lon1,
+                                  double lon2, double el1, double el2) {
+
+        final int R = 6371; // Radius of the earth
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c * 1000; // convert to meters
+
+        double height = el1 - el2;
+
+        distance = Math.pow(distance, 2) + Math.pow(height, 2);
+
+        return Math.sqrt(distance);
+    }
+
     /**
      * Initilizes the gui display with the correct content in the table.
      * @param location not used
@@ -438,6 +568,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         organsTreeTable.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 
+        final ContextMenu profileMenu = new ContextMenu();
 
         ObservableList<String> organSearchlist = FXCollections.observableArrayList();
         Organ[] organsList = Organ.values();
@@ -484,6 +615,32 @@ public class ClinicianAvailableOrgansController implements Initializable{
                             TimeUnit.MILLISECONDS.toMinutes(millis) % TimeUnit.HOURS.toMinutes(1),
                             TimeUnit.MILLISECONDS.toSeconds(millis) % TimeUnit.MINUTES.toSeconds(1)));
 
+                }
+            }
+        });
+
+        MenuItem transferOrgan = new MenuItem();
+        profileMenu.getItems().add(transferOrgan);
+
+        transferOrgan.setOnAction(event -> {
+            DonatableOrgan organ = (DonatableOrgan) organsTreeTable.getSelectionModel().getSelectedItem().getParent().getValue();
+            User user = (User) organsTreeTable.getSelectionModel().getSelectedItem().getValue();
+            try {
+                transferOrganDialog(organ, user);
+            } catch (HttpResponseException | UnirestException | NullPointerException e){
+                Debugger.error(e.getMessage());
+            }
+        });
+
+        organsTreeTable.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if (event.getButton().equals(MouseButton.SECONDARY)) {
+                DonatableOrgan organ = (DonatableOrgan) organsTreeTable.getSelectionModel().getSelectedItem().getParent().getValue();
+                User user = (User) organsTreeTable.getSelectionModel().getSelectedItem().getValue();
+                // No need to check for default user
+                if (organ != null) {
+                    System.out.println(organ);
+                    transferOrgan.setText("Transfer " + organ.getOrganType() + " to " + user.getName());
+                    profileMenu.show(organsTreeTable, event.getScreenX(), event.getScreenY());
                 }
             }
         });

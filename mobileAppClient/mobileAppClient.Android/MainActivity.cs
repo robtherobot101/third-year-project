@@ -16,6 +16,7 @@ using ImageCircle.Forms.Plugin.Droid;
 using Firebase.Messaging;
 using Firebase.Iid;
 using Android.Util;
+using Plugin.Toasts;
 
 namespace mobileAppClient.Droid
 {
@@ -45,6 +46,7 @@ namespace mobileAppClient.Droid
             global::Plugin.CrossPlatformTintedImage.Android.TintedImageRenderer.Init();
             global::Xamarin.FormsMaps.Init(this, bundle);
 
+
             ActivityContext = this;
 
             // For circular images (on menu drawer)
@@ -53,6 +55,8 @@ namespace mobileAppClient.Droid
 
             LoadApplication(new App());
         }
+
+
 
         protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {

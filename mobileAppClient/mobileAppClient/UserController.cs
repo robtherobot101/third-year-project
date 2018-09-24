@@ -17,10 +17,13 @@ namespace mobileAppClient
         public string AuthToken { get; set; }
         public Photo photoObject { get; set; }
         public ImageSource ProfilePhotoSource { get; set; }
-        public string FacebookEmail { get; set; }
-        public string FacebookDateOfBirth { get; set; }
         public MainPage mainPageController { get; set; }
         public LoginPage loginPageController { get; set; }
+
+        //All fields used for when a user has incomplete login
+        public string FacebookEmail { get; set; }
+        public string FacebookDateOfBirth { get; set; }
+        public string NHI { get; set; }
 
         private static readonly Lazy<UserController> lazy =
         new Lazy<UserController>(() => new UserController());

@@ -5,7 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import seng302.Logic.Database.UserWaitingList;
+import seng302.Model.Attribute.Organ;
 import seng302.Model.WaitingListItem;
+import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -128,6 +130,8 @@ public class WaitingListController {
             try {
                 model.insertWaitingListItem(receivedWaitingListItem, requestedUserId);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification(requestedUserId, "Organ added to waiting list.",
+                        Organ.capitalise(receivedWaitingListItem.getOrganType().toString()) + " was added to your organ waiting list.");
                 return "WAITING LIST ITEM INSERTED FOR USER ID: " + requestedUserId;
             } catch (SQLException e) {
                 response.status(500);
@@ -160,6 +164,8 @@ public class WaitingListController {
             try {
                 model.updateAllWaitingListItems(waitingListItems, requestedUserId);
                 response.status(200);
+                PushAPI.getInstance().sendTextNotification(requestedUserId, "Organ waiting list updated.",
+                        "Your waiting list has been updated.");
                 return "Success";
             } catch (SQLException e) {
                 response.status(500);
@@ -194,6 +200,8 @@ public class WaitingListController {
             try {
                 model.updateWaitingListItem(receivedWaitingListItem, requestedWaitingListItemId, requestedUserId);
                 response.status(201);
+                PushAPI.getInstance().sendTextNotification(requestedUserId, "Organ waiting list item updated.",
+                        Organ.capitalise(receivedWaitingListItem.getOrganType().toString()) + "from your waiting list has been updated.");
                 return "WAITING LIST ITEM WITH ID: "+ requestedWaitingListItemId +" FOR USER ID: "+ requestedUserId +" SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
                 response.status(500);
@@ -221,7 +229,21 @@ public class WaitingListController {
         try {
             model.removeWaitingListItem(requestedUserId, requestedWaitingListItemId);
             response.status(201);
+            PushAPI.getInstance().sendTextNotification(requestedUserId, "Organ waiting list item deleted.",
+                    "An organ was deleted from your waiting list.");
             return "WAITING LIST ITEM WITH ID: "+ requestedWaitingListItemId +" FOR USER ID: "+ requestedUserId +" DELETED";
+        } catch (SQLException e) {
+            response.status(500);
+            return e.getMessage();
+        }
+    }
+
+    public String transplantCompleted(Request request, Response response) {
+        int waitingListId = Integer.parseInt(request.params(":waitingListItemId"));
+        try {
+            model.transplantWaitingListItem(waitingListId);
+            response.status(201);
+            return "WAITING LIST ITEM WITH ID: " + waitingListId + " SUCCESSFULLY UPDATED";
         } catch (SQLException e) {
             response.status(500);
             return e.getMessage();
@@ -255,6 +277,34 @@ public class WaitingListController {
             return null;
         }
         return queriedWaitingListItem;
+    }
+
+
+    public String getWaitingListId(Request request, Response response) {
+        int userId = Integer.parseInt(request.params(":id"));
+        Organ organType = Organ.parse(request.params(":organType"));
+        System.out.println(organType);
+        int queriedWaitingListId;
+        try {
+            queriedWaitingListId = model.getWaitingListId(userId, organType);
+        } catch (SQLException e) {
+            response.status(500);
+            response.body("Internal server error");
+            return null;
+        }
+
+        if (queriedWaitingListId == 0) {
+            response.status(404);
+            response.body("Not found");
+            return null;
+        }
+
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String serialQueriedWaitingListItem = gson.toJson(queriedWaitingListId);
+
+        response.type("application/json");
+        response.status(200);
+        return serialQueriedWaitingListItem;
     }
 
 

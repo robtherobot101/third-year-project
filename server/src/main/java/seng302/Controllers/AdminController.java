@@ -104,7 +104,7 @@ public class AdminController {
                 receivedAdmin.setPassword(SaltHash.createHash(receivedAdmin.getPassword()));
                 model.insertAdmin(receivedAdmin);
                 response.status(201);
-                return "placeholder token";
+                return "success";
             } catch (SQLException e) {
                 Server.getInstance().log.error(e.getMessage());
                 response.status(500);

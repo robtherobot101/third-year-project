@@ -2,6 +2,8 @@ package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Medication.Medication;
+import seng302.NotificationManager.Notification;
+import seng302.NotificationManager.PushAPI;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,16 +37,15 @@ public class UserMedications extends DatabaseMethods {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String insertMedicationsQuery = "INSERT INTO MEDICATION (name, active_ingredients, history, user_id) " +
                     "VALUES (?, ?, ?, ?)";
+
             statement = connection.prepareStatement(insertMedicationsQuery);
 
             String activeIngredientsString = String.join(",", medication.getActiveIngredients());
             String historyString = String.join(",", medication.getHistory());
-
             statement.setString(1, medication.getName());
             statement.setString(2, activeIngredientsString);
             statement.setString(3, historyString);
             statement.setInt(4, userId);
-
             System.out.println("Inserting new medication -> Successful -> Rows Added: " + statement.executeUpdate());
         } finally {
             close(statement);
@@ -178,6 +179,9 @@ public class UserMedications extends DatabaseMethods {
         //Upload all new medications
         for (Medication medication : newMedications) {
             insertMedication(medication, userId);
+            PushAPI.getInstance().sendNotification(new Notification("New Medication",
+                    "A clinician has added a new medication " + medication.getName()), Integer.toString(userId));
+
         }
     }
 }

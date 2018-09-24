@@ -1,5 +1,6 @@
 ﻿using mobileAppClient.odmsAPI;
 using mobileAppClient.Views;
+using mobileAppClient.Views.Clinician;
 using System;
 using System.Collections.ObjectModel;
 using System.Reflection;
@@ -95,6 +96,7 @@ namespace mobileAppClient
             var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png",TargetType = typeof(MedicationsPage) };
             var userSettingsPage = new MasterPageItem() { Title = "Settings", Icon = "settings_icon.png", TargetType = typeof(UserSettings) };
             var livesSavedPage = new MasterPageItem() { Title = "Lives Saved", Icon = "score_icon.png", TargetType = typeof(PointsPage) };
+            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(MessageThreadsListPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -104,6 +106,7 @@ namespace mobileAppClient
             menuList.Add(medicationsPage);
             menuList.Add(diseasesPage);
             menuList.Add(proceduresPage);
+            menuList.Add(messagesPage);
             menuList.Add(waitingListItemsPage);
             menuList.Add(userSettingsPage);
             menuList.Add(logoutPage);
@@ -125,6 +128,7 @@ namespace mobileAppClient
             var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "waitinglist_icon.png", TargetType = typeof(TransplantListPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
             var mapPage = new MasterPageItem() { Title = "Map", Icon = "map_icon.png", TargetType = typeof(ClinicianMapPage) };
+            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(MessageThreadsListPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -132,6 +136,7 @@ namespace mobileAppClient
             menuList.Add(attributesPage);
             menuList.Add(transplantListPage);
             menuList.Add(mapPage);
+            menuList.Add(messagesPage);
             menuList.Add(logoutPage);
         }
 
@@ -192,10 +197,18 @@ namespace mobileAppClient
                     }
                     break;
                 default:
-                    NavigationPage content = new NavigationPage((Page) Activator.CreateInstance(page));
+                    try
+                    {
+                        NavigationPage content = new NavigationPage((Page)Activator.CreateInstance(page));
+                        Detail = content;
+                        IsPresented = false;
 
-                    Detail = content;
-                    IsPresented = false;
+                    }
+                    catch (TargetInvocationException ie)
+                    {
+                        Console.WriteLine("Exception: " + ie.InnerException);
+                        Console.WriteLine("Exception: " + ie.InnerException.InnerException);
+                    }
                     break;
             }
         }
@@ -228,12 +241,11 @@ namespace mobileAppClient
             else
             {
                 // Use photo from server
-                profileImagePath = UserController.Instance.ProfilePhotoSource.ToString();
+                ProfilePhotoImage.Source = UserController.Instance.ProfilePhotoSource;
             }
 
             BindingContext = new
             {
-                ProfileImage = profileImagePath,
                 FullName = UserController.Instance.LoggedInUser.FullName,
                 BorderColor = "White"
             };

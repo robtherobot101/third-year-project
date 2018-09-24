@@ -22,7 +22,7 @@ public class GeneralClinicianTest extends GenericTest {
     public void getClinicianFromResultSet() throws SQLException {
         Clinician clinician = HelperMethods.insertClinician(generalClinician);
         try(Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT * FROM CLINICIAN WHERE username = ?";
+            String query = "SELECT * FROM CLINICIAN JOIN ACCOUNT WHERE staff_id = id AND username = ?";
             PreparedStatement statement = connection.prepareStatement(query);
 
             statement.setString(1, clinician.getUsername());
@@ -74,7 +74,7 @@ public class GeneralClinicianTest extends GenericTest {
      */
     @Test
     public void getClinicianIdFromUsername() throws SQLException {
-        Clinician clinician = generalClinician.getClinicianFromId(1);
+        Clinician clinician = generalClinician.getClinicianFromId(2);
         assertEquals(clinician.getStaffID(), generalClinician.getClinicianIdFromUsername(clinician.getUsername()));
     }
 
@@ -94,8 +94,8 @@ public class GeneralClinicianTest extends GenericTest {
      */
     @Test
     public void getClinicianFromId() throws SQLException {
-        Clinician clinician = generalClinician.getClinicianFromId(1);
-        assertEquals(1, clinician.getStaffID());
+        Clinician clinician = generalClinician.getClinicianFromId(2);
+        assertEquals(2, clinician.getStaffID());
     }
 
     /**

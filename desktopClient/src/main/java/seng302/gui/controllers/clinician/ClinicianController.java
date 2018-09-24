@@ -98,17 +98,24 @@ public class ClinicianController implements Initializable {
     @FXML
     private AnchorPane organsPane;
     @FXML
+    private AnchorPane transfersPane;
+    @FXML
     private StatusBar statusBar;
     @FXML
     private ClinicianWaitingListController waitingListController;
     @FXML
     private ClinicianAvailableOrgansController availableOrgansController;
     @FXML
+    private ClinicianTransferOrgansController transferOrgansController;
+    @FXML
     private ComboBox countryComboBox;
     @FXML
     private ComboBox<String> regionComboBox;
     @FXML
     private TextField clinicianRegionField;
+
+    @FXML
+    private Button transferListButton;
 
 
     private FadeTransition fadeIn = new FadeTransition(
@@ -259,6 +266,7 @@ public class ClinicianController implements Initializable {
         this.token = token;
         waitingListController.setToken(token);
         availableOrgansController.setToken(token);
+        transferOrgansController.setToken(token);
 
         if (clinician.getRegion() == null) {
             clinician.setRegion("");
@@ -393,41 +401,68 @@ public class ClinicianController implements Initializable {
      * and creates a new account settings window to do so. Then does a prompt for the password as well.
      */
     public void updateAccountSettings() {
-        TextInputDialog dialog = new TextInputDialog("");
+        Dialog<ButtonType> dialog = new Dialog();
         WindowManager.setIconAndStyle(dialog.getDialogPane());
         dialog.setTitle("View Account Settings");
         dialog.setHeaderText("In order to view your account settings, \nplease enter your login details.");
-        dialog.setContentText("Please enter your password:");
-        Optional<String> password = dialog.showAndWait();
-        if (password.isPresent()) { //Ok was pressed, Else cancel
-            Boolean flag = false;
-            try {
-                flag = WindowManager.getDataManager().getGeneral().checkPassword(password.get(), clinician.getStaffID());
-            } catch (HttpResponseException e) {
-                e.printStackTrace();
-            }
-            if (flag) {
+
+        // Set the button types.
+        ButtonType loginButtonType = new ButtonType("Login", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+        // Create the username and password labels and fields.
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        PasswordField passwordfield = new PasswordField();
+        passwordfield.setPromptText("Password");
+        grid.add(new Label("Enter your password:"), 0, 1);
+        grid.add(passwordfield, 1, 1);
+
+        Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+        loginButton.setDisable(true);
+
+        passwordfield.textProperty().addListener((observable, oldValue, newValue) -> {
+            loginButton.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        Optional<ButtonType> result = dialog.showAndWait();
+        result.ifPresent(option -> {
+            if (result.get() == loginButtonType) { //Ok was pressed, Else cancel
+                String password = passwordfield.getText();
+                Boolean flag = false;
                 try {
-                    Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinician/clinicianSettings.fxml"));
-                    Stage stage = new Stage();
-                    stage.getIcons().add(WindowManager.getIcon());
-                    stage.setResizable(false);
-                    stage.setTitle("Account Settings");
-                    stage.setScene(new Scene(root, 290, 280));
-                    stage.initModality(Modality.APPLICATION_MODAL);
-
-                    WindowManager.setCurrentClinicianForAccountSettings(clinician, token);
-                    WindowManager.setClinicianAccountSettingsEnterEvent();
-
-                    stage.showAndWait();
-                } catch (Exception e) {
-                    Debugger.error(e.getLocalizedMessage());
+                    flag = WindowManager.getDataManager().getGeneral().checkPassword(password, clinician.getStaffID());
+                } catch (HttpResponseException e) {
+                    e.printStackTrace();
                 }
-            } else { // Password incorrect
-                WindowManager.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
-                        "Incorrect password. ", "Please enter the correct password to view account settings").show();
+                if (flag) {
+                    try {
+                        Parent root = FXMLLoader.load(getClass().getClassLoader().getResource("fxml/clinician/clinicianSettings.fxml"));
+                        Stage stage = new Stage();
+                        stage.getIcons().add(WindowManager.getIcon());
+                        stage.setResizable(false);
+                        stage.setTitle("Account Settings");
+                        stage.setScene(new Scene(root, 290, 280));
+                        stage.initModality(Modality.APPLICATION_MODAL);
+
+                        WindowManager.setCurrentClinicianForAccountSettings(clinician, token);
+                        WindowManager.setClinicianAccountSettingsEnterEvent();
+
+                        stage.showAndWait();
+                    } catch (Exception e) {
+                        Debugger.error(e.getLocalizedMessage());
+                    }
+                } else { // Password incorrect
+                    WindowManager.createAlert(Alert.AlertType.INFORMATION, "Incorrect",
+                            "Incorrect password. ", "Please enter the correct password to view account settings").show();
+                }
             }
-        }
+        });
     }
 
     /**
@@ -846,9 +881,11 @@ public class ClinicianController implements Initializable {
         setButtonSelected(homeButton, false);
         setButtonSelected(transplantListButton, false);
         setButtonSelected(organListButton, false);
+        setButtonSelected(transferListButton, false);
 
         mainPane.setVisible(false);
         transplantListPane.setVisible(false);
+        transfersPane.setVisible(false);
         organsPane.setVisible(false);
     }
 
@@ -889,4 +926,21 @@ public class ClinicianController implements Initializable {
         WindowManager.updateAvailableOrgans();
         titleBar.setTitle(clinician.getName(), clinicianString, "Available Organs");
     }
+
+    /**
+     * Calls the available organs controller and displays it.
+     * also refreshes the table data
+     */
+    public void organsTransfer() {
+        hideAllTabs();
+        setButtonSelected(transferListButton, true);
+        transfersPane.setVisible(true);
+
+        transferOrgansController.startTimer();
+        transferOrgansController.setup();
+
+        WindowManager.updateTransferOrgans();
+        titleBar.setTitle(clinician.getName(), clinicianString, "Organs in Transfer");
+    }
+
 }

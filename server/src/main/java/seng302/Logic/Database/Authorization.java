@@ -1,6 +1,7 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
+import seng302.Logic.SaltHash;
 import seng302.Model.Admin;
 import seng302.Model.Clinician;
 import seng302.Model.User;
@@ -24,7 +25,7 @@ public class Authorization extends DatabaseMethods {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT password FROM USER WHERE (id = ?)";
+            String query = "SELECT password FROM USER JOIN ACCOUNT WHERE USER.id = ACCOUNT.id AND USER.id = ?";
             statement = connection.prepareStatement(query);
             statement.setLong(1, id);
             resultSet = statement.executeQuery();
@@ -49,7 +50,7 @@ public class Authorization extends DatabaseMethods {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT password FROM CLINICIAN WHERE (staff_id = ?)";
+            String query = "SELECT password FROM CLINICIAN JOIN ACCOUNT WHERE staff_id = id AND staff_id = ?";
             statement = connection.prepareStatement(query);
             statement.setLong(1, id);
             resultSet = statement.executeQuery();
@@ -69,35 +70,34 @@ public class Authorization extends DatabaseMethods {
      * Returns the user with a matching username/email and password if such a user exists, otherwise returns null
      *
      * @param usernameEmail Either a username or an email address
+     * @param password The password of the user
      * @return The matched user
      * @throws SQLException If there is an error working with the database
      */
-    public User loginUser(String usernameEmail) throws SQLException {
+    public User loginUser(String usernameEmail, String password) throws SQLException {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique user with the given inputs
             // SELECT * FROM USER WHERE username = usernameEmail OR email = usernameEmail AND password = password
-            String query = "SELECT * FROM USER WHERE (username = ? OR email = ? OR nhi = ?)";
+            String query = "SELECT * FROM USER JOIN ACCOUNT WHERE USER.id = ACCOUNT.id AND (username = ? OR email = ? OR nhi = ?)";
             statement = connection.prepareStatement(query);
-
             statement.setString(1, usernameEmail);
             statement.setString(2, usernameEmail);
             statement.setString(3, usernameEmail);
             resultSet = statement.executeQuery();
 
             //If response is empty then return null
-            if (!resultSet.next()) {
-                return null;
-            } else {
+            if (resultSet.next() && SaltHash.checkHash(password, resultSet.getString("password"))) {
                 //If response is not empty then get the user object from the result set
                 GeneralUser generalUser = new GeneralUser();
                 return generalUser.getUserFromResultSet(resultSet);
+            } else {
+                return null;
             }
         } finally {
             close(resultSet, statement);
         }
-
     }
 
 
@@ -108,23 +108,23 @@ public class Authorization extends DatabaseMethods {
      * @return The matched clinician if it was found, otherwise null
      * @throws SQLException If there is an error working with the database
      */
-    public Clinician loginClinician(String username) throws SQLException {
+    public Clinician loginClinician(String username, String password) throws SQLException {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique clinician with the given inputs
-            String query = "SELECT * FROM CLINICIAN WHERE username = ?";
+            String query = "SELECT * FROM CLINICIAN JOIN ACCOUNT WHERE CLINICIAN.staff_id = ACCOUNT.id AND username = ?";
             statement = connection.prepareStatement(query);
             statement.setString(1, username);
             resultSet = statement.executeQuery();
 
             //If response is empty then return null
-            if (!resultSet.next()) {
-                return null;
-            } else {
+            if (resultSet.next() && SaltHash.checkHash(password, resultSet.getString("password"))) {
                 //If response is not empty then return a new Clinican Object with the fields from the database
                 GeneralClinician generalClinician = new GeneralClinician();
                 return generalClinician.getClinicianFromResultSet(resultSet);
+            } else {
+                return null;
             }
         } finally {
             close(resultSet, statement);
@@ -139,24 +139,24 @@ public class Authorization extends DatabaseMethods {
      * @return The matched admin if it was found, otherwise null
      * @throws SQLException If there is an error working with the database
      */
-    public Admin loginAdmin(String username) throws SQLException {
+    public Admin loginAdmin(String username, String password) throws SQLException {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             //First needs to do a search to see if there is a unique admin with the given inputs
-            String query = "SELECT * FROM ADMIN WHERE username = ?";
+            String query = "SELECT * FROM ADMIN JOIN ACCOUNT WHERE ADMIN.staff_id = ACCOUNT.id AND  username = ?";
             statement = connection.prepareStatement(query);
 
             statement.setString(1, username);
             resultSet = statement.executeQuery();
 
             //If response is empty then return null
-            if (!resultSet.next()) {
-                return null;
-            } else {
+            if (resultSet.next() && SaltHash.checkHash(password, resultSet.getString("password"))) {
                 //If response is not empty then return a new admin Object with the fields from the database
                 GeneralAdmin generalAdmin = new GeneralAdmin();
                 return generalAdmin.getAdminFromResultSet(resultSet);
+            } else {
+                return null;
             }
         } finally {
             close(resultSet, statement);
