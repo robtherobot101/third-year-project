@@ -7957,8 +7957,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d003d
 			public const int ALT = 2131558461;
 			
-			// aapt resource value: 0x7f0d00e4
-			public const int Address = 2131558628;
+			// aapt resource value: 0x7f0d00f0
+			public const int Address = 2131558640;
 			
 			// aapt resource value: 0x7f0d003e
 			public const int CTRL = 2131558462;
@@ -7966,26 +7966,35 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d003f
 			public const int FUNCTION = 2131558463;
 			
-			// aapt resource value: 0x7f0d00f0
-			public const int ImageFrame = 2131558640;
+			// aapt resource value: 0x7f0d00f6
+			public const int ImageFrame = 2131558646;
 			
-			// aapt resource value: 0x7f0d00f2
-			public const int InfoWindowAddress = 2131558642;
+			// aapt resource value: 0x7f0d00f8
+			public const int InfoWindowAddress = 2131558648;
 			
-			// aapt resource value: 0x7f0d00f3
-			public const int InfoWindowButton = 2131558643;
+			// aapt resource value: 0x7f0d00f9
+			public const int InfoWindowButton = 2131558649;
 			
-			// aapt resource value: 0x7f0d00f1
-			public const int InfoWindowTitle = 2131558641;
+			// aapt resource value: 0x7f0d00f7
+			public const int InfoWindowTitle = 2131558647;
 			
 			// aapt resource value: 0x7f0d0040
 			public const int META = 2131558464;
 			
-			// aapt resource value: 0x7f0d00ee
-			public const int OrganFrame = 2131558638;
+			// aapt resource value: 0x7f0d00f4
+			public const int OrganFrame = 2131558644;
+			
+			// aapt resource value: 0x7f0d00e1
+			public const int Organ_Name = 2131558625;
 			
 			// aapt resource value: 0x7f0d00e2
-			public const int ProfilePictureFrame = 2131558626;
+			public const int Organ_Picture = 2131558626;
+			
+			// aapt resource value: 0x7f0d00ef
+			public const int ProfilePictureFrame = 2131558639;
+			
+			// aapt resource value: 0x7f0d00e7
+			public const int ReceiverTableLayout = 2131558631;
 			
 			// aapt resource value: 0x7f0d0041
 			public const int SHIFT = 2131558465;
@@ -7993,11 +8002,17 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0042
 			public const int SYM = 2131558466;
 			
-			// aapt resource value: 0x7f0d00e8
-			public const int SegControl = 2131558632;
+			// aapt resource value: 0x7f0d00ea
+			public const int SegControl = 2131558634;
 			
-			// aapt resource value: 0x7f0d00e1
-			public const int User_Name = 2131558625;
+			// aapt resource value: 0x7f0d00e6
+			public const int Time_Left = 2131558630;
+			
+			// aapt resource value: 0x7f0d00e4
+			public const int UserName = 2131558628;
+			
+			// aapt resource value: 0x7f0d00ee
+			public const int User_Name = 2131558638;
 			
 			// aapt resource value: 0x7f0d00cf
 			public const int action0 = 2131558607;
@@ -8275,14 +8290,14 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d006d
 			public const int list_item = 2131558509;
 			
-			// aapt resource value: 0x7f0d00f5
-			public const int masked = 2131558645;
+			// aapt resource value: 0x7f0d00fb
+			public const int masked = 2131558651;
 			
 			// aapt resource value: 0x7f0d00d2
 			public const int media_actions = 2131558610;
 			
-			// aapt resource value: 0x7f0d00eb
-			public const int message = 2131558635;
+			// aapt resource value: 0x7f0d00ed
+			public const int message = 2131558637;
 			
 			// aapt resource value: 0x7f0d0099
 			public const int messages_list_view = 2131558553;
@@ -8404,8 +8419,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d00d4
 			public const int notification_main_column_container = 2131558612;
 			
-			// aapt resource value: 0x7f0d00e5
-			public const int organTableLayout = 2131558629;
+			// aapt resource value: 0x7f0d00f1
+			public const int organTableLayout = 2131558641;
 			
 			// aapt resource value: 0x7f0d00ac
 			public const int pager = 2131558572;
@@ -8437,11 +8452,11 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0081
 			public const int radio = 2131558529;
 			
-			// aapt resource value: 0x7f0d00ef
-			public const int relative = 2131558639;
+			// aapt resource value: 0x7f0d00f5
+			public const int relative = 2131558645;
 			
-			// aapt resource value: 0x7f0d00ec
-			public const int relativeLayout1 = 2131558636;
+			// aapt resource value: 0x7f0d00f2
+			public const int relativeLayout1 = 2131558642;
 			
 			// aapt resource value: 0x7f0d0054
 			public const int right = 2131558484;
@@ -8518,8 +8533,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d009c
 			public const int send_button = 2131558556;
 			
-			// aapt resource value: 0x7f0d00f6
-			public const int shape_id = 2131558646;
+			// aapt resource value: 0x7f0d00fc
+			public const int shape_id = 2131558652;
 			
 			// aapt resource value: 0x7f0d0080
 			public const int shortcut = 2131558528;
@@ -8533,8 +8548,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0030
 			public const int showTitle = 2131558448;
 			
-			// aapt resource value: 0x7f0d00e9
-			public const int sliding_tabs = 2131558633;
+			// aapt resource value: 0x7f0d00eb
+			public const int sliding_tabs = 2131558635;
 			
 			// aapt resource value: 0x7f0d009e
 			public const int smallLabel = 2131558558;
@@ -8584,14 +8599,17 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d00df
 			public const int tableLayout1 = 2131558623;
 			
-			// aapt resource value: 0x7f0d00ed
-			public const int tableLayout2 = 2131558637;
+			// aapt resource value: 0x7f0d00f3
+			public const int tableLayout2 = 2131558643;
 			
 			// aapt resource value: 0x7f0d00e0
 			public const int tableRow1 = 2131558624;
 			
+			// aapt resource value: 0x7f0d00e5
+			public const int tableRow3 = 2131558629;
+			
 			// aapt resource value: 0x7f0d00e3
-			public const int tableRow3 = 2131558627;
+			public const int tableRow4 = 2131558627;
 			
 			// aapt resource value: 0x7f0d0019
 			public const int tag_transition_group = 2131558425;
@@ -8611,8 +8629,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0075
 			public const int textSpacerNoTitle = 2131558517;
 			
-			// aapt resource value: 0x7f0d00e7
-			public const int textView = 2131558631;
+			// aapt resource value: 0x7f0d00e9
+			public const int textView = 2131558633;
 			
 			// aapt resource value: 0x7f0d00ab
 			public const int text_input_password_toggle = 2131558571;
@@ -8635,8 +8653,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d007b
 			public const int title_template = 2131558523;
 			
-			// aapt resource value: 0x7f0d00ea
-			public const int toolbar = 2131558634;
+			// aapt resource value: 0x7f0d00ec
+			public const int toolbar = 2131558636;
 			
 			// aapt resource value: 0x7f0d0049
 			public const int top = 2131558473;
@@ -8647,8 +8665,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d00a2
 			public const int touch_outside = 2131558562;
 			
-			// aapt resource value: 0x7f0d00e6
-			public const int transferText = 2131558630;
+			// aapt resource value: 0x7f0d00e8
+			public const int transferText = 2131558632;
 			
 			// aapt resource value: 0x7f0d000f
 			public const int transition_current_scene = 2131558415;
@@ -8680,8 +8698,8 @@ namespace mobileAppClient.Droid
 			// aapt resource value: 0x7f0d0016
 			public const int view_offset_helper = 2131558422;
 			
-			// aapt resource value: 0x7f0d00f4
-			public const int visible = 2131558644;
+			// aapt resource value: 0x7f0d00fa
+			public const int visible = 2131558650;
 			
 			// aapt resource value: 0x7f0d00c4
 			public const int volume_item_container = 2131558596;
@@ -9014,10 +9032,13 @@ namespace mobileAppClient.Droid
 			public const int tooltip = 2130968651;
 			
 			// aapt resource value: 0x7f04004c
-			public const int vertical_viewpager = 2130968652;
+			public const int UserOrganOverview = 2130968652;
 			
 			// aapt resource value: 0x7f04004d
-			public const int XamarinMapInfoWindow = 2130968653;
+			public const int vertical_viewpager = 2130968653;
+			
+			// aapt resource value: 0x7f04004e
+			public const int XamarinMapInfoWindow = 2130968654;
 			
 			static Layout()
 			{

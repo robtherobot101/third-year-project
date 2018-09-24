@@ -473,10 +473,10 @@ namespace CustomRenderer.Droid
                         var organImage = new ImageView(Context.ApplicationContext);
                         switch (organ.organType.ToLower())
                         {
-                            case "bone-marrow":
+                            case "bone":
                                 organImage.SetImageResource(Resource.Drawable.bone_icon);
                                 break;
-                            case "middle-ear":
+                            case "ear":
                                 organImage.SetImageResource(Resource.Drawable.ear_icon);
                                 break;
                             case "cornea":
@@ -503,7 +503,7 @@ namespace CustomRenderer.Droid
                             case "skin":
                                 organImage.SetImageResource(Resource.Drawable.skin_icon);
                                 break;
-                            case "connective-tissue":
+                            case "tissue":
                                 organImage.SetImageResource(Resource.Drawable.tissue_icon);
                                 break;
                         }

@@ -169,6 +169,7 @@
     <Compile Include="Messaging\AndrConvoViewController.cs" />
     <Compile Include="Messaging\AndrMessageArrayAdapter.cs" />
     <Compile Include="Messaging\AndrMessagingEntryClass.cs" />
+    <Compile Include="OrganTransferActivity.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="AndroidCamera.cs" />
@@ -494,7 +495,12 @@
     <AndroidResource Include="Resources\drawable\inc_bubble.9.9.png" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidResource Include="Resources\layout\OrganTransfer.axml" />
+    <AndroidResource Include="Resources\layout\UserOrganOverview.axml" />
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\OrganTransfer.axml">
+      <SubType>Designer</SubType>
+    </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>
