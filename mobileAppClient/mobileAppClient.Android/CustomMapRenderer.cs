@@ -479,13 +479,13 @@ namespace CustomRenderer.Droid
                                 organImage.SetImageResource(Resource.Drawable.ear_icon);
                                 break;
                             case "cornea_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.eye_icon);
+                                organImage.SetImageResource(Resource.Drawable.cornea_icon);
                                 break;
                             case "heart_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.heart_icon);
                                 break;
                             case "intestine_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.intestines_icon);
+                                organImage.SetImageResource(Resource.Drawable.intestine_icon);
                                 break;
                             case "kidney_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.kidney_icon);
@@ -494,7 +494,7 @@ namespace CustomRenderer.Droid
                                 organImage.SetImageResource(Resource.Drawable.liver_icon);
                                 break;
                             case "lung_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.lungs_icon);
+                                organImage.SetImageResource(Resource.Drawable.lung_icon);
                                 break;
                             case "pancreas_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.pancreas_icon);

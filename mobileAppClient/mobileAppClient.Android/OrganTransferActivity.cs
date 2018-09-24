@@ -47,7 +47,7 @@ namespace mobileAppClient.Droid
                     organText.Text = "Middle Ear";
                     break;
                 case "cornea":
-                    organImage.SetImageResource(Resource.Drawable.eye_icon);
+                    organImage.SetImageResource(Resource.Drawable.cornea_icon);
                     organText.Text = "Cornea";
                     break;
                 case "heart":
@@ -55,7 +55,7 @@ namespace mobileAppClient.Droid
                     organText.Text = "Heart";
                     break;
                 case "intestine":
-                    organImage.SetImageResource(Resource.Drawable.intestines_icon);
+                    organImage.SetImageResource(Resource.Drawable.intestine_icon);
                     organText.Text = "Intestines";
                     break;
                 case "kidney":
@@ -67,7 +67,7 @@ namespace mobileAppClient.Droid
                     organText.Text = "Liver";
                     break;
                 case "lung":
-                    organImage.SetImageResource(Resource.Drawable.lungs_icon);
+                    organImage.SetImageResource(Resource.Drawable.lung_icon);
                     organText.Text = "Lungs";
                     break;
                 case "pancreas":

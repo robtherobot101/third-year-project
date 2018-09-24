@@ -41,15 +41,12 @@ namespace mobileAppClient.Droid
         {
             int rowIndex = view.Id;
             String organName = null;
-            for (int index = 0; index < ((ViewGroup)view).ChildCount; ++index)
-            {
-                Android.Views.View nextChild = ((ViewGroup)view).GetChildAt(index);
-                if (nextChild.GetType() == typeof(TextView))
-                {
-                    organName = ((TextView)nextChild).Text;
+            Android.Views.View nextChild = ((ViewGroup)view).GetChildAt(1);
+            
+            organName = ((TextView)nextChild).Text;
 
-                }
-            }
+           
+            
             foreach (DonatableOrgan organ in organs)
             {
                 if (organName.ToLower().Equals(organ.organType.ToLower()))
@@ -142,56 +139,45 @@ namespace mobileAppClient.Droid
                 TextView organTimer = new TextView(this);
                 ImageView organImage = new ImageView(this);
                 String organName = organ.organType;
-              //  ViewGroup.LayoutParams textParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
-              //  organText.LayoutParameters = textParameters;
+                //  ViewGroup.LayoutParams textParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
+                //  organText.LayoutParameters = textParameters;
 
-             
 
+                organText.Text = char.ToUpper(organ.organType[0]) + organ.organType.Substring(1).ToLower();
                 switch (organ.organType.ToLower())
                 {
                     case "bone":
                         organImage.SetImageResource(Resource.Drawable.bone_icon);
-                        organText.Text = "Bone Marrow";
                         break;
                     case "ear":
                         organImage.SetImageResource(Resource.Drawable.ear_icon);
-                        organText.Text = "Middle Ear";
                         break;
                     case "cornea":
-                        organImage.SetImageResource(Resource.Drawable.eye_icon);
-                        organText.Text = "Cornea";
+                        organImage.SetImageResource(Resource.Drawable.cornea_icon);
                         break;
                     case "heart":
                         organImage.SetImageResource(Resource.Drawable.heart_icon);
-                        organText.Text = "Heart";
                         break;
                     case "intestine":
-                        organImage.SetImageResource(Resource.Drawable.intestines_icon);
-                        organText.Text = "Intestines";
+                        organImage.SetImageResource(Resource.Drawable.intestine_icon);
                         break;
                     case "kidney":
                         organImage.SetImageResource(Resource.Drawable.kidney_icon);
-                        organText.Text = "Kidney";
                         break;
                     case "liver":
                         organImage.SetImageResource(Resource.Drawable.liver_icon);
-                        organText.Text = "Liver";
                         break;
                     case "lung":
-                        organImage.SetImageResource(Resource.Drawable.lungs_icon);
-                        organText.Text = "Lungs";
+                        organImage.SetImageResource(Resource.Drawable.lung_icon);
                         break;
                     case "pancreas":
                         organImage.SetImageResource(Resource.Drawable.pancreas_icon);
-                        organText.Text = "Pancreas";
                         break;
                     case "skin":
                         organImage.SetImageResource(Resource.Drawable.skin_icon);
-                        organText.Text = "Skin";
                         break;
                     case "tissue":
                         organImage.SetImageResource(Resource.Drawable.tissue_icon);
-                        organText.Text = "Connective Tissue";
                         break;
                 }
                 organText.SetTextAppearance(this, Android.Resource.Style.TextAppearanceMedium);
