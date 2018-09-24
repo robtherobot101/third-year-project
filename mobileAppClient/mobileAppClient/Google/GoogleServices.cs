@@ -16,7 +16,7 @@ namespace mobileAppClient.Google
         private static readonly string client_id = "990254303378-hompkeqv6gthfgaut6j0bipdu6bf9ef0.apps.googleusercontent.com";
         private static readonly string client_secret = "yHw2OvqSYK4ocE0SH5-AHfJc";
 
-        public static string GetLoginAddr()
+        public static string GetLoginAddr() //login
         {
             return
                 $"https://accounts.google.com/o/oauth2/v2/auth?response_type=code&scope=email" +
@@ -24,7 +24,7 @@ namespace mobileAppClient.Google
                 $"&client_id={client_id}";
         }
 
-        private static string GetTokenAddr(string code)
+        private static string GetTokenAddr(string code) 
         {
             return $"https://www.googleapis.com/oauth2/v4/token?grant_type=authorization_code" +
                    $"&code={code}" +

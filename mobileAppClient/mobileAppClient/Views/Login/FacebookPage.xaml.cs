@@ -15,6 +15,7 @@ namespace mobileAppClient
     {
         private LoginPage parentLoginPage;
         private FacebookServices facebookServices;
+        private int userId;
         private User accountBeingChanged;
         public FacebookPage(LoginPage loginPage)
         {
@@ -32,11 +33,11 @@ namespace mobileAppClient
             Content = webView;
         }
 
-        public FacebookPage(User user)
+        public FacebookPage(int userId)
         {
             InitializeComponent();
             facebookServices = new FacebookServices();
-
+            this.userId = userId;
             var webView = new WebView
             {
                 Source = facebookServices.apiRequest,
@@ -45,18 +46,17 @@ namespace mobileAppClient
 
             webView.Navigated += ChangeLoginMethodOnNavigate;
             Content = webView;
-
         }
 
         private async void ChangeLoginMethodOnNavigate(object sender, WebNavigatedEventArgs e)
         {
+            //Console.WriteLine("User ID is: " + userId);
             var accessToken = facebookServices.ExtractAccessTokenFromUrl(e.Url);
-
             if (accessToken != "")
             {
                 FacebookProfile facebookProfile = await facebookServices.GetFacebookProfileAsync(accessToken);
 
-                HttpStatusCode facebookRegisterStatus = await new LoginAPI().FacebookRegisterUser(accountBeingChanged.id, facebookProfile.Id);
+                HttpStatusCode facebookRegisterStatus = await new LoginAPI().FacebookRegisterUser(userId, facebookProfile.Id);
 
                 switch (facebookRegisterStatus)
                 {
@@ -87,10 +87,7 @@ namespace mobileAppClient
                         break;
                 }
             }
-            else
-            {
-
-            }
+            await Navigation.PopModalAsync();
         }
 
         async void Handle_CancelClicked(object sender, System.EventArgs e)
