@@ -5,7 +5,6 @@ namespace mobileAppClient.Google
 {
     public class GoogleTokenResponse
     {
-        public string id { get; set; }
         public string access_token { get; set; }
         public List<Email> emails { get; set; }
         public Name name { get; set; }

@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
-using System.Threading.Tasks;
 using mobileAppClient.Models;
 using Xamarin.Forms;
 
@@ -18,14 +17,14 @@ namespace mobileAppClient.Notifications
         static MessageThreadsListPage messageThreadsListPageController;
         static ConversationPage conversationController;
 
-        public static async void Setup()
+        public async static void Setup()
         {
 
             // This should come before AppCenter.Start() is called
             // Avoid duplicate event registration:
             if (!AppCenter.Configured)
             {
-                Push.PushNotificationReceived += async (sender, e) =>
+                Push.PushNotificationReceived += (sender, e) =>
                 {
                     // If the notification contains message data, handle it as such
                     if (e.CustomData.ContainsKey("conversationId"))
@@ -40,27 +39,20 @@ namespace mobileAppClient.Notifications
                         {
                             if (conversationController.conversation != null && conversationController.conversation.id == notifiedMessage.conversationId) 
                             {
-                                conversationController.conversation.messages.Insert(0, notifiedMessage);
+                                conversationController.conversation.messages.Add(notifiedMessage);
                             }
+
+                            DependencyService.Get<IToast>().ShortAlert("You have received a message");
                         }
                         else
                         {
                             if (messageThreadsListPageController != null)
                             {
                                 List<Conversation> localConversation = new List<Conversation>(messageThreadsListPageController.conversationList);
-                                Conversation conversationToUpdate = localConversation.Find(conversation =>
-                                    conversation.id == notifiedMessage.conversationId);
+                                localConversation.Find(conversation => conversation.id == notifiedMessage.conversationId)?.messages.Add(notifiedMessage);
 
-                                if (conversationToUpdate != null)
-                                {
-                                    conversationToUpdate.messages.Insert(0, notifiedMessage);
-                                    messageThreadsListPageController.conversationList.Clear();
-                                    messageThreadsListPageController.conversationList.AddRange(localConversation);
-                                }
-                                else
-                                {
-                                    await messageThreadsListPageController.ReloadConversations();
-                                }
+                                messageThreadsListPageController.conversationList.Clear();
+                                messageThreadsListPageController.conversationList.AddRange(localConversation);
                             }
                                                         
                         }
@@ -82,7 +74,7 @@ namespace mobileAppClient.Notifications
             VSAppCenter.messageThreadsListPageController = messageThreadsListPageController;
         }
 
-        public static void setConversationController(ConversationPage conversationController)
+        public static void seConversationController(ConversationPage conversationController)
         {
             VSAppCenter.conversationController = conversationController;
         }

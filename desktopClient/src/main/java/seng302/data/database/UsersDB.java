@@ -39,7 +39,6 @@ public class UsersDB implements UsersDAO {
     public void insertUser(User user) {
         JsonParser jp = new JsonParser();
         JsonObject userJson = jp.parse(new Gson().toJson(user)).getAsJsonObject();
-        userJson.add("password", userJson.getAsJsonPrimitive("passphrase"));
         Debugger.log("INSERTING USER");
         Debugger.log(userJson);
         userJson.remove("id");

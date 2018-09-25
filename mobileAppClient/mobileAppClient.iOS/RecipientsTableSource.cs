@@ -95,48 +95,29 @@ namespace mobileAppClient.iOS
             cell.TextLabel.TextColor = UIColor.White;
             //GET USER ICON HERE
 
-            string imageString = "recipientIcon" + indexPath.Row + ".png";
-         
-
-            cell.ImageView.Image = UIImage.FromFile(imageString);
+            cell.ImageView.Image = UIImage.FromFile("donationIcon.png");
 
             cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
             //string bloodTypeString = BloodTypeExtensions.ToString(BloodTypeExtensions.ToBloodTypeJSON(item.bloodType));
             //string genderString = char.ToUpper(item.gender[0]) + item.gender.Substring(1).ToLower();
 
-            cell.DetailTextLabel.Text = item?.currentAddress + ", " + item?.region;
+            cell.DetailTextLabel.Text = "Address: " + item?.currentAddress + ", " + item?.region;
             //Change colour based on severity
             cell.DetailTextLabel.TextColor = UIColor.White;
 
             return cell;
         }
 
-        public override async void RowSelected(UITableView tableView, NSIndexPath indexPath)
+        public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
             selectedRecipient = recipients[indexPath.Row];
-
-            ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-
-            bool canArrive = await parent.CheckGetToReceiverInTime(currentOrgan, selectedRecipient);
-
-            if (!canArrive)
-            {
-                UIAlertController okAlertController = UIAlertController.Create("Begin transfer process?",
-                                                                               "Cannot transfer " + currentOrgan.organType + " to " + selectedRecipient.FullName + " as it will expire before it arrives.",
-                                                                               UIAlertControllerStyle.Alert);
-                okAlertController.AddAction(UIAlertAction.Create("confirm", UIAlertActionStyle.Cancel, null));
-            }
-            else
-            {
-
-                UIAlertController okAlertController = UIAlertController.Create("Begin transfer process?",
-                                                                               "Would you like to transfer " + currentOrgan.organType + " to " + selectedRecipient.FullName + "?",
-                                                                               UIAlertControllerStyle.Alert);
-                okAlertController.AddAction(UIAlertAction.Create("Yes", UIAlertActionStyle.Default, BeginTransferProcess));
-                okAlertController.AddAction(UIAlertAction.Create("No", UIAlertActionStyle.Cancel, null));
-                owner.PresentViewController(okAlertController, true, null);
-                tableView.DeselectRow(indexPath, true);
-            }
+            UIAlertController okAlertController = UIAlertController.Create("Begin transfer process?", 
+                                                                           "Would you like to transfer " + currentOrgan.organType + " to " + selectedRecipient.FullName + "?", 
+                                                                           UIAlertControllerStyle.Alert);
+            okAlertController.AddAction(UIAlertAction.Create("Yes", UIAlertActionStyle.Default, BeginTransferProcess));
+            okAlertController.AddAction(UIAlertAction.Create("No", UIAlertActionStyle.Cancel, null));
+            owner.PresentViewController(okAlertController, true, null);
+            tableView.DeselectRow(indexPath, true);
 
         }
 

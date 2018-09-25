@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              xmlns:local="clr-namespace:mobileAppClient" 
              x:Class="mobileAppClient.AttributesPage" 
-             Title="Attributes" NavigationPage.HasNavigationBar="True">
+             Title="Attributes" NavigationPage.HasNavigationBar="True"
+             xmlns:autocomplete="clr-namespace:Syncfusion.SfAutoComplete.XForms;assembly=Syncfusion.SfAutoComplete.XForms">
     <StackLayout>
         <TableView Intent="Menu" HasUnevenRows="True" x:Name="AttributesTableView">
             <TableRoot>
@@ -111,15 +112,6 @@
                             <DatePicker x:Name="dodInput"
                                 Format="D"
                                 MinimumDate="01/01/1900"
-                                IsEnabled="False"
-                             />
-                        </StackLayout>
-                    </ViewCell>
-                    <ViewCell>
-                        <StackLayout Orientation="Horizontal" x:Name="timeOfDeathCombo" Padding="15,0,0,0">
-                            <Label Text="Time of Death" VerticalOptions="Center"/>
-                            <TimePicker x:Name="todInput"
-                                
                                 IsEnabled="False"
                              />
                         </StackLayout>

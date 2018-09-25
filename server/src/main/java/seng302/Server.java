@@ -50,11 +50,7 @@ public class Server {
 
     private Map<Object, Object> config = new ConfigParser().getConfig();
 
-    private Server() {
-        System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
-        System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "yyyy-MM-dd HH:mm:ss");
-        log = LoggerFactory.getLogger(Server.class);
-    }
+    private Server() { }
 
     public static Server getInstance() {
         return INSTANCE;
@@ -269,10 +265,6 @@ public class Server {
                 get("",      userController::countUsers);
             });
 
-            path("/300Account", () -> post("", profileUtils::changeToTeam300));
-            path("/facebookaccount", () -> post("",      profileUtils::changeToFacebook));
-            path("/googleaccount", () -> post("", profileUtils::changeToGoogle));
-
             path("/countries", () -> {
                 get("", countriesController::getCountries);
                 patch("", countriesController::patchCountries);
@@ -309,16 +301,20 @@ public class Server {
     }
 
     public static void main(String[] args) {
+        System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
+        System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "yyyy-MM-dd HH:mm:ss");
+        INSTANCE.log = LoggerFactory.getLogger(Server.class);
         INSTANCE.testing = false;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){
-            try {
+            try{
                 if(argz.contains("-t")){
                     INSTANCE.testing = true;
                 }
                 INSTANCE.port = Integer.parseInt(argz.get(0));
             }
             catch (Exception ignored){
+
             }
         }
         INSTANCE.start();

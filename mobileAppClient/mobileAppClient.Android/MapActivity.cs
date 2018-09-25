@@ -26,10 +26,10 @@ namespace mobileAppClient.Droid
 
         public void InitializeMap() {
             //Intent intent = new Intent(this, typeof(BottomSheetListActivity));
-            //intent.PutExtra("action", 3);
-            //intent.PutExtra("title", "Andy");
+           // intent.PutExtra("action", 3);
+           // intent.PutExtra("title", "Andy");
             //intent.PutExtra("style", (e.Position == 5));
-            //StartActivity(intent);
+           // StartActivity(intent);
         }
     }
 }

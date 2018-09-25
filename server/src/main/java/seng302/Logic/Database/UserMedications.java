@@ -180,7 +180,7 @@ public class UserMedications extends DatabaseMethods {
         for (Medication medication : newMedications) {
             insertMedication(medication, userId);
             PushAPI.getInstance().sendNotification(new Notification("New Medication",
-                    "A clinician has added a new medication " + medication.getName()), userId);
+                    "A clinician has added a new medication " + medication.getName()), Integer.toString(userId));
 
         }
     }

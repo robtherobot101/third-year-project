@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:dataTemplateSelector="clr-namespace:mobileAppClient;assembly=mobileAppClient"
              x:Class="mobileAppClient.OutgoingViewCell">
-    <Grid ColumnSpacing="2" Padding="5" FlowDirection="LeftToRight" Rotation="180">
+  <Grid ColumnSpacing="2" Padding="5">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="40"></ColumnDefinition>
       <ColumnDefinition Width="*"></ColumnDefinition>
@@ -12,12 +12,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="Auto"></RowDefinition>
+
         </Grid.RowDefinitions>
-
         <Frame Grid.Row="0" OutlineColor="Transparent" HasShadow="False" Grid.Column="1" BackgroundColor="#F5F5F5">
-            <Label TextColor="Black" HorizontalTextAlignment="End" Text="{Binding text}" />
-        </Frame>
-        <Label Grid.Row="1" FontSize="Micro" Grid.Column="1" HorizontalTextAlignment="End"  Text="{Binding timestampDateTime, StringFormat='{0:MM/dd/yyyy hh:mm tt}'}" TextColor="Gray"/>
-
-    </Grid>
+      <Label TextColor="Black" HorizontalTextAlignment="End" Text="{Binding text}" />
+    </Frame>
+        <Label Grid.Row="1" FontSize="Micro" Grid.Column="1" HorizontalTextAlignment="End"  Text="{Binding timestampDateTime, StringFormat='{0:MM/dd/yyyy hh:mm tt}'}" TextColor="Gray"></Label>
+    
+  </Grid>
 </ViewCell>

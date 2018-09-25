@@ -1,5 +1,6 @@
 package seng302.gui.controllers.clinician;
 
+import com.google.gson.JsonObject;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import javafx.animation.FadeTransition;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -14,6 +15,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Callback;
+import javafx.util.StringConverter;
 import org.apache.http.client.HttpResponseException;
 import org.json.JSONObject;
 import seng302.User.*;
@@ -25,6 +27,7 @@ import seng302.generic.WindowManager;
 import seng302.gui.StatusIndicator;
 import seng302.gui.TitleBar;
 
+import javax.xml.soap.Text;
 import java.net.URL;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -428,7 +431,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
     }
 
-    private boolean checkGetToReceiverInTime(DonatableOrgan organ, User receiver) throws HttpResponseException, UnirestException, NullPointerException{
+    private boolean checkGetToReceievrInTime(DonatableOrgan organ, User receiver) throws HttpResponseException, UnirestException, NullPointerException{
 
         User donor = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
         JSONObject donorLocation = WindowManager.getDataManager().getGeneral().getPosition(donor.getCityOfDeath() +", " + donor.getRegionOfDeath() + ", " + donor.getCountryOfDeath());
@@ -462,7 +465,7 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * @throws HttpResponseException Throws if cannot connect to server
      */
     private void transferOrganDialog(DonatableOrgan organ, User user) throws HttpResponseException, UnirestException, NullPointerException{
-        if (!checkGetToReceiverInTime(organ, user)) {
+        if (!checkGetToReceievrInTime(organ, user)) {
 
             Dialog<ButtonType> dialog = new Dialog<>();
             dialog.setTitle("Transfer Organ Error");

@@ -21,7 +21,6 @@ public class Notification {
         notificationContent.put("name", "Notification");
         notificationContent.put("title", title);
         notificationContent.put("body", message);
-		customData.put("sound", "coin");
         notificationContent.put("custom_data", customData);
     }
 

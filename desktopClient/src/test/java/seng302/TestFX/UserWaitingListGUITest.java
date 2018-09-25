@@ -147,10 +147,84 @@ public class UserWaitingListGUITest extends TestFXTest {
         assert (lookup("#organTypeComboBox").query().isVisible());
     }
 
+    @Ignore
+    @Test
+    public void receiverCannotUpdateTransplantWaitingList() throws TimeoutException {
+        user.getWaitingListItems().add(new WaitingListItem("","",-1,Organ.BONE));
+        usersTransplantWaitingListAsUser();
+        assert (!lookup("#registerOrganButton").query().isVisible());
+        assert (!lookup("#deregisterOrganButton").query().isVisible());
+        assert (!lookup("#organTypeComboBox").query().isVisible());
+    }
+
     @Test
     public void donorCannotSeeTransplantWaitingListOption() {
         userWindow(user);
         assert (!lookup("#waitingListButton").query().isVisible());
+    }
+
+    @Ignore
+    @Test
+    public void itemAddedToWaitingList_appearsInWaitingList() throws TimeoutException {
+        usersTransplantWaitingListAsClinician();
+        register(Organ.LIVER);
+        assert (user.getWaitingListItems().get(0).getOrganType().equals(Organ.LIVER));
+        assert (waitingListItems().get(0).getOrganType().equals(Organ.LIVER));
+    }
+
+    @Ignore
+    @Test
+    public void itemRegisteredIn_userBecomesReceiver() throws TimeoutException {
+        usersTransplantWaitingListAsClinician();
+        register(Organ.KIDNEY);
+        assertTrue(user.isReceiver());
+    }
+
+    @Ignore
+    @Test
+    public void noRegisteredItemsInWaitingList_userIsNotReceiver() throws TimeoutException {
+        usersTransplantWaitingListAsClinician();
+        register(Organ.KIDNEY);
+        deregister(Organ.KIDNEY);
+        assertFalse(user.isReceiver());
+    }
+
+    @Ignore
+    @Test
+    public void itemDeregistered_hasDeregisteredDateAndIsStillWaitingOnIsFalse() throws TimeoutException {
+        usersTransplantWaitingListAsClinician();
+        register(Organ.LIVER);
+        deregister(Organ.LIVER);
+        assert (!(waitingListItems().get(0).getStillWaitingOn()));
+    }
+
+    @Ignore
+    @Test
+    public void deregisteredItemReregistered_overridesDeregisteredItem() throws TimeoutException {
+        usersTransplantWaitingListAsClinician();
+        register(Organ.TISSUE);
+        deregister(Organ.TISSUE);
+        register(Organ.TISSUE);
+        assertEquals(2, waitingListItems().size());
+    }
+
+    @Ignore
+    @Test
+    public void registerDonatingOrgan_organIsHighlightedInWaitingList() throws TimeoutException {
+        user.getOrgans().add(Organ.LIVER);
+        usersTransplantWaitingListAsClinician();
+        register(Organ.LIVER);
+        assertTrue(getWaitingListOrgan(Organ.LIVER).getStyleClass().contains("highlighted-row"));
+    }
+
+    @Ignore
+    @Test
+    public void deregisterDonatingOrgan_organIsNotHighlightedInWaitingList() throws TimeoutException {
+        user.getOrgans().add(Organ.LIVER);
+        usersTransplantWaitingListAsClinician();
+        register(Organ.LIVER);
+        deregister(Organ.LIVER);
+        assertFalse(getWaitingListOrgan(Organ.LIVER).getStyleClass().contains("highlighted-row"));
     }
 
 
@@ -167,5 +241,54 @@ public class UserWaitingListGUITest extends TestFXTest {
         return null;
     }
 
+    public void pressDialogOKButtons(){
+        sleep(500);
+        for(Window window: this.listWindows()){
+            for(Node nodeWithOKText : from(window.getScene().getRoot()).lookup("OK").queryAll()){
+                if(nodeWithOKText instanceof Button){
+                    clickOn(nodeWithOKText);
+                }
+            }
+        }
+    }
+
+
+    @Ignore
+    @Test
+    public void changeUserWaitingList_clinicianWaitingListUpdated() throws TimeoutException {
+        usersTransplantWaitingListAsClinician();
+        register(Organ.HEART);
+        openClinicianWindow(new Clinician("test","test","test"));
+        waitForNodeVisible(5,"#transplantListButton");
+        clickOn("#transplantListButton");
+        TableView transplantTable = lookup("#transplantTable").queryTableView();
+        assertTrue(transplantListHasItem(transplantTable, Organ.HEART, user.getName()));
+    }
+
+    @Ignore
+    @Test
+    public void changeClinicianList_userWaitingListUpdated() throws TimeoutException {
+        user.getWaitingListItems().add(
+                new WaitingListItem("","",user.getId(),Organ.HEART));
+
+        openClinicianWindow(new Clinician("test","test","test"));
+        waitForNodeVisible(5,"#transplantListButton");
+        clickOn("#transplantListButton");
+        TableView transplantTable = lookup("#transplantTable").queryTableView();
+        transplantTable.getSelectionModel().select(getTransplantListItem(transplantTable,Organ.HEART,user.getName()));
+
+        clickOn("#deregisterReceiverButton");
+        pressDialogOKButtons();
+
+        clickOn("#saveButton");
+
+        pressDialogOKButtons();
+
+
+        usersTransplantWaitingListAsClinician();
+        sleep(500);
+
+        assertTrue(waitingListItems().size()==0);
+    }
 }
 

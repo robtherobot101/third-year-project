@@ -13,7 +13,6 @@ using Android.Widget;
 using Android.Support.V4.Content;
 using Android;
 using ImageCircle.Forms.Plugin.Droid;
-using Plugin.CurrentActivity;
 
 using Firebase.Messaging;
 using Firebase.Iid;
@@ -21,15 +20,12 @@ using Android.Util;
 using Plugin.Toasts;
 using Android.Database;
 using Android.Provider;
-using mobileAppClient.Google;
 
 namespace mobileAppClient.Droid
 {
     [Activity(Label = "mobileAppClient.Android", Icon = "@drawable/donationIcon", LaunchMode = LaunchMode.SingleInstance, Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 
     [IntentFilter(new [] {Intent.ActionView}, Categories = new [] {Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "https", DataHost = "csse-s302g3.canterbury.ac.nz", DataPath = "/oauth2redirect")]
-
-    [IntentFilter(new[] { Intent.ActionView }, Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "https", DataHost = "csse-s302g3.canterbury.ac.nz", DataPath = "/oauth2redirectChangeLogin")]
 
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
@@ -47,7 +43,7 @@ namespace mobileAppClient.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
-            CrossCurrentActivity.Current.Init(this, bundle);
+
             global::Xamarin.Forms.Forms.Init(this, bundle);
             global::SegmentedControl.FormsPlugin.Android.SegmentedControlRenderer.Init();
             global::Plugin.CrossPlatformTintedImage.Android.TintedImageRenderer.Init();
@@ -59,8 +55,6 @@ namespace mobileAppClient.Droid
             // For circular images (on menu drawer)
             ImageCircleRenderer.Init();
 
-            //Enables reference of the main activity from interface contexts
-            
 
             LoadApplication(new App());
         }
@@ -287,16 +281,9 @@ namespace mobileAppClient.Droid
             if (intent.Data != null)
             {
                 var data = intent.Data;
-                string queryParameter = data.GetQueryParameter("code");
 
-                if (data.Path == "/oauth2redirectChangeLogin")
-                {
-                    await UserController.Instance.PassControlToUserSettings(queryParameter);
-                }
-                else
-                {
-                    await UserController.Instance.PassControlToLoginPage(queryParameter);
-                }
+                string queryParameter = data.GetQueryParameter("code");
+                await UserController.Instance.PassControlToLoginPage(queryParameter);
             }
         }
     }

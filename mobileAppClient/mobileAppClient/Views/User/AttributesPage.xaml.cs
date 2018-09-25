@@ -49,6 +49,7 @@ namespace mobileAppClient
             NHIInput.IsEnabled = isClinicianEditing;
 
             dobInput.MaximumDate = DateTime.Today;
+            dodInput.MaximumDate = DateTime.Today;
 
             FillFields();
 
@@ -113,8 +114,6 @@ namespace mobileAppClient
             if (hasDiedSwitch.On)
             {
                 dodInput.Date = loggedInUser.dateOfDeath.date.ToDateTime();
-                Console.WriteLine(loggedInUser.dateOfDeath.ToDateTimeWithSeconds().TimeOfDay);
-                todInput.Time = loggedInUser.dateOfDeath.ToDateTimeWithSeconds().TimeOfDay;
 
                 DODCityInput.Text = loggedInUser.cityOfDeath;
 
@@ -123,18 +122,14 @@ namespace mobileAppClient
 
 
                 dodInput.IsEnabled = true;
-                todInput.IsEnabled = true;
                 DODCountryInput.IsEnabled = true;
                 DODRegionInput.IsEnabled = true;
 
                 DODCityInput.IsEnabled = true;
                 DODCityInput.Text = UserController.Instance.LoggedInUser.cityOfDeath;
-
-
             } else
             {
                 dodInput.IsEnabled = false;
-                todInput.IsEnabled = false;
                 DODCountryInput.IsEnabled = false;
                 DODRegionInput.IsEnabled = false;
 
@@ -299,7 +294,7 @@ namespace mobileAppClient
 
             if (hasDiedSwitch.On)
             {
-                loggedInUser.dateOfDeath = new CustomDateTime(dodInput.Date.Add(todInput.Time));
+                loggedInUser.dateOfDeath = new CustomDateTime(dodInput.Date);
                 loggedInUser.countryOfDeath = DODCountryInput.SelectedItem == null ? "" : DODCountryInput.SelectedItem.ToString();
                 loggedInUser.regionOfDeath = DODRegionInput.SelectedItem == null ? "" : DODRegionInput.SelectedItem.ToString();
                 loggedInUser.cityOfDeath = DODCityInput.Text;
@@ -359,7 +354,6 @@ namespace mobileAppClient
         private void dateOfDeathSwitchChanged(object sender, ToggledEventArgs e)
         {
             dodInput.IsEnabled = e.Value;
-            todInput.IsEnabled = e.Value;
             DODCountryInput.IsEnabled = e.Value;
             DODRegionInput.IsEnabled = e.Value;
 
@@ -379,7 +373,6 @@ namespace mobileAppClient
             DODCityInput.Text = "";
 
             dateOfDeathCombo.ForceLayout();
-            timeOfDeathCombo.ForceLayout();
         }
 
         /*
@@ -387,7 +380,7 @@ namespace mobileAppClient
          */
         void Handle_StreetAutoCompleteItemTapped(object sender, ItemTappedEventArgs e)
         {
-            if(StreetAutoCompleteStAddr.Text != null || StreetAutoCompleteStAddr.Text != "")
+            if(StreetAutoCompleteStAddr.Text != "")
             {
                 AutoCompleteitemTapped = true;
                 DisplayAddress(StreetAutoCompleteStAddr.Text);

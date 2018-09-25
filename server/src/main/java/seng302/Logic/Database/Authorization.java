@@ -1,6 +1,5 @@
 package seng302.Logic.Database;
 
-import javafx.util.Pair;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Logic.SaltHash;
 import seng302.Model.Admin;
@@ -101,27 +100,6 @@ public class Authorization extends DatabaseMethods {
         }
     }
 
-    /**
-     * Gets required information to log in with just an app_id
-     * @param api_id The user's app_id
-     * @return A Pair containing the
-     * @throws SQLException When something goes wrong
-     */
-    public User loginUser(String api_id) throws SQLException {
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT * FROM ACCOUNT JOIN USER ON USER.id = ACCOUNT.id WHERE api_id = ? AND acc_type IN ('facebook', 'google') ";
-            statement = connection.prepareStatement(query);
-            statement.setString(1, api_id);
-            resultSet = statement.executeQuery();
-            resultSet.next();
-            return new GeneralUser().getUserFromResultSet(resultSet);
-        }
-        finally {
-            close(statement, resultSet);
-        }
-    }
 
     /**
      * Returns the clinician with a matching username and password if such a clinician exists, otherwise returns null

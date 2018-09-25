@@ -23,66 +23,28 @@ public abstract class HelperMethods {
     /**
      * Create a test user with semi-random attributes
      * @param generalUser Server access object
-     * @param password The password to give the new user
      * @return The created user
      * @throws SQLException catch sql execution exceptions
      */
-    public static User insertUser(GeneralUser generalUser, String password) throws SQLException {
+    public static User insertUser(GeneralUser generalUser) throws SQLException {
         String[] middle = {"Middle" + r.nextInt(1000000)};
         User user = new User("First" + r.nextInt(1000000), middle, "Last" + r.nextInt(1000000), LocalDate.of(1900 + r.nextInt(100), 8, 4), "username5" + r.nextInt(1000000), "email5@domain.com" + r.nextInt(1000000), "chj" + r.nextInt(9999));
-        generalUser.insertUser(user, SaltHash.createHash(password));
+        generalUser.insertUser(user, SaltHash.createHash("pasword"));
         user.setId(generalUser.getIdFromUser(user.getUsername()));
         return user;
     }
 
     /**
-     * Create a test user with semi-random attributes
-     * @param generalUser Server access object
-     * @return The created user
-     * @throws SQLException catch sql execution exceptions
-     */
-    public static User insertUser(GeneralUser generalUser) throws SQLException {
-        return insertUser(generalUser, "pasword");
-    }
-
-    /**
      * Create a test admin with semi-random attributes
      * @param generalAdmin Server access object
      * @return The created admin
      * @throws SQLException catch sql execution exceptions
      */
-    public static Admin insertAdmin(GeneralAdmin generalAdmin) throws SQLException {
-        return insertAdmin(generalAdmin, "password" + r.nextInt(1000000));
-    }
-
-    /**
-     * Create a test admin with semi-random attributes
-     * @param generalAdmin Server access object
-     * @param password The admin's password
-     * @return The created admin
-     * @throws SQLException catch sql execution exceptions
-     */
-    public static Admin insertAdmin(GeneralAdmin generalAdmin, String password) throws SQLException {
-        Admin admin = new Admin("username" + r.nextInt(1000000), password, "Full Name" + r.nextInt(1000000));
-        admin.setPassword(SaltHash.createHash(admin.getPassword()));
+    public static Admin insertAdmin(GeneralAdmin generalAdmin)  throws SQLException {
+        Admin admin = new Admin("username" + r.nextInt(1000000), "password" + r.nextInt(1000000), "Full Name" + r.nextInt(1000000));
         generalAdmin.insertAdmin(admin);
         admin.setStaffID(generalAdmin.getAdminIdFromUsername(admin.getUsername()));
         return admin;
-    }
-
-    /**
-     * Create a test clinician with semi-random attributes
-     * @param generalClinician Server access object
-     * @param password The clinician's password
-     * @return The created clinician
-     * @throws SQLException catch sql execution exceptions
-     */
-    public static Clinician insertClinician(GeneralClinician generalClinician, String password) throws SQLException {
-        Clinician Clinician = new Clinician("username" + r.nextInt(1000000), password, "Full Name" + r.nextInt(1000000));
-        Clinician.setPassword(SaltHash.createHash(Clinician.getPassword()));
-        generalClinician.insertClinician(Clinician);
-        Clinician.setStaffID(generalClinician.getClinicianIdFromUsername(Clinician.getUsername()));
-        return Clinician;
     }
 
     /**
@@ -92,7 +54,10 @@ public abstract class HelperMethods {
      * @throws SQLException catch sql execution exceptions
      */
     public static Clinician insertClinician(GeneralClinician generalClinician) throws SQLException {
-        return insertClinician(generalClinician, "password" + r.nextInt(1000000));
+        Clinician Clinician = new Clinician("username" + r.nextInt(1000000), "password" + r.nextInt(1000000), "Full Name" + r.nextInt(1000000));
+        generalClinician.insertClinician(Clinician);
+        Clinician.setStaffID(generalClinician.getClinicianIdFromUsername(Clinician.getUsername()));
+        return Clinician;
     }
 
     /**

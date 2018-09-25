@@ -92,29 +92,6 @@ namespace mobileAppClient
             IsLoading = false;
         }
 
-        /// <summary>
-        /// Only called by VSAppCenter if a new conversation is made with a new message
-        /// </summary>
-        /// <returns></returns>
-        public async Task ReloadConversations()
-        {
-            conversationList.Clear();
-            IsLoading = true;
-            if (isClinicianAccessing)
-            {
-                localClinician = ClinicianController.Instance.LoggedInClinician;
-                await LoadClinicianConversations();
-
-            }
-            else
-            {
-                localUser = UserController.Instance.LoggedInUser;
-                await LoadUserConversations();
-                NewConversationButton.IsEnabled = false;
-            }
-            IsLoading = false;
-        }
-
         protected override void OnDisappearing()
         {
             VSAppCenter.setConversationListController(null);

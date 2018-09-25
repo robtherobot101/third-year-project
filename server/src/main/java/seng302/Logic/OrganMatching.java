@@ -1,14 +1,13 @@
 package seng302.Logic;
 
+import com.sun.javafx.scene.web.Debugger;
 import seng302.Logic.Database.GeneralUser;
-import seng302.Model.Attribute.Organ;
 import seng302.Model.DonatableOrgan;
 import seng302.Model.User;
 import seng302.Server;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,9 +15,61 @@ import java.util.List;
 public class OrganMatching {
 
     private GeneralUser model;
+    private static DonatableOrgan organ;
 
     public OrganMatching(){
         model = new GeneralUser();
+    }
+
+
+    /**
+     * checks if two users are within the correct age range to transfer organs
+     * @param donor the donor to check
+     * @param receiver the receiver to check
+     * @return returns truew if they are in the correct age range, otherwise false
+     */
+    private boolean isWithinAgeRange(User donor, User receiver){
+        if (donor.getAgeDouble() == receiver.getAgeDouble()){
+            return true;
+        } else if (donor.getAgeDouble() < 12 && receiver.getAgeDouble() < 12){
+            return true;
+        } else if (donor.getAgeDouble() > 12 && receiver.getAgeDouble() > 12){
+            if (donor.getAgeDouble() > receiver.getAgeDouble()){
+                return (donor.getAgeDouble() - receiver.getAgeDouble()) < 15;
+            } else {
+                return (receiver.getAgeDouble() - donor.getAgeDouble()) < 15;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * check if two users have the same blood type
+     * @param donor the first user
+     * @param receiver the second user
+     * @return returns true if both users have the same blood type, otherwise false
+     */
+    private boolean isSameBloodType(User donor, User receiver){
+        return  (donor.getBloodType() == receiver.getBloodType());
+    }
+
+
+    /**
+     * Gets all of the matches between an organ and receivers
+     * @param donor the user donating
+     * @return a list of matched users
+     * @throws SQLException catch sql execution errors
+     */
+    private List<User> getAllMatches(User donor) throws SQLException{
+        List<User> matches = new ArrayList<>();
+        List<User> possibleMatches = model.getMatchingUsers(organ);
+        for (User user: possibleMatches){
+            if (isSameBloodType(donor, user) && isWithinAgeRange(donor, user)){
+                matches.add(user);
+            }
+        }
+        return matches;
     }
 
     /**
@@ -27,18 +78,18 @@ public class OrganMatching {
      * @param possibleMatches the list of possible matches
      * @return returns a the top 5 users
      */
-    private List<User> getBestMatches(String region, List<User> possibleMatches, DonatableOrgan organ) {
+    private List<User> getBestMatches(String region, List<User> possibleMatches){
         List<User> topMatches = new ArrayList<>();
         for(User user: possibleMatches){
-            if (user.getRegion().equals(region)){
+            if (user.getRegion() != null && user.getRegion().equals(region)){
                 topMatches.add(user);
             }
         }
-        topMatches.sort(new WaitingComparator(organ));
+        topMatches.sort(new WaitingComparator());
 
         if (topMatches.size() < 5){
             possibleMatches.removeAll(topMatches);
-            possibleMatches.sort(new WaitingComparator(organ));
+            possibleMatches.sort(new WaitingComparator());
             int diff = 5 - topMatches.size();
             if (possibleMatches.size() < diff){
                 topMatches.addAll(possibleMatches);
@@ -61,12 +112,13 @@ public class OrganMatching {
      */
     public List<User> getTop5Matches(DonatableOrgan organ, String receiverNameQuery){
         try {
-            User donor = model.getUserFromId((int) organ.getDonorId());
-            List<User> matches = model.getMatchingUsers(organ, (int)ChronoUnit.MONTHS.between(donor.getDateOfBirth(), LocalDate.now()), donor.getBloodType());
-            matches = getBestMatches(donor.getRegionOfDeath(), matches, organ);
+            OrganMatching.organ = organ;
+            User donor = model.getUserFromId((int) OrganMatching.organ.getDonorId());
+            List<User> matches = getAllMatches(donor);
+            matches = getBestMatches(donor.getRegionOfDeath(), matches);
             List<User> topMatches = new ArrayList<>();
             for (User user : matches){
-                if (user.getName() != null && user.getName().toLowerCase().contains(receiverNameQuery.toLowerCase())){
+                if(user.getName() != null && user.getName().toLowerCase().contains(receiverNameQuery.toLowerCase())){
                     topMatches.add(user);
                 }
             }
@@ -80,13 +132,7 @@ public class OrganMatching {
     /**
      * Compares to users based on waiting time
      */
-    class WaitingComparator implements Comparator<User> {
-        private DonatableOrgan organ;
-
-        WaitingComparator(DonatableOrgan organ) {
-            this.organ = organ;
-        }
-
+    static class WaitingComparator implements Comparator<User> {
         @Override
         public int compare(User user1, User user2) {
             int i = 0;

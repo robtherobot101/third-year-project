@@ -3,7 +3,7 @@ using System;
 
 namespace mobileAppClient.Models
 {
-    public class OrganTransfer
+    class OrganTransfer
     {
 
         public int id { get; set; }

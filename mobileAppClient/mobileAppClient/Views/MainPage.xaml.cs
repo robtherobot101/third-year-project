@@ -129,7 +129,6 @@ namespace mobileAppClient
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
             var mapPage = new MasterPageItem() { Title = "Map", Icon = "map_icon.png", TargetType = typeof(ClinicianMapPage) };
             var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(MessageThreadsListPage) };
-            var clinicianSettingsPage = new MasterPageItem() { Title = "Settings", Icon = "settings_icon.png", TargetType = typeof(ClinicianSettings) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -138,9 +137,7 @@ namespace mobileAppClient
             menuList.Add(transplantListPage);
             menuList.Add(mapPage);
             menuList.Add(messagesPage);
-            menuList.Add(clinicianSettingsPage);
             menuList.Add(logoutPage);
-
         }
 
         public void clinicianViewingUser()
@@ -210,6 +207,7 @@ namespace mobileAppClient
                     catch (TargetInvocationException ie)
                     {
                         Console.WriteLine("Exception: " + ie.InnerException);
+                        Console.WriteLine("Exception: " + ie.InnerException.InnerException);
                     }
                     break;
             }
