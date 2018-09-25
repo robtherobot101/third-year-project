@@ -248,6 +248,7 @@
     <Folder Include="Resources\drawable-xhdpi\" />
     <Folder Include="Resources\drawable-xxhdpi\" />
     <Folder Include="Resources\drawable-xxxhdpi\" />
+    <Folder Include="res\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\mobileAppClient\mobileAppClient.csproj">
@@ -480,6 +481,11 @@
   <ItemGroup>
     <AndroidResource Include="Resources\layout\OrganTransfer.axml">
       <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\raw\coin.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AndroidResource>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />

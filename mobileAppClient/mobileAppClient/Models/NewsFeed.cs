@@ -20,7 +20,7 @@ namespace mobileAppClient
          **/
         public NewsFeed()
         {
-            fillFeed(
+            FillFeed(
                 "http://www.adhb.health.nz/about-us/news-and-publications/latest-stories/atom",
                 "http://www.tdh.org.nz/news-and-media/news/rss",
                 "https://waikatodhbnewsroom.co.nz/feed/",
@@ -34,13 +34,13 @@ namespace mobileAppClient
             switch (region)
             {
                 case ("Waikato"):
-                    fillFeed("https://waikatodhbnewsroom.co.nz/feed/");
+                    FillFeed("https://waikatodhbnewsroom.co.nz/feed/");
                     break;
                 case ("Auckland"):
-                    fillFeed("http://www.adhb.health.nz/about-us/news-and-publications/latest-stories/atom");
+                    FillFeed("http://www.adhb.health.nz/about-us/news-and-publications/latest-stories/atom");
                     break;
                 default:
-                    fillFeed();
+                    FillFeed();
                     break;
             }
         }
@@ -77,9 +77,9 @@ namespace mobileAppClient
         /**
          * Fill the image carousel with images and captions
          */
-        private async void fillFeed(params string[] feeds)
+        private void FillFeed(params string[] feeds)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return;
             }
