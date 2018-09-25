@@ -43,7 +43,7 @@ namespace mobileAppClient
             MessagesListView.ItemsSource = conversationMessages;
 
             //MessagesListView.ScrollToLast();
-            VSAppCenter.seConversationController(this);
+            VSAppCenter.setConversationController(this);
         }
 
         private void ConversationMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -53,7 +53,7 @@ namespace mobileAppClient
 
         protected override void OnDisappearing()
         {  
-            VSAppCenter.seConversationController(null);
+            VSAppCenter.setConversationController(null);
         }
 
 

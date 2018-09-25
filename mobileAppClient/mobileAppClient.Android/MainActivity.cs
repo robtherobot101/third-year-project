@@ -27,6 +27,8 @@ namespace mobileAppClient.Droid
 
     [IntentFilter(new [] {Intent.ActionView}, Categories = new [] {Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "https", DataHost = "csse-s302g3.canterbury.ac.nz", DataPath = "/oauth2redirect")]
 
+    [IntentFilter(new[] { Intent.ActionView }, Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "https", DataHost = "csse-s302g3.canterbury.ac.nz", DataPath = "/oauth2redirectChangeLogin")]
+
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
 
@@ -281,6 +283,8 @@ namespace mobileAppClient.Droid
             if (intent.Data != null)
             {
                 var data = intent.Data;
+
+                // if data == www...ChangeLogin
 
                 string queryParameter = data.GetQueryParameter("code");
                 await UserController.Instance.PassControlToLoginPage(queryParameter);
