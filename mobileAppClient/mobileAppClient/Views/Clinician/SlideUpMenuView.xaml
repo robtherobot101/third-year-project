@@ -3,8 +3,10 @@
     xmlns:t1="clr-namespace:SlideOverKit;assembly=SlideOverKit"
     xmlns="http://xamarin.com/schemas/2014/forms" 
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+    xmlns:androidWidget="clr-namespace:mobileAppClient.Droid;assembly=mobileAppClient.Droid;targetPlatform=Android"
     x:Class="mobileAppClient.Views.Clinician.SlideUpMenuView">
-   
+
+    <!-- TODO this. Tableview inside a grid?-->
     <Grid Padding="10, 30, 10, 10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
@@ -17,13 +19,23 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Label Text="Slide Up Menu" FontSize="Default" Grid.ColumnSpan="2" XAlign="Center" YAlign="Center" TextColor="White" />
+        <Label x:Name="UserName" FontSize="24" Grid.ColumnSpan="2" XAlign="Center" YAlign="Center" TextColor="White" />
         <Image Grid.Column="0" Grid.Row="1" Source="Home.png" WidthRequest="25" HeightRequest="25" HorizontalOptions="End" VerticalOptions="Center"/>
         <Label Text="Go home now?" Grid.Column="1" Grid.Row="1" XAlign="Start" YAlign="Center" TextColor="White"/>
         <Image Grid.Column="0" Grid.Row="2" Source="Pencil.png" WidthRequest="25" HeightRequest="25" HorizontalOptions="End" VerticalOptions="Center"/>
         <Label Text="Set destination" Grid.Column="1" Grid.Row="2" XAlign="Start" YAlign="Center" TextColor="White"/>
         <Image Grid.Column="0" Grid.Row="3" Source="Settings.png" WidthRequest="25" HeightRequest="25" HorizontalOptions="End" VerticalOptions="Center"/>
         <Label Text="Navigation settings" Grid.Column="1" Grid.Row="3" XAlign="Start" YAlign="Center" TextColor="White"/>
-        <Button Grid.ColumnSpan="2" Grid.Row="4" Text="View Profile" TextColor="White" FontSize="Default" BorderRadius="5" BorderWidth="1" BackgroundColor="LightPink"/>
+        <Image Grid.Column="0" Grid.Row="3" Source="Settings.png" WidthRequest="25" HeightRequest="25" HorizontalOptions="End" VerticalOptions="Center"/>
+        <Label Text="Navigation settings" Grid.Column="1" Grid.Row="3" XAlign="Start" YAlign="Center" TextColor="White"/>
+        <Image Grid.Column="0" Grid.Row="3" Source="Settings.png" WidthRequest="25" HeightRequest="25" HorizontalOptions="End" VerticalOptions="Center"/>
+        <Label Text="Navigation settings" Grid.Column="1" Grid.Row="3" XAlign="Start" YAlign="Center" TextColor="White"/>
+        <Image Grid.Column="0" Grid.Row="3" Source="Settings.png" WidthRequest="25" HeightRequest="25" HorizontalOptions="End" VerticalOptions="Center"/>
+        <Label Text="Navigation settings" Grid.Column="1" Grid.Row="3" XAlign="Start" YAlign="Center" TextColor="White"/><Image Grid.Column="0" Grid.Row="3" Source="Settings.png" WidthRequest="25" HeightRequest="25" HorizontalOptions="End" VerticalOptions="Center"/>
+        <Label Text="Navigation settings" Grid.Column="1" Grid.Row="3" XAlign="Start" YAlign="Center" TextColor="White"/>
+        <Button Grid.ColumnSpan="2" Grid.Row="4" Text="Start" TextColor="White" FontSize="24" BorderRadius="5" BorderWidth="1" BackgroundColor="#2E3332"/>
     </Grid>
+    <androidWidget:BottomSheetLayout>
+        
+    </androidWidget:BottomSheetLayout>
 </t1:SlideMenuView >
