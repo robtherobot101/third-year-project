@@ -54,8 +54,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
             LocalDate.of(1969, 8, 4),
             "bflame",
             "flameman@hotmail.com",
-                "cfj3772",
-                "default"
+                "cfj3772"
         );
         testUserBobby.setGender(Gender.MALE);
         testUserBobby.setRegion("Auckland");
@@ -66,8 +65,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
             LocalDate.of(1997, 1, 4),
             "andy",
             "andy@hotmail.com",
-                "lsj4940",
-                "default"
+                "lsj4940"
         );
         testUserAndy.setGender(Gender.FEMALE);
         testUserAndy.setRegion("Arrowtown");
@@ -79,8 +77,7 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
             LocalDate.of(1996, 8, 4),
             "test",
             "test@hotmail.com",
-                "cfj3769",
-                "default"
+                "cfj3769"
         );
         testUserTest.setGender(Gender.MALE);
         testUserTest.setRegion("Canterbury");

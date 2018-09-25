@@ -44,7 +44,7 @@ public class GeneralM implements GeneralDAO {
         Map<Object, String> response = new HashMap<>();
         for(User u : users.getAllUsers(null)) {
             try {
-                if(u.getEmail().equals(usernameEmail) && u.getPassphrase().equals(password) || u.getUsername().equals(usernameEmail) && u.getPassphrase().equals(password)) {
+                if(u.getEmail().equals(usernameEmail) && u.getPassword().equals(password) || u.getUsername().equals(usernameEmail) && u.getPassword().equals(password)) {
                     response.put(u, null);
                     return response;
                 }

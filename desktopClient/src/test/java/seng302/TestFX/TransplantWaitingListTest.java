@@ -379,8 +379,7 @@ public class TransplantWaitingListTest extends TestFXTest {
                 LocalDate.of(1969, 8, 4),
                 "bflame",
                 "flameman@hotmail.com",
-                "cfj3742",
-                "default"
+                "cfj3742"
         );
         testUser.setRegion("Canterbury");
         try{
@@ -393,8 +392,7 @@ public class TransplantWaitingListTest extends TestFXTest {
                 LocalDate.of(1957, 12, 12),
                 "bobr",
                 "bob@live.com",
-                "cfj3742",
-                "default"
+                "cfj3742"
         );
         try{
             WindowManager.getDataManager().getUsers().insertUser(testUser);
