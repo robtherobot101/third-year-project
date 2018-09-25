@@ -380,7 +380,7 @@ namespace mobileAppClient
          */
         void Handle_StreetAutoCompleteItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
-            if(StreetAutoCompleteStAddr.Text != "")
+            if(StreetAutoCompleteStAddr.Text != null || StreetAutoCompleteStAddr.Text != "")
             {
                 AutoCompleteitemTapped = true;
                 DisplayAddress(StreetAutoCompleteStAddr.Text);
