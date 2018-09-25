@@ -75,7 +75,7 @@ namespace CustomRenderer.iOS
                 nativeMap.CalloutAccessoryControlTapped += OnCalloutAccessoryControlTapped;
                 nativeMap.DidSelectAnnotationView += OnDidSelectAnnotationView;
                 nativeMap.DidDeselectAnnotationView += OnDidDeselectAnnotationView;
-                
+
 
             }
 
@@ -262,7 +262,7 @@ namespace CustomRenderer.iOS
                 processHelicopterTapped(helicopterPin);
                 return;
 
-            } 
+            }
             else if (!customViewUrl[0].Equals("ReceiverURL"))
             {
 
@@ -317,7 +317,7 @@ namespace CustomRenderer.iOS
 
                 MapEntryClass mapEntryClass = new MapEntryClass();
                 await mapEntryClass.addSlideUpSheet(currentPin, formsMap, nativeMap, this);
-            } 
+            }
 
 
 
@@ -371,7 +371,7 @@ namespace CustomRenderer.iOS
                     window.RootViewController = rootVC.ChildViewControllers[0];
                 }
 
-            } 
+            }
         }
 
         public void removeOverlays() {
@@ -459,7 +459,7 @@ namespace CustomRenderer.iOS
         /// <param name="heliPin"></param>
         private void addFlightPath(CustomPin heliPin)
         {
-       
+
             CoreLocation.CLLocationCoordinate2D[] cLLocationCoordinate2Ds = new CoreLocation.CLLocationCoordinate2D[2];
             cLLocationCoordinate2Ds[0] = new CoreLocation.CLLocationCoordinate2D(heliPin.Position.Latitude, heliPin.Position.Longitude);
             cLLocationCoordinate2Ds[1] = new CoreLocation.CLLocationCoordinate2D(heliPin.HelicopterDetails.destinationPosition.Latitude,
