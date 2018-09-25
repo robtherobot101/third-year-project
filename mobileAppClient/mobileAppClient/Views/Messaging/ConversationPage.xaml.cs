@@ -12,6 +12,7 @@ using mobileAppClient.Notifications;
 using Xamarin.Forms.Xaml;
 using mobileAppClient.Models.CustomObjects;
 using mobileAppClient.odmsAPI;
+using mobileAppClient.Views.Messaging;
 
 namespace mobileAppClient
 {
@@ -51,6 +52,13 @@ namespace mobileAppClient
             //MessagesListView.ScrollToLast();
         }
 
+        protected async override void OnAppearing()
+        {
+            base.OnAppearing();
+            await ScrollViewContainer.ScrollToAsync(0,100,true);
+
+        }
+
         protected override void OnDisappearing()
         {  
             VSAppCenter.setConversationController(null);
@@ -67,6 +75,12 @@ namespace mobileAppClient
 	            isClinicianAccessing = true;
 	        }
 	    }
+
+        void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
+        {
+            DependencyService.Get<IForceKeyboardDismissalService>().DismissKeyboard();
+
+        }
 
         /// <summary>
         /// Handles the sending of a message

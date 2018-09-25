@@ -71,8 +71,6 @@ namespace mobileAppClient
             // Temporary fix for the Google login not working on iOS
             if (Device.RuntimePlatform == Device.iOS) {
                 GoogleButton.IsVisible = false;
-                RememberMeSwitch.IsVisible = false;
-                RememberMeLabel.IsVisible = false;
 
             }
 

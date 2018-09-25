@@ -50,7 +50,11 @@ public class Server {
 
     private Map<Object, Object> config = new ConfigParser().getConfig();
 
-    private Server() { }
+    private Server() {
+        System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
+        System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "yyyy-MM-dd HH:mm:ss");
+        log = LoggerFactory.getLogger(Server.class);
+    }
 
     public static Server getInstance() {
         return INSTANCE;
@@ -301,20 +305,16 @@ public class Server {
     }
 
     public static void main(String[] args) {
-        System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
-        System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "yyyy-MM-dd HH:mm:ss");
-        INSTANCE.log = LoggerFactory.getLogger(Server.class);
         INSTANCE.testing = false;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){
-            try{
+            try {
                 if(argz.contains("-t")){
                     INSTANCE.testing = true;
                 }
                 INSTANCE.port = Integer.parseInt(argz.get(0));
             }
             catch (Exception ignored){
-
             }
         }
         INSTANCE.start();

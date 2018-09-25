@@ -118,18 +118,6 @@ public class ClinicianWindowGUITest extends TestFXTest {
         assertTrue(((String)displayNCombobox.getItems().get(2)).matches("All " + i + " results"));
     }
 
-    @Ignore
-    @Test
-    public void clickOnProfile_opensProfile() throws TimeoutException, HttpResponseException {
-        removeAllUsers();
-        User u1 = new User("Victor", LocalDate.now());
-        WindowManager.getDataManager().getUsers().insertUser(u1);
-        clickOn("#profileSearchTextField").write("victor");
-        TableView profileTable = lookup("#profileTable").queryTableView();
-        doubleClickOn((Node)from(profileTable).lookup(u1.getName()).query());
-        waitForEnabled(10,"#attributesGridPane");
-    }
-
     @Test
     public void searchForProfile_resultsInTable() throws TimeoutException, HttpResponseException {
         User u1 = new User("Victor,Abby,West", LocalDate.now());

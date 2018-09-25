@@ -295,11 +295,16 @@ public class User {
     }
 
     public String getPreferredName() {
-        String val;
-        if (preferredName == null || preferredName.length == 0) {
-            val = "";
-        } else {
-            val = String.join(" ", preferredName);
+        String val = "";
+        if (preferredName != null) {
+            for (String name : preferredName) {
+                if (name != null) {
+                    val += name + " ";
+                }
+            }
+            if (!val.isEmpty()) {
+                val = val.substring(0, val.length()-1);
+            }
         }
         return val;
     }

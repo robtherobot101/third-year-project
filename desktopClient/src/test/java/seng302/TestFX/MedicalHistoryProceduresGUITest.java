@@ -121,24 +121,6 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         verifyThat("Heart Transplant", isVisible());
     }
 
-
-    /**
-     * Add a procedure with an empty diagnosis but valid date
-     * @throws SQLException catch sql execution exceptions
-     * @throws HttpResponseException catch connection errors
-     */
-    @Ignore
-    @Test
-    public void addProcedureEmptySummaryAndDescription() throws SQLException, HttpResponseException{
-        enterMedicalHistoryProceduresView();
-        clickOn("#dateOfProcedureInput").write("9/1/2020");
-        clickOn("#addNewProcedureButton");
-
-        // Checks an alert dialog was presented -> this checks disease was not added
-        clickOn("OK");
-    }
-
-
     /**
      * Add a disease with an empty date of diagnosis but valid diagnosis
      * @throws SQLException catch sql execution exceptions
@@ -153,25 +135,6 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         // Checks an alert dialog was presented -> this checks disease was not added
         clickOn("OK");
     }
-
-    /**
-     * Add a procedure with a valid diagnosis with date before user's date of birth
-     * @throws SQLException catch sql execution exceptions
-     * @throws HttpResponseException catch connection errors
-     */
-    @Ignore
-    @Test
-    public void addProcedureDateBeforeDOB() throws SQLException, HttpResponseException{
-        enterMedicalHistoryProceduresView();
-        clickOn("#summaryInput").write("Arm Transplant");
-        clickOn("#descriptionInput").write("Transfer of arm");
-        clickOn("#dateOfProcedureInput").write("4/04/1923");
-        clickOn("#addNewProcedureButton");
-
-        // Checks an alert dialog was presented -> this checks disease was not added
-        clickOn("OK");
-    }
-    
 
     /**
      * Checks when a procedure is updated, changes are reflected appropriately
@@ -245,55 +208,4 @@ public class MedicalHistoryProceduresGUITest extends TestFXTest {
         pendingProcedureTableView = lookup("#pendingProcedureTableView").query();
         assertEquals(0, pendingProcedureTableView.getItems().size());
     }
-
-
-    /**
-     * Adds a medication to the donor and then saves the medications, and then checks that the donor has been updated in the back end
-     * as well as checking that the current medications table has been populated.
-     * @throws SQLException catch sql execution exceptions
-     * @throws HttpResponseException catch connection errors
-     */
-    @Ignore
-    @Test
-    public void saveProcedure() throws SQLException, HttpResponseException{
-        //Add Medication for donor.
-        addNewProcedureToPendingProcedures();
-
-        clickOn("#saveButton");
-        sleep(200);
-        clickOn("OK");
-        clickOn("#exitUserButton");
-        sleep(200);
-        clickOn("#exitOK");
-
-        //Check if procedure added is correct in the Medication Array List of the user.
-        TableView donorList = lookup("#profileTable").queryTableView();
-        User topDonor = (User) donorList.getItems().get(0);
-        assertTrue(topDonor.getPendingProcedures().get(0).getSummary().equalsIgnoreCase("Arm Transplant"));
-        assertTrue(topDonor.getPendingProcedures().get(0).getDescription().equalsIgnoreCase("Transfer of arm"));
-        assertEquals(LocalDate.of(2020, 4, 4), topDonor.getPendingProcedures().get(0).getDate());
-
-        doubleClickOn("Bobby Dong Flame");
-        WaitForAsyncUtils.waitForFxEvents();
-
-        // Coords of the button #medicalHistoryButton. Needs to be hardcoded as a workaround to a TestFX bug
-        clickOn("#proceduresButton");
-
-        //Check if medication added is correct and is populated when the user re-enters the medications window.
-        pendingProcedureTableView = lookup("#pendingProcedureTableView").query();
-        Procedure topProcedure = pendingProcedureTableView.getItems().get(0);
-        assertEquals("Arm Transplant", topProcedure.getSummary());
-        assertEquals("Transfer of arm", topProcedure.getDescription());
-        assertEquals(LocalDate.of(2020, 4, 4), topProcedure.getDate());
-
-        //Get rid of procedure to not affect further tests
-        clickOn("Arm Transplant");
-        clickOn("#deleteProcedureButton");
-        sleep(200);
-        clickOn("OK");
-        clickOn("#saveButton");
-        sleep(200);
-        clickOn("OK");
-    }
-
 }

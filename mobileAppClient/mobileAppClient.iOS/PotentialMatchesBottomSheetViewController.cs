@@ -145,7 +145,7 @@ namespace mobileAppClient.iOS
 
         }
 
-        void BackButton_TouchUpInside(object sender, EventArgs)
+        void BackButton_TouchUpInside(object sender, EventArgs e)
         {
             customMapRenderer.ClearAllReceivers();
             customMapRenderer.removeOverlays();

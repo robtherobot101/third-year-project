@@ -37,7 +37,7 @@ namespace CustomRenderer.iOS
         private Dictionary<Organ, string> helicopterIcons;
 
 
-        protected override void OnElementChanged(ElementChangedEventArgs<View>)
+        protected override void OnElementChanged(ElementChangedEventArgs<View> e)
         {
             base.OnElementChanged(e);
 
@@ -230,7 +230,7 @@ namespace CustomRenderer.iOS
             return annotationView;
         }
 
-        async void OnCalloutAccessoryControlTapped(object sender, MKMapViewAccessoryTappedEventArgs)
+        async void OnCalloutAccessoryControlTapped(object sender, MKMapViewAccessoryTappedEventArgs e)
         {
 
             //Display Alert 
@@ -243,7 +243,7 @@ namespace CustomRenderer.iOS
 
 
 
-        async void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs)
+        async void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
 
             var customView = e.View as CustomMKAnnotationView;
@@ -322,7 +322,7 @@ namespace CustomRenderer.iOS
 
         }
 
-        async void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs)
+        async void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
             if (!e.View.Selected)
             {
