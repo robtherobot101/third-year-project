@@ -5,11 +5,13 @@ import org.junit.Test;
 import seng302.User.Attribute.BloodType;
 import seng302.User.Attribute.Gender;
 import seng302.User.Attribute.Organ;
+import seng302.User.Medication.Medication;
 import seng302.User.User;
 import seng302.User.WaitingListItem;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -153,5 +155,33 @@ public class UserTest {
                 + "\n-Last Modified: null"
                 + "\n-Organs to donate: [].", user.toString());
 
+    }
+
+    @Test
+    public void checkNhiRegionCharInvalid() {
+        assertFalse(User.checkNhi("baa0000"));
+    }
+
+    @Test
+    public void checkNhiValid() {
+        assertTrue(User.checkNhi("caa0000"));
+    }
+
+    @Test
+    public void checkNhiLengthInvalid() {
+        assertFalse(User.checkNhi("caa00000"));
+    }
+
+    @Test
+    public void checkNhiCharTypeInvalid() {
+        assertFalse(User.checkNhi("ca00000"));
+    }
+
+    @Test
+    public void testMedicationEquals() {
+        //Test that the custom equals method for medications works correctly
+        Medication test1 = new Medication("testMed", new String[]{}, new ArrayList<>());
+        Medication test2 = new Medication("testMed", new String[]{});
+        assertTrue(test2.equals(test1));
     }
 }

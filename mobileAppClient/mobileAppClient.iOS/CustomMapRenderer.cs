@@ -37,7 +37,7 @@ namespace CustomRenderer.iOS
         private Dictionary<Organ, string> helicopterIcons;
 
 
-        protected override void OnElementChanged(ElementChangedEventArgs<View>)
+        protected override void OnElementChanged(ElementChangedEventArgs<View> e)
         {
             base.OnElementChanged(e);
 
@@ -75,7 +75,7 @@ namespace CustomRenderer.iOS
                 nativeMap.CalloutAccessoryControlTapped += OnCalloutAccessoryControlTapped;
                 nativeMap.DidSelectAnnotationView += OnDidSelectAnnotationView;
                 nativeMap.DidDeselectAnnotationView += OnDidDeselectAnnotationView;
-                
+
 
             }
 
@@ -127,7 +127,8 @@ namespace CustomRenderer.iOS
             var customPin = GetCustomPin(annotation as MKPointAnnotation);
             if (customPin == null)
             {
-                throw new Exception("NOT WORKING");
+                Console.WriteLine("Pin added incorrectly! KNOWN BUG");
+                return null;
             }
 
             
@@ -230,7 +231,7 @@ namespace CustomRenderer.iOS
             return annotationView;
         }
 
-        async void OnCalloutAccessoryControlTapped(object sender, MKMapViewAccessoryTappedEventArgs)
+        async void OnCalloutAccessoryControlTapped(object sender, MKMapViewAccessoryTappedEventArgs e)
         {
 
             //Display Alert 
@@ -243,7 +244,7 @@ namespace CustomRenderer.iOS
 
 
 
-        async void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs)
+        async void OnDidSelectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
 
             var customView = e.View as CustomMKAnnotationView;
@@ -261,7 +262,7 @@ namespace CustomRenderer.iOS
                 processHelicopterTapped(helicopterPin);
                 return;
 
-            } 
+            }
             else if (!customViewUrl[0].Equals("ReceiverURL"))
             {
 
@@ -316,13 +317,13 @@ namespace CustomRenderer.iOS
 
                 MapEntryClass mapEntryClass = new MapEntryClass();
                 await mapEntryClass.addSlideUpSheet(currentPin, formsMap, nativeMap, this);
-            } 
+            }
 
 
 
         }
 
-        async void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs)
+        async void OnDidDeselectAnnotationView(object sender, MKAnnotationViewEventArgs e)
         {
             if (!e.View.Selected)
             {
@@ -370,7 +371,7 @@ namespace CustomRenderer.iOS
                     window.RootViewController = rootVC.ChildViewControllers[0];
                 }
 
-            } 
+            }
         }
 
         public void removeOverlays() {
@@ -458,7 +459,7 @@ namespace CustomRenderer.iOS
         /// <param name="heliPin"></param>
         private void addFlightPath(CustomPin heliPin)
         {
-       
+
             CoreLocation.CLLocationCoordinate2D[] cLLocationCoordinate2Ds = new CoreLocation.CLLocationCoordinate2D[2];
             cLLocationCoordinate2Ds[0] = new CoreLocation.CLLocationCoordinate2D(heliPin.Position.Latitude, heliPin.Position.Longitude);
             cLLocationCoordinate2Ds[1] = new CoreLocation.CLLocationCoordinate2D(heliPin.HelicopterDetails.destinationPosition.Latitude,

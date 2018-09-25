@@ -170,11 +170,10 @@ DROP TABLE IF EXISTS `MESSAGE`;
 CREATE TABLE IF NOT EXISTS `MESSAGE` (
   `id` int(11) NOT NULL,
   `conversation_id` int(11) NOT NULL,
-  `text` text NOT NULL,
+  `text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- --------------------------------------------------------
 
 --
@@ -303,7 +302,10 @@ CREATE TABLE IF NOT EXISTS `USER` (
   `regionOfDeath` text,
   `countryOfDeath` text,
   `country` text,
-  `profile_image_type` varchar(4) DEFAULT NULL
+  `profile_image_type` varchar(4) DEFAULT NULL,
+  `acc_type` varchar(10) NOT NULL DEFAULT 'team300',
+  `api_id` text
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- -------------------------------------------------------
 
@@ -507,6 +509,8 @@ ALTER TABLE `USER`
 --
 ALTER TABLE `WAITING_LIST_ITEM`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
 --
 -- Constraints for dumped tables
 --

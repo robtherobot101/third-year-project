@@ -2,6 +2,7 @@ package seng302.Logic.Database;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import seng302.Server;
 
 import java.io.IOException;
 import java.sql.SQLException;
