@@ -308,14 +308,13 @@ public class Server {
         INSTANCE.testing = false;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){
-            try{
+            try {
                 if(argz.contains("-t")){
                     INSTANCE.testing = true;
                 }
                 INSTANCE.port = Integer.parseInt(argz.get(0));
             }
             catch (Exception ignored){
-
             }
         }
         INSTANCE.start();
