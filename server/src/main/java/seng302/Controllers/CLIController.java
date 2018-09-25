@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import seng302.Logic.CommandLineInterface;
 import seng302.Logic.Database.GeneralClinician;
 import seng302.Model.Command;
+import seng302.Server;
 import spark.Request;
 import spark.Response;
 
@@ -39,7 +40,7 @@ public class CLIController {
                 String result = model.readCommand(command.toString()).getResponse();
                 return result;
             } catch (Exception e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";
             }

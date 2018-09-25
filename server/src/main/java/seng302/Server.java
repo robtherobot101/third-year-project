@@ -2,6 +2,7 @@ package seng302;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.impl.SimpleLogger;
 import seng302.Config.ConfigParser;
 import seng302.Controllers.*;
 import seng302.Model.Attribute.ProfileType;
@@ -22,7 +23,7 @@ public class Server {
 
     private static final Server INSTANCE = new Server();
 
-    public final Logger log = LoggerFactory.getLogger(Server.class);
+    public Logger log;
 
     private DatabaseController databaseController;
     private UserController userController;
@@ -49,7 +50,11 @@ public class Server {
 
     private Map<Object, Object> config = new ConfigParser().getConfig();
 
-    private Server() { }
+    private Server() {
+        System.setProperty(SimpleLogger.SHOW_DATE_TIME_KEY, "true");
+        System.setProperty(SimpleLogger.DATE_TIME_FORMAT_KEY, "yyyy-MM-dd HH:mm:ss");
+        log = LoggerFactory.getLogger(Server.class);
+    }
 
     public static Server getInstance() {
         return INSTANCE;
@@ -264,6 +269,10 @@ public class Server {
                 get("",      userController::countUsers);
             });
 
+            path("/300Account", () -> post("", profileUtils::changeToTeam300));
+            path("/facebookaccount", () -> post("",      profileUtils::changeToFacebook));
+            path("/googleaccount", () -> post("", profileUtils::changeToGoogle));
+
             path("/countries", () -> {
                 get("", countriesController::getCountries);
                 patch("", countriesController::patchCountries);
@@ -303,14 +312,13 @@ public class Server {
         INSTANCE.testing = false;
         List<String> argz = Arrays.asList(args);
         if(argz.size() > 0){
-            try{
+            try {
                 if(argz.contains("-t")){
                     INSTANCE.testing = true;
                 }
                 INSTANCE.port = Integer.parseInt(argz.get(0));
             }
             catch (Exception ignored){
-
             }
         }
         INSTANCE.start();

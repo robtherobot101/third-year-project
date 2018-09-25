@@ -51,15 +51,14 @@ namespace mobileAppClient
             MiddleEarCell.On = true;
             SkinCell.On = true;
             BoneMarrowCell.On = true;
-            ConnectiveTissueCell.On = true;
-            
+            ConnectiveTissueCell.On = true;         
         }
 
         /*
          * Handles when a user presses the save button, sending an 
          * API call to update a user's donated organs.
          */ 
-        async void Handle_SavePressed(object sender, System.EventArgs e)
+        async void Handle_SavePressed(object sender, EventArgs e)
         {
             UserController.Instance.LoggedInUser.organs.Clear();
             if(LiverCell.On) {

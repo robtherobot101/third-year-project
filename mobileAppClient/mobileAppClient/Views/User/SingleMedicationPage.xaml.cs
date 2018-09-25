@@ -107,7 +107,7 @@ namespace mobileAppClient
         }
 
 
-        async void Handle_SearchButtonPressed(object sender, System.EventArgs e)
+        async void Handle_SearchButtonPressed(object sender, EventArgs e)
         {
             // Update the current search param
             IsLoading = true;
@@ -123,7 +123,7 @@ namespace mobileAppClient
 
         }
 
-        async void Handle_MedicationTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e) {
+        async void Handle_MedicationTapped(object sender, ItemTappedEventArgs e) {
             if (e == null)
             {
                 return; //ItemSelected is called on deselection, which results in SelectedItem being set to null

@@ -2,7 +2,14 @@ package seng302.Controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import javafx.util.Pair;
+import org.json.JSONException;
+import org.json.JSONObject;
 import seng302.Logic.Database.Authorization;
+import seng302.Logic.Database.GeneralUser;
+import seng302.Logic.Database.ProfileUtils;
 import seng302.Logic.SaltHash;
 import seng302.Logic.Database.Notifications;
 import seng302.Model.Admin;
@@ -42,7 +49,7 @@ public class AuthorizationController {
                 matchedPassword = SaltHash.checkHash(password, hash);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
         }
         if (!foundUser) {
             try {
@@ -51,7 +58,7 @@ public class AuthorizationController {
                     matchedPassword = SaltHash.checkHash(password, hash);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
         }
         if (matchedPassword) {
@@ -64,7 +71,8 @@ public class AuthorizationController {
 
     /**
      * method to handle the login requests
-     * @param request Java request object, used to invoke correct methods
+     *
+     * @param request  Java request object, used to invoke correct methods
      * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return JSON object containing the information of the user logging in or a message saying why it failed, very nice
      */
@@ -72,10 +80,6 @@ public class AuthorizationController {
 
         String usernameEmail = request.queryParams("usernameEmail");
         String password = request.queryParams("password");
-        if(usernameEmail == null || password == null) {
-            response.status(400);
-            return "Missing Parameters";
-        }
 
         ProfileType typeMatched = null;
         String loginToken = null;
@@ -93,7 +97,30 @@ public class AuthorizationController {
                 System.out.println("LoginController: Logging in as user...");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
+        }
+
+        if(loginToken == null){
+            try {
+                // If we are given an app id, log in with that
+                if (request.queryParams("api_id") != null/* && request.queryParams("api_access_token") != null && request.queryParams("acc_type") != null*/) {
+                    //validateAccessToken(request.queryParams("api_access_token"), request.queryParams("acc_type"));
+                    currentUser = new Authorization().loginUser(request.queryParams("api_id"));
+                } else if (usernameEmail == null || password == null) {
+                    response.status(400);
+                    return "Missing Parameters";
+                }
+
+                if (currentUser != null) {
+                    loginToken = model.generateToken((int) currentUser.getId(), 0);
+                    typeMatched = ProfileType.USER;
+                    System.out.println("LoginController: Logging in as user...");
+                }
+            } catch (SQLException e) {
+                response.status(500);
+                Server.getInstance().log.error(e.getMessage());
+                return "Failed to login";
+            }
         }
 
         if (loginToken == null) { //if user login was unsuccessful
@@ -106,7 +133,7 @@ public class AuthorizationController {
                     System.out.println("LoginController: Logging in as clinician...");
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
         }
 
@@ -120,7 +147,7 @@ public class AuthorizationController {
                     System.out.println("LoginController: Logging in as admin...");
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
         }
 
@@ -130,7 +157,7 @@ public class AuthorizationController {
                 notifications.register(request.headers("device_id"), loginToken);
             } catch (SQLException e) {
                 Server.getInstance().log.error("Could not register device!");
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
             switch (typeMatched) {
                 case ADMIN:
@@ -164,9 +191,35 @@ public class AuthorizationController {
         return "Server Failure";
     }
 
+/*
+    public boolean validateAccessToken(String apiToken, String developerToken, String accType) {
+        if(accType.equals("GOOGLE")) {
+            return validateGoogleAccessToken(apiToken, developerToken);
+        } else if (accType.equals("FACEBOOK")) {
+            return validateFacebookAccessToken(apiToken, developerToken);
+        }
+        return false;
+    }
+
+    public boolean validateFacebookAccessToken(String apiToken, String facebookUserId) {
+        try {
+            String url = String.format("graph.facebook.com/debug_token" +
+                    "?input_token=%s" +
+                    "&access_token=%s", apiToken, "971327199740898");
+            JSONObject response = new JSONObject(Unirest.get(url).asString().getBody());
+            return response.getJSONObject("data").getString("user_id").equals(facebookUserId);
+        } catch (UnirestException | JSONException e) {
+            return false;
+        }
+    }
+*/
+
+    public boolean validateGoogleAccessToken;
+
     /**
      * method to handle logging out a user
-     * @param request Java request object, used to invoke correct methods
+     *
+     * @param request  Java request object, used to invoke correct methods
      * @param response Defines the contract between a returned instance and the runtime when an application needs to provide meta-data to the runtime
      * @return String containing information whether the logout was successful
      */

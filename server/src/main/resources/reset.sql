@@ -303,7 +303,10 @@ CREATE TABLE IF NOT EXISTS `USER` (
   `regionOfDeath` text,
   `countryOfDeath` text,
   `country` text,
-  `profile_image_type` varchar(4) DEFAULT NULL
+  `profile_image_type` varchar(4) DEFAULT NULL,
+  `acc_type` varchar(10) NOT NULL DEFAULT 'team300',
+  `api_id` text
+
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- -------------------------------------------------------
 
@@ -314,9 +317,10 @@ CREATE TABLE IF NOT EXISTS `USER` (
 DROP TABLE IF EXISTS `ACCOUNT`;
 CREATE TABLE IF NOT EXISTS `ACCOUNT` (
   `id` bigint(11) NOT NULL,
-  `username` text NOT NULL,
-  `password` text NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `username` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `password` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+
 
 --
 -- Indexes for dumped tables
@@ -506,6 +510,8 @@ ALTER TABLE `USER`
 --
 ALTER TABLE `WAITING_LIST_ITEM`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+
 --
 -- Constraints for dumped tables
 --

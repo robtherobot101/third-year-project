@@ -8,9 +8,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using mobileAppClient.Models;
 using Xamarin.Forms;
+using mobileAppClient.Notifications;
 using Xamarin.Forms.Xaml;
 using mobileAppClient.Models.CustomObjects;
 using mobileAppClient.odmsAPI;
+using mobileAppClient.Views.Messaging;
 
 namespace mobileAppClient
 {
@@ -22,10 +24,7 @@ namespace mobileAppClient
 
         private bool isClinicianAccessing { get; set; }
 
-	    private Conversation conversation;
-
-        // The current conversation being displayed
-        public static Conversation currentConversation = null;
+	    public Conversation conversation;
 
         private CustomObservableCollection<Message> conversationMessages;
 
@@ -40,21 +39,36 @@ namespace mobileAppClient
 
 		    Title = conversation.externalName;
             conversationMessages = conversation.messages;
+            conversationMessages.CollectionChanged += ConversationMessages_CollectionChanged;
 
             MessagesListView.ItemsSource = conversationMessages;
-		    MessagesListView.ItemTapped += OnMessageTapped;
 
-            if (conversationMessages.Count > 0)
-            {
-                MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
-            }
+            //MessagesListView.ScrollToLast();
+            VSAppCenter.setConversationController(this);
+        }
+
+        private void ConversationMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //MessagesListView.ScrollToLast();
+        }
+
+        protected async override void OnAppearing()
+        {
+            base.OnAppearing();
+            await ScrollViewContainer.ScrollToAsync(0,100,true);
+
+        }
+
+        protected override void OnDisappearing()
+        {  
+            VSAppCenter.setConversationController(null);
         }
 
 
-	    /// <summary>
+        /// <summary>
         /// Checks whether the clinician is viewing this page, important for fetching the correct profiles of participants
         /// </summary>
-	    private void CheckIfClinicianAccessing()
+        private void CheckIfClinicianAccessing()
 	    {
 	        if (ClinicianController.Instance.isLoggedIn())
 	        {
@@ -62,16 +76,11 @@ namespace mobileAppClient
 	        }
 	    }
 
-        /// <summary>
-        /// When a message is tapped fire this event
-        /// Just deselects the item immediately, giving the appearance of not being tappable
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void OnMessageTapped(object sender, ItemTappedEventArgs e) {
-	        if (e.Item == null) return;
-	        ((ListView)sender).SelectedItem = null;
-	    }
+        void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
+        {
+            DependencyService.Get<IForceKeyboardDismissalService>().DismissKeyboard();
+
+        }
 
         /// <summary>
         /// Handles the sending of a message
@@ -103,11 +112,9 @@ namespace mobileAppClient
                 timestamp = new CustomDateTime(DateTime.Now)
 	        };
 
-            conversationMessages.Add(newMessage);
-            MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
+            conversationMessages.Insert(0, newMessage);
 	        chatTextInput.Text = "";
-	    }
-
-        
+            chatTextInput.Keyboard = null;
+        }
 	}
 }

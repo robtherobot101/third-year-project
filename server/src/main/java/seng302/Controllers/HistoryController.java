@@ -72,7 +72,7 @@ public class HistoryController {
                 response.status(201);
                 return "HISTORY ITEM INSERTED FOR USER ID: " + requestedUserId;
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
                 response.status(500);
                 return "Internal Server Error";
             }

@@ -99,14 +99,14 @@ public class UserSettingsController implements Initializable {
                         currentUser.getId(), usernameField.getText(), emailField.getText(), passwordField.getText(), userController.getToken());
             } catch (HttpResponseException e) {
                 Debugger.error(e.getMessage());
-                e.printStackTrace();
+                Debugger.error(e.getMessage());
                 WindowManager.createAlert(AlertType.ERROR, "Update failed!", "Failed to update account settings", "No changes were made to you account").showAndWait();
                 ((Stage) updateButton.getScene().getWindow()).close();
                 return;
             }
             currentUser.setUsername(usernameField.getText());
             currentUser.setEmail(emailField.getText());
-            currentUser.setPassword(passwordField.getText());
+            currentUser.setPassphrase(passwordField.getText());
 
             userController.addHistoryEntry("Account settings updated", "Profile account settings were updated.");
             Stage stage = (Stage) updateButton.getScene().getWindow();

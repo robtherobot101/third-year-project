@@ -2,6 +2,7 @@
 <MasterDetailPage xmlns="http://xamarin.com/schemas/2014/forms" 
                   xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
                   xmlns:local="clr-namespace:mobileAppClient"
+                  xmlns:androidLocal="clr-namespce:mobileAppClient.Droid;assembly:mobileAppClient.Droid"
                   xmlns:abstractions="clr-namespace:ImageCircle.Forms.Plugin.Abstractions;assembly=ImageCircle.Forms.Plugin"
                   x:Class="mobileAppClient.MainPage">
 
@@ -13,7 +14,7 @@
                 <Grid HeightRequest="200">
                     <Image Source="profile_photo_bg.png" Aspect="AspectFill" />
                     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                        <Image x:Name="ProfilePhotoImage" Source="{Binding ProfileImage}" Aspect="AspectFit" WidthRequest="90" HeightRequest="90">
+                        <Image x:Name="ProfilePhotoImage" Aspect="AspectFit" WidthRequest="90" HeightRequest="90">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Tapped="OnProfilePhotoTapped"

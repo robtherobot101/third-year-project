@@ -30,7 +30,7 @@ namespace mobileAppClient.iOS
             this.pin = pin;
             holdView = new UIView();
             fullView = 300;
-            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 70;
+            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 80;
             this.customMapRenderer = customMapRenderer;
         }
 

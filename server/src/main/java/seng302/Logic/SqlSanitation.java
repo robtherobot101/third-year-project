@@ -28,6 +28,8 @@ public class SqlSanitation extends DatabaseMethods {
             printStream = "You do not have permission to insert into the database.";
         } else if (sqlCommand.toLowerCase().contains("alter")) {
             printStream = "You do not have permission to alter the database.";
+        } else if (sqlCommand.toLowerCase().contains("sleep")) {
+            printStream = "You do not have permission to sleep.";
         }
         return printStream;
     }
@@ -51,11 +53,13 @@ public class SqlSanitation extends DatabaseMethods {
 //            table.append("\n");
             while (rs.next()) {
                 for (int i = 1; i <= columnsNumber; i++) {
-                    String columnValue = rs.getString(i);
-                    table.append(rsmd.getColumnName(i));
-                    table.append(": ");
-                    table.append(columnValue);
-                    table.append(", ");
+                    if (!rsmd.getColumnName(i).equalsIgnoreCase("password")) {
+                        String columnValue = rs.getString(i);
+                        table.append(rsmd.getColumnName(i));
+                        table.append(": ");
+                        table.append(columnValue);
+                        table.append(", ");
+                    }
                 }
                 table.append("\n");
             }

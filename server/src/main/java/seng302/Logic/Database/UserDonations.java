@@ -6,10 +6,7 @@ import seng302.Model.WaitingListItem;
 import seng302.NotificationManager.PushAPI;
 
 import java.sql.*;
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -155,6 +152,7 @@ public class UserDonations extends DatabaseMethods {
             Organ found = null;
             for (Organ newOrgan : newDonationItems) {
                 if (newOrgan == oldDonationItems.get(i)) {
+                    updateDonationListItem(userId, found.toString(), dateOfDeath);
                     found = newOrgan;
                     break;
                 }
@@ -163,7 +161,7 @@ public class UserDonations extends DatabaseMethods {
                 //Patch edited donations
                 for (Organ newOrgan : newDonationItems) {
                     if (newOrgan == oldDonationItems.get(i)) {
-                        System.out.println("Exists: " + newOrgan);
+                        updateDonationListItem(userId, found.toString(), dateOfDeath);
                         found = newOrgan;
                         break;
                     }
@@ -182,11 +180,39 @@ public class UserDonations extends DatabaseMethods {
 
         //Upload all new waiting list items
         for (Organ organ : newDonationItems) {
-            insertDonation(organ, userId, new GeneralUser().getUserFromId(userId).getDateOfDeath());
+            insertDonation(organ, userId, dateOfDeath);
             PushAPI.getInstance().sendTextNotification(userId, "Organ added to your donation list.",
                     Organ.capitalise(organ.toString()) + " was added to your organ donation list.");
         }
     }
+
+    public void updateDonationListItem(int userId, String organ, LocalDateTime deathDate) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "UPDATE DONATION_LIST_ITEM " +
+                            "SET timeOfDeath = ?, expired = ? " +
+                            "WHERE user_id = ? AND name = ?";
+            statement = connection.prepareStatement(update);
+            if (deathDate == null) {
+                statement.setNull(1, Types.BIGINT);
+                statement.setInt(2, 0);
+            } else {
+                statement.setLong(1, deathDate.toEpochSecond(OffsetDateTime.now().getOffset()));
+                if (deathDate.plus(getExpiryDuration(Organ.parse(organ))).isBefore(LocalDateTime.now())) {
+                    statement.setInt(2, 1);
+                } else {
+                    statement.setInt(2, 0);
+                }
+            }
+            statement.setInt(3, userId);
+            statement.setString(4, organ);
+            System.out.println("Update of Donation List Item - NAME: " + organ + " USERID: " + userId + " -> Successful -> Rows Changed: " + statement.executeUpdate());
+        } finally {
+            close(statement);
+        }
+    }
+
+
 
     /**
      * Returns a duration of how long the organ will last based on the organ type entered.

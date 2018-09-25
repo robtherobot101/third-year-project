@@ -38,7 +38,7 @@ public class DatabaseConfiguration {
         try {
             cpds.setDriverClass(jdbcDriver);
         } catch (PropertyVetoException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
         }
         cpds.setJdbcUrl(url + "/" + connectDatabase + "?useUnicode=yes&characterEncoding=UTF-8");
         cpds.setUser(username);

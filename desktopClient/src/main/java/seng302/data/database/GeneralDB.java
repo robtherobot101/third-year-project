@@ -258,7 +258,7 @@ public class GeneralDB implements GeneralDAO {
         JsonObject jsonTransfer = jp.parse(new Gson().toJson(transfer)).getAsJsonObject();
         APIResponse response = server.postRequest(jsonTransfer, new HashMap<>(), token, "transfer");
         if (response == null) {
-            Debugger.log(response.getStatusCode());
+            throw new HttpResponseException(0, "Could not reach server");
         }
         if (response.getStatusCode() != 201){
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
@@ -310,7 +310,7 @@ public class GeneralDB implements GeneralDAO {
     public int getSingleWaitingListItem(String token, long userId, Organ organ) throws HttpResponseException {
         APIResponse response = server.getRequest(new HashMap<>(), token, "users/"+ userId +"/waitingListOrgan/" + organ);
         if (response == null) {
-            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+            throw new HttpResponseException(0, "Could not reach server");
         }
         if (response.getStatusCode() != 200){
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());

@@ -17,7 +17,11 @@ namespace mobileAppClient
         private static readonly Lazy<ClinicianController> lazy =
         new Lazy<ClinicianController>(() => new ClinicianController());
 
+        public bool isTestMode;
+
         public static ClinicianController Instance { get { return lazy.Value; } }
+
+
 
         /*
          * Logs out the logged in clinician, setting the logged in user to null.
@@ -47,12 +51,6 @@ namespace mobileAppClient
         {
             this.LoggedInClinician = loggedInClinician;
             this.AuthToken = authToken;
-
-            if (UserController.Instance.loginPageController.rememberLogin)
-            {
-                SecureStorage.SetAsync("usernameEmail", loggedInClinician.username);
-                SecureStorage.SetAsync("password", loggedInClinician.password);
-            }
         }
 
         private ClinicianController()
