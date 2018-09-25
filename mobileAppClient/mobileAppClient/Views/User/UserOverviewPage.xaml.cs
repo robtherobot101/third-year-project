@@ -33,7 +33,7 @@ namespace mobileAppClient
                 {
                     this.BindingContext = new
                     {
-                        rss = new NewsFeed().rss
+                        rss = new NewsFeed(UserController.Instance.LoggedInUser.region).rss
                     };
                 }
                 
