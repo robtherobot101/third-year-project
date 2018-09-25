@@ -384,15 +384,16 @@ namespace mobileAppClient
 
 	    public async Task Handle_RedirectUriCaught(string code)
 	    {
-	        Tuple<User, string> parsedUser = await GoogleServices.GetUserProfile(code);
+	        Tuple<User, string, string> parsedUser = await GoogleServices.GetUserProfile(code);
 
 	        await LoginAsGoogleUser(parsedUser);
 	    }
 
-	    private async Task LoginAsGoogleUser(Tuple<User, string> parsedUser)
+	    private async Task LoginAsGoogleUser(Tuple<User, string, string> parsedUser)
 	    {
 	        User googleUser = parsedUser.Item1;
 	        string profileImageURL = parsedUser.Item2;
+	        string id = parsedUser.Item3;
 	        string password = "password";
 
             UserAPI userAPI = new UserAPI();
@@ -407,7 +408,7 @@ namespace mobileAppClient
 
             if (isUniqueEmailResult.Item2 == false)
             {
-                HttpStatusCode statusCode = await loginAPI.LoginUser(googleUser.email, password);
+                HttpStatusCode statusCode = await loginAPI.LoginUser(id);
                 switch (statusCode)
                 {
                     case HttpStatusCode.OK:
@@ -441,7 +442,7 @@ namespace mobileAppClient
             }
             else
             {
-                await Navigation.PushModalAsync(new GooglePage(this, googleUser, profileImageURL));
+                await Navigation.PushModalAsync(new GooglePage(this, googleUser, profileImageURL, id));
             }
 	        IsLoading = false;
         }

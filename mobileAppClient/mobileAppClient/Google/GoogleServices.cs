@@ -68,7 +68,7 @@ namespace mobileAppClient.Google
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public static async Task<Tuple<User, string>> GetUserProfile(string code)
+        public static async Task<Tuple<User, string, string>> GetUserProfile(string code)
         {
             client = ServerConfig.Instance.client;
 
@@ -90,6 +90,7 @@ namespace mobileAppClient.Google
             string firstName = foundProfile.name.givenName;
             string lastName = foundProfile.name.familyName;
             string email = foundProfile.emails[0].value;
+            string id = foundProfile.id;
 
             // TODO update image
             string imageURL = foundProfile.image.url;
@@ -97,8 +98,8 @@ namespace mobileAppClient.Google
             imageURL = imageURL.Substring(0, imageURL.Length - 6);
             imageURL += "?sz=1000";
 
-            return new Tuple<User, string>(new User(
-                firstName, lastName, email), imageURL);
+            return new Tuple<User, string, string>(new User(
+                firstName, lastName, email), imageURL, foundProfile.id);
         }
 
         /// <summary>
