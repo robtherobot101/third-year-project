@@ -14,7 +14,7 @@
                 <Grid HeightRequest="200">
                     <Image Source="profile_photo_bg.png" Aspect="AspectFill" />
                     <StackLayout HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand">
-                        <Image x:Name="ProfilePhotoImage" Source="{Binding ProfileImage}" Aspect="AspectFit" WidthRequest="90" HeightRequest="90">
+                        <Image x:Name="ProfilePhotoImage" Aspect="AspectFit" WidthRequest="90" HeightRequest="90">
                             <Image.GestureRecognizers>
                                 <TapGestureRecognizer
                                     Tapped="OnProfilePhotoTapped"

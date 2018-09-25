@@ -84,7 +84,6 @@ public class UserReaderCSV implements ProfileReader<User> {
                 String homePhone = nextLine[18];
                 String mobilePhone = nextLine[19];
                 String email = nextLine[20];
-                String password = "password";
 
                 // Convert raw dates to LocalDates
                 LocalDate dateOfBirth = null;

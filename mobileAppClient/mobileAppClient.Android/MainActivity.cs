@@ -9,6 +9,7 @@ using System.IO;
 using Android.Media;
 using Android.Graphics;
 using Xamarin.Forms;
+using Android.Widget;
 using Android.Support.V4.Content;
 using Android;
 using ImageCircle.Forms.Plugin.Droid;
@@ -18,6 +19,8 @@ using Firebase.Messaging;
 using Firebase.Iid;
 using Android.Util;
 using Plugin.Toasts;
+using Android.Database;
+using Android.Provider;
 
 namespace mobileAppClient.Droid
 {
@@ -71,27 +74,24 @@ namespace mobileAppClient.Droid
             {
                 if (resultCode == Result.Ok)
                 {
-                    Task.Run(() =>
+                    if (App.ImageIdToSave != null)
                     {
-                        if (App.ImageIdToSave != null)
+                        var documentsDirectry = ActivityContext.GetExternalFilesDir(Android.OS.Environment.DirectoryPictures);
+                        string pngFilename = System.IO.Path.Combine(documentsDirectry.AbsolutePath, App.ImageIdToSave + "." + FileFormatEnum.JPEG.ToString());
+
+                        if (File.Exists(pngFilename))
                         {
-                            var documentsDirectry = ActivityContext.GetExternalFilesDir(Android.OS.Environment.DirectoryPictures);
-                            string pngFilename = System.IO.Path.Combine(documentsDirectry.AbsolutePath, App.ImageIdToSave + "." + FileFormatEnum.JPEG.ToString());
+                            Java.IO.File file = new Java.IO.File(documentsDirectry, App.ImageIdToSave + "." + FileFormatEnum.JPEG.ToString());
+                            Android.Net.Uri uri = Android.Net.Uri.FromFile(file);
 
-                            if (File.Exists(pngFilename))
-                            {
-                                Java.IO.File file = new Java.IO.File(documentsDirectry, App.ImageIdToSave + "." + FileFormatEnum.JPEG.ToString());
-                                Android.Net.Uri uri = Android.Net.Uri.FromFile(file);
+                            //Read the meta data of the image to determine what orientation the image should be in
+                            var originalMetadata = new ExifInterface(pngFilename);
+                            int orientation = GetRotation(originalMetadata);
 
-                                //Read the meta data of the image to determine what orientation the image should be in
-                                var originalMetadata = new ExifInterface(pngFilename);
-                                int orientation = GetRotation(originalMetadata);
-
-                                var fileName = App.ImageIdToSave + "." + FileFormatEnum.JPEG.ToString();
-                                HandleBitmap(uri, orientation, fileName);
-                            }
+                            var fileName = App.ImageIdToSave + "." + FileFormatEnum.JPEG.ToString();
+                            HandleBitmap(uri, orientation, fileName);
                         }
-                    });
+                    }     
                 }
             }
             else if (requestCode == 1)
@@ -113,6 +113,11 @@ namespace mobileAppClient.Droid
                             {
                                 fileName = App.ImageIdToSave + "." + FileFormatEnum.JPEG.ToString();
                                 var pathToImage = GetPathToImage(uri);
+                                if (pathToImage == null)
+                                {
+                                    return;
+                                }
+
                                 var originalMetadata = new ExifInterface(pathToImage);
                                 int orientation = GetRotation(originalMetadata);
 
@@ -137,6 +142,7 @@ namespace mobileAppClient.Droid
          *  https://stackoverflow.com/questions/26597811/xamarin-choose-image-from-gallery-path-is-null
          */
 
+
         private string GetPathToImage(Android.Net.Uri uri)
         {
             string doc_id = "";
@@ -151,12 +157,20 @@ namespace mobileAppClient.Droid
 
             // The projection contains the columns we want to return in our query.
             string selection = Android.Provider.MediaStore.Images.Media.InterfaceConsts.Id + " =? ";
-            using (var cursor = ManagedQuery(Android.Provider.MediaStore.Images.Media.ExternalContentUri, null, selection, new string[] { doc_id }, null))
+            using (var cursor = this.ContentResolver.Query(Android.Provider.MediaStore.Images.Media.ExternalContentUri, null, selection, new string[] { doc_id }, null))
             {
                 if (cursor == null) return path;
                 var columnIndex = cursor.GetColumnIndexOrThrow(Android.Provider.MediaStore.Images.Media.InterfaceConsts.Data);
                 cursor.MoveToFirst();
-                path = cursor.GetString(columnIndex);
+
+                try
+                {
+                    path = cursor.GetString(columnIndex);
+                } catch (Android.Database.CursorIndexOutOfBoundsException)
+                {
+                    Toast.MakeText(this, "Failed to upload image, try browsing to image differently", ToastLength.Long);
+                }
+                
             }
             return path;
         }
@@ -186,7 +200,7 @@ namespace mobileAppClient.Droid
             }
         }
 
-        public async Task HandleBitmap(Android.Net.Uri uri, int orientation, string imageId)
+        public void HandleBitmap(Android.Net.Uri uri, int orientation, string imageId)
         {
             try
             {

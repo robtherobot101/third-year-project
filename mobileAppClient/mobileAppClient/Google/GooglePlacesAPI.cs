@@ -47,7 +47,7 @@ namespace mobileAppClient.Google
                     return null;
                 }
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return null;
             }
@@ -133,7 +133,7 @@ namespace mobileAppClient.Google
             {
                 return new List<Tuple<String, String>>();
             }
-            catch (JsonReaderException e)
+            catch (JsonReaderException)
             {
                 return new List<Tuple<String, String>>();
             }
@@ -237,7 +237,7 @@ namespace mobileAppClient.Google
             {
                 return new List<Tuple<String, String>>();
             }
-            catch (JsonReaderException e)
+            catch (JsonReaderException)
             {
                 return new List<Tuple<String, String>>();
             }
