@@ -26,7 +26,7 @@ public class User {
     private String nhi;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
     private int zipCode=0;
-    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, bloodPressure = "", profileImageType = "";
+    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, passphrase, bloodPressure = "", profileImageType = "";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications = new ArrayList<>(), historicMedications = new ArrayList<>();
@@ -48,7 +48,7 @@ public class User {
         this.id = 1;
     }
 
-    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String nhi) {
+    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String nhi, String passphrase) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         this.name = new String[1 + middleNames.length + isLastName];
         this.name[0] = firstName;
@@ -61,6 +61,7 @@ public class User {
         this.creationTime = LocalDateTime.now();
         this.username = username;
         this.email = email;
+        this.passphrase = passphrase;
         // TODO Add functionality to DAOs for getting next id.
         this.id = 1;
         this.nhi = nhi;
@@ -101,13 +102,14 @@ public class User {
         this.mobilePhone = mobilePhone;
 
         this.email = email;
+        this.passphrase = "passphrase";
         // TODO Add functionality to DAOs for getting next id.
         this.id = 1;
         this.nhi= nhi;
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
-                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String nhi, String country, String cityOfDeath, String regionOfDeath, String countryOfdeath) {
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String nhi, String passphrase, String country, String cityOfDeath, String regionOfDeath, String countryOfdeath) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
@@ -132,6 +134,7 @@ public class User {
         this.username = username;
         this.email = email;
         this.nhi = nhi;
+        this.passphrase = passphrase;
         this.country = country;
         this.cityOfDeath = cityOfDeath;
         this.regionOfDeath = regionOfDeath;
@@ -149,7 +152,7 @@ public class User {
 
 
     /**
-     * Used to create a deep copy of the object. Does not copy username, password, or email.
+     * Used to create a deep copy of the object. Does not copy username, passphrase, or email.
      *
      * @param user The user to make a copy of
      */
@@ -244,7 +247,7 @@ public class User {
     }
 
     /**
-     * Checks whether there is any difference between the attributes of this user and a given user. Does NOT compare username, password, email, or any lists.
+     * Checks whether there is any difference between the attributes of this user and a given user. Does NOT compare username, passphrase, email, or any lists.
      *
      * @param user The user to compare to
      * @return Whether they are equal
@@ -292,11 +295,16 @@ public class User {
     }
 
     public String getPreferredName() {
-        String val;
-        if (preferredName == null || preferredName.length == 0) {
-            val = "";
-        } else {
-            val = String.join(" ", preferredName);
+        String val = "";
+        if (preferredName != null) {
+            for (String name : preferredName) {
+                if (name != null) {
+                    val += name + " ";
+                }
+            }
+            if (!val.isEmpty()) {
+                val = val.substring(0, val.length()-1);
+            }
         }
         return val;
     }
@@ -331,6 +339,10 @@ public class User {
         this.email = email;
     }
 
+    public void setPassphrase(String passphrase) {
+        this.passphrase = passphrase;
+    }
+
     public LocalDateTime getCreationTime() {
         return creationTime;
     }
@@ -349,6 +361,10 @@ public class User {
 
     public String getEmail() {
         return email;
+    }
+
+    public String getPassphrase() {
+        return passphrase;
     }
 
     public EnumSet<Organ> getOrgans() {

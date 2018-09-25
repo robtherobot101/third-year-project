@@ -40,7 +40,7 @@ namespace mobileAppClient.iOS
             this.customPin = pin;
             holdView = new UIView();
             fullView = 360;
-            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 60;
+            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 80;
             this.currentOrganCell = currentOrganCell;
             this.customMapRenderer = customMapRenderer;
             foreach (DonatableOrgan donatableOrgan in customPin.donatableOrgans)
@@ -145,7 +145,7 @@ namespace mobileAppClient.iOS
 
         }
 
-        void BackButton_TouchUpInside(object sender, EventArgs)
+        void BackButton_TouchUpInside(object sender, EventArgs e)
         {
             customMapRenderer.ClearAllReceivers();
             customMapRenderer.removeOverlays();
@@ -265,6 +265,7 @@ namespace mobileAppClient.iOS
 
                 //Add all other user objects around the user
                 Random rnd = new Random();
+                int i = 0;
                 foreach (User item in currentOrgan.topReceivers) {
 
                     //SET GENDER ICON
@@ -272,24 +273,9 @@ namespace mobileAppClient.iOS
                     //If other then set to a pin
                     //If none then also set to a pin
 
-                    string genderIcon = "";
-                    switch (item.gender)
-                    {
-                        case ("Male"):
-                            int number = rnd.Next(1, 15);
-                            genderIcon = "man" + number + ".png";
-                            break;
-                        case ("Female"):
-                            number = rnd.Next(1, 12);
-                            genderIcon = "woman" + number + ".png";
-                            break;
-                        case ("Other"):
-                            genderIcon = "other.png";
-                            break;
-                        default:
-                            genderIcon = "other.png";
-                            break;
-                    }
+                    string recipientIcon = "recipientIcon" + i + ".png";
+                    i++;
+
 
                     //Find the position of the Pin
                     Geocoder geocoder = new Geocoder();
@@ -337,12 +323,13 @@ namespace mobileAppClient.iOS
                         Label = item.FullName,
                         Address = item?.currentAddress + ", " + item?.region,
                         Url = "ReceiverURL," + item.id.ToString(),
-                        genderIcon = genderIcon,
+                        genderIcon = recipientIcon,
                         userPhoto = profilePhoto,
                         userId = item.id
                     };
                     map.CustomPins.Add(pin.Position, pin);
                     map.Pins.Add(pin);
+
                 }
 
             }

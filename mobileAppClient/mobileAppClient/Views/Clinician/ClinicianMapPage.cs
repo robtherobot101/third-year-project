@@ -11,6 +11,7 @@ using System.IO;
 using System.Threading;
 using mobileAppClient.Maps;
 using mobileAppClient.Models;
+using Xamarin.Essentials;
 
 namespace mobileAppClient.Views.Clinician
 {
@@ -26,7 +27,7 @@ namespace mobileAppClient.Views.Clinician
 
         public ClinicianMapPage()
         {
-            this.SlideMenu = new SlideUpMenuView();
+
         }
 
         public void displayBottomSheet(CustomPin pin, CustomMap map) {
@@ -34,12 +35,15 @@ namespace mobileAppClient.Views.Clinician
             DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin, map);
         }
 
+
         public async void displayUserDialog(string organString, string id)
         {
             //if Android, use the SlideOverKit stuff
             if (Device.RuntimePlatform == Device.Android)
             {
-                ShowMenu();
+
+                //ShowMenu();
+
             }
             //otherwise iPhone or something
             else
@@ -91,12 +95,13 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
+
+
         ///// <summary>
         ///// Activated whenever focus is on this page
         ///// </summary>
         protected override async void OnAppearing()
         {
-            this.SlideMenu = new SlideUpMenuView();
 
             customMap = new CustomMap
             {
@@ -285,6 +290,7 @@ namespace mobileAppClient.Views.Clinician
                     }
 
                     StartTimer(200);
+                    Console.WriteLine("Reached the end of OnAppearing");
                     break;
 
                 case HttpStatusCode.ServiceUnavailable:
@@ -302,7 +308,7 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
-        private async Task InitialiseHospitals()
+        public async Task InitialiseHospitals()
         {
 
             ClinicianAPI clinicianApi = new ClinicianAPI();
@@ -315,6 +321,7 @@ namespace mobileAppClient.Views.Clinician
 
                     foreach (Hospital currentHospital in hospitals)
                     {
+                        Console.WriteLine("Tracking positions");
                         Position finalPosition = new Position(currentHospital.latitude, currentHospital.longitude);
 
                         var pin = new CustomPin
@@ -385,7 +392,7 @@ namespace mobileAppClient.Views.Clinician
 
             // Add the main helichopper pin to our list of custom heli pins we can track (heli pin contains the transported organ custom pin)
             customMap.HelicopterPins.Add(heliPin.Address, heliPin);
-            
+
             // Add the pin we want visible on the map (but cant track these)
 	        customMap.Pins.Add(heliPin);
         }
@@ -536,7 +543,8 @@ namespace mobileAppClient.Views.Clinician
             newOrganTransfer.startLon = donorPosition.Longitude;
 
             Hospital receiverHospital = null;
-            foreach(Hospital hospital in hospitals) {
+            await InitialiseHospitalsWithoutAddingToMap();
+            foreach (Hospital hospital in hospitals) {
                 if(hospital.region.Equals(selectedRecipient.region)) {
                     receiverHospital = hospital;
                 }
@@ -571,6 +579,69 @@ namespace mobileAppClient.Views.Clinician
                           );
         }
 
+        public async void NewTransferWithoutAddingHelicpoter(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition)
+        {
+            await InitialiseHospitalsWithoutAddingToMap();
+
+            OrganTransfer newOrganTransfer = new OrganTransfer();
+            newOrganTransfer.id = currentOrgan.id;
+            newOrganTransfer.receiverId = selectedRecipient.id;
+
+            //Find the position of the donor
+            newOrganTransfer.startLat = donorPosition.Latitude;
+            newOrganTransfer.startLon = donorPosition.Longitude;
+
+            Hospital receiverHospital = null;
+            await InitialiseHospitalsWithoutAddingToMap();
+            foreach (Hospital hospital in hospitals)
+            {
+                if (hospital.region.Equals(selectedRecipient.region))
+                {
+                    receiverHospital = hospital;
+                }
+            }
+
+            //Find the nearest hospital
+            newOrganTransfer.endLat = receiverHospital.latitude;
+            newOrganTransfer.endLon = receiverHospital.longitude;
+
+            newOrganTransfer.organType = OrganExtensions.ToOrgan(currentOrgan.organType);
+
+            Position HospitalPosition = new Position(receiverHospital.latitude, receiverHospital.longitude);
+
+            newOrganTransfer.arrivalTime = new CustomDateTime(DateTime.Now.AddSeconds(distance(donorPosition.Latitude, HospitalPosition.Latitude,
+                                                                                               donorPosition.Longitude, HospitalPosition.Longitude, 0, 0) / 70));
+
+            TransplantListAPI transplantListAPI = new TransplantListAPI();
+            await transplantListAPI.InsertTransfer(newOrganTransfer);
+            transplantListAPI.SetInTransfer(currentOrgan.id, 1);
+        }
+
+        public async Task InitialiseHospitalsWithoutAddingToMap()
+        {
+
+            ClinicianAPI clinicianApi = new ClinicianAPI();
+            Tuple<HttpStatusCode, List<Hospital>> tuple = await clinicianApi.GetHospitals();
+            switch (tuple.Item1)
+            {
+                case HttpStatusCode.OK:
+                    Console.WriteLine("Organ map hospitals retrieved successfully");
+                    hospitals = tuple.Item2;
+
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    await DisplayAlert("",
+                    "Server unavailable, check connection",
+                    "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert("",
+                    "Server error retrieving hospitals, please try again (500)",
+                    "OK");
+                    break;
+            }
+        }
+
         public double distance(double lat1, double lat2, double lon1,
                                   double lon2, double el1, double el2)
         {
@@ -599,6 +670,50 @@ namespace mobileAppClient.Views.Clinician
             transplantListAPI.DeleteWaitingListItem(waitingListItemId);
             transplantListAPI.SetInTransfer(organId, 2);
 
+        }
+
+        public async Task<bool> CheckGetToReceiverInTime(DonatableOrgan organ, User receiver) {
+
+            UserAPI userAPI = new UserAPI();
+
+            User donor = await userAPI.getUser(organ.donorId, ClinicianController.Instance.AuthToken);
+            double startLat = 0;
+            double startLon = 0;
+            try
+            {
+                var address = donor.cityOfDeath + ", " + donor.regionOfDeath + ", " + donor.countryOfDeath;
+                var locations = await Geocoding.GetLocationsAsync(address);
+
+                var location = locations?.FirstOrDefault();
+                if (location != null)
+                {
+                    startLat = location.Latitude;
+                    startLon = location.Longitude;
+                    Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            Hospital receiverHospital = null;
+
+            await InitialiseHospitalsWithoutAddingToMap();
+
+            foreach (Hospital hospital in hospitals) {
+                if (hospital.region == receiver.region){
+                    receiverHospital = hospital;
+                }
+            }
+            double dist = distance(
+                    startLat,
+                    receiverHospital.latitude,
+                    startLon,
+                    receiverHospital.latitude, 0, 0);
+
+            DateTime arrivalTime = DateTime.Now.AddSeconds((long)(dist / 69.444444));
+
+            return arrivalTime < (DateTime.Now.AddSeconds(organ.getTimeRemaining().Item2));
         }
 
     }

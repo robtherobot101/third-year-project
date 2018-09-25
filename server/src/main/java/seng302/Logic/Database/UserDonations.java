@@ -152,6 +152,7 @@ public class UserDonations extends DatabaseMethods {
             Organ found = null;
             for (Organ newOrgan : newDonationItems) {
                 if (newOrgan == oldDonationItems.get(i)) {
+                    updateDonationListItem(userId, found.toString(), dateOfDeath);
                     found = newOrgan;
                     break;
                 }
@@ -160,13 +161,13 @@ public class UserDonations extends DatabaseMethods {
                 //Patch edited donations
                 for (Organ newOrgan : newDonationItems) {
                     if (newOrgan == oldDonationItems.get(i)) {
+                        updateDonationListItem(userId, found.toString(), dateOfDeath);
                         found = newOrgan;
                         break;
                     }
                 }
             }
             if (found != null) {
-                updateDonationListItem(userId, found.toString(), dateOfDeath);
                 newDonationItems.remove(found);
                 oldDonationItems.remove(i);
             }

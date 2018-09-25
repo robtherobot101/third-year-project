@@ -22,11 +22,8 @@
                     </TableSection>
                 </TableRoot>
             </TableView>
-
-
             
         </StackLayout>
-        
         
     </ContentPage.Content>
 </ContentPage>
