@@ -11,16 +11,41 @@
             <TableView Intent="Menu" >
                 <TableRoot>
                     <TableSection Title="Profile">
-                        <!--<TextCell Text="Account Details" TextColor="Black" x:Name="AccountDetailsListItem"/>-->
-                        <ViewCell x:Name="PhotoListItem"  Tapped="Handle_Tapped">
+
+                        <ViewCell x:Name="PhotoListItem"  Tapped="Handle_PhotoSettingsTapped">
                             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,10,0">
                                 <Label Text="Photo" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
                                 <controls:TintedImage Source="arrow_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25"/>
                             </StackLayout>
                         </ViewCell>
+
+                        <ViewCell x:Name="AccountSettings" Tapped="Handle_AccountSettingsTapped">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,10,0">
+                                <Label Text="Account Settings" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
+                                <controls:TintedImage Source="arrow_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25"/>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell x:Name="FacebookSettings" Tapped="Handle_FacebookSettingsTapped">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,10,0">
+                                <controls:TintedImage Source="facebook_cell_icon.png" HorizontalOptions="StartAndExpand" HeightRequest="25" WidthRequest="25"  TintColor="Transparent"/>
+                                <Label Text="Facebook" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
+                                <controls:TintedImage Source="arrow_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25"/>
+                            </StackLayout>
+                        </ViewCell>
+
+                        <ViewCell x:Name="GoogleSettings" Tapped="Handle_GoogleSettingsTapped">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,10,0">
+                                <controls:TintedImage Source="google_cell_icon.png" HorizontalOptions="StartAndExpand" HeightRequest="25" WidthRequest="25" TintColor="Transparent"/>
+                                <Label Text="Google" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
+                                <controls:TintedImage Source="arrow_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25"/>
+                            </StackLayout>
+                        </ViewCell>
+
                     </TableSection>
                 </TableRoot>
             </TableView>
+            
         </StackLayout>
         
     </ContentPage.Content>

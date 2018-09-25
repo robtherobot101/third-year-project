@@ -9,8 +9,10 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using CarouselView.FormsPlugin.Abstractions;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using String = System.String;
 
 namespace mobileAppClient.odmsAPI
 {
@@ -101,6 +103,89 @@ namespace mobileAppClient.odmsAPI
             }
         }
 
+        /**
+         * Returns response status code of the attempted login 
+         */
+        public async Task<HttpStatusCode> LoginUser(String api_id)
+        {
+            if (!ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            // Get the profile controller instances
+            UserController userController = UserController.Instance;
+            ClinicianController clinicianController = ClinicianController.Instance;
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            String queries = null;
+
+            queries = $"?api_id={api_id}";
+
+            HttpContent content = new StringContent("");
+            content.Headers.Add("device_id", AppCenter.GetInstallIdAsync().Result.ToString());
+            HttpResponseMessage response;
+
+            try
+            {
+                response = await client.PostAsync(url + "/login" + queries, content);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                string responseContent = await response.Content.ReadAsStringAsync();
+
+                if (IsClinician(responseContent))
+                {
+                    Clinician loggedInClinician = JsonConvert.DeserializeObject<Clinician>(responseContent);
+                    string authToken = response.Headers.GetValues("token").FirstOrDefault();
+
+                    ClinicianController.Instance.Login(loggedInClinician, authToken);
+
+                    Console.WriteLine("Logged in as (CLINICIAN)" + string.Join(String.Empty, clinicianController.LoggedInClinician.name));
+
+                    // Created code to signifiy clinician login internally
+                    return HttpStatusCode.OK;
+                }
+                else if (IsUser(responseContent))
+                {
+                    // Login as the user
+                    User loggedInUser = JsonConvert.DeserializeObject<User>(responseContent);
+                    if (loggedInUser.dateOfDeath == null)
+                    {
+                        string authToken = response.Headers.GetValues("token").FirstOrDefault();
+                        UserController.Instance.Login(loggedInUser, authToken);
+
+                        Console.WriteLine("Logged in as (USER)" + String.Join(String.Empty, userController.LoggedInUser.name));
+
+                        // OK code to signifiy user login internally
+                        return HttpStatusCode.OK;
+                    }
+                    else
+                    {
+                        return HttpStatusCode.Conflict;
+                    }
+                }
+                else
+                {
+                    // Must've attempted login as admin -> deny
+                    return HttpStatusCode.BadRequest;
+                }
+            }
+            else
+            {
+                Console.WriteLine(String.Format("Failed login (Server {0})", response.StatusCode));
+                return response.StatusCode;
+            }
+        }
+
         /*
          * Returns whether or not the logout operation was successful
          */
@@ -125,7 +210,6 @@ namespace mobileAppClient.odmsAPI
             {
                 request.Headers.Add("token", UserController.Instance.AuthToken);
             }
-
 
             try
             {
@@ -223,11 +307,105 @@ namespace mobileAppClient.odmsAPI
             String registerUserRequestBody = JsonConvert.SerializeObject(user);
 
             HttpContent body = new StringContent(registerUserRequestBody);
-            var response = await client.PostAsync(url + "/users", body);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(url + "/users", body);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
 
             if (response.StatusCode == HttpStatusCode.Created)
             {
                 Console.WriteLine("Success on creating user");
+                user.id = Int32.Parse((String)response.Headers.GetValues("id").GetItem(0));
+            }
+            else
+            {
+                Console.WriteLine($"Failed register ({response.StatusCode})");
+            }
+            return response.StatusCode;
+        }
+
+        /*
+         * Returns response status code of the attempted user registration
+         */
+        public async Task<HttpStatusCode> FacebookRegisterUser(int userId, string api_id)
+        {
+            if (!ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            // Get the single userController instance
+            UserController userController = UserController.Instance;
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpContent body = new StringContent("");
+            String queries = $"?api_id={api_id}&id={userId}";
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(url + "/facebookaccount" + queries, body);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                Console.WriteLine("Success on editing user");
+            }
+            else
+            {
+                Console.WriteLine($"Failed register ({response.StatusCode})");
+            }
+            return response.StatusCode;
+        }
+
+
+
+        /*
+         * Returns response status code of the attempted user registration
+         */
+        public async Task<HttpStatusCode> GoogleRegisterUser(int userId, string api_id)
+        {
+            if (!ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            // Get the single userController instance
+            UserController userController = UserController.Instance;
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpContent body = new StringContent("");
+            String queries = $"?api_id={api_id}&id={userId}";
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(url + "/googleaccount" + queries, body);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                Console.WriteLine("Success on editing user");
             }
             else
             {
