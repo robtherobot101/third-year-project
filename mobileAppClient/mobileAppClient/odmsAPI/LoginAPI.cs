@@ -133,7 +133,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.PostAsync(url + "/login" + queries, content);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -307,7 +307,16 @@ namespace mobileAppClient.odmsAPI
             String registerUserRequestBody = JsonConvert.SerializeObject(user);
 
             HttpContent body = new StringContent(registerUserRequestBody);
-            var response = await client.PostAsync(url + "/users", body);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(url + "/users", body);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
 
             if (response.StatusCode == HttpStatusCode.Created)
             {
@@ -324,7 +333,7 @@ namespace mobileAppClient.odmsAPI
         /*
          * Returns response status code of the attempted user registration
          */
-        public async Task<HttpStatusCode> FacebookRegisterUser(int userId, String api_id)
+        public async Task<HttpStatusCode> FacebookRegisterUser(int userId, string api_id)
         {
             if (!ServerConfig.Instance.IsConnectedToInternet())
             {
@@ -340,7 +349,16 @@ namespace mobileAppClient.odmsAPI
 
             HttpContent body = new StringContent("");
             String queries = $"?api_id={api_id}&id={userId}";
-            var response = await client.PostAsync(url + "/facebookaccount" + queries, body);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(url + "/facebookaccount" + queries, body);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
 
             if (response.StatusCode == HttpStatusCode.Created)
             {
@@ -357,7 +375,7 @@ namespace mobileAppClient.odmsAPI
         /*
          * Returns response status code of the attempted user registration
          */
-        public async Task<HttpStatusCode> GoogleRegisterUser(int userId, String api_id)
+        public async Task<HttpStatusCode> GoogleRegisterUser(int userId, string api_id)
         {
             if (!ServerConfig.Instance.IsConnectedToInternet())
             {
@@ -373,7 +391,16 @@ namespace mobileAppClient.odmsAPI
 
             HttpContent body = new StringContent("");
             String queries = $"?api_id={api_id}&id={userId}";
-            var response = await client.PostAsync(url + "/googleaccount" + queries, body);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(url + "/googleaccount" + queries, body);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
