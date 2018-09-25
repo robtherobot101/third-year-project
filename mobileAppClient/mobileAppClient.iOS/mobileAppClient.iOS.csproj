@@ -508,4 +508,9 @@
     <BundleResource Include="Resources\helicopter_liver_icon.png" />
     <BundleResource Include="Resources\viewing_user_photo.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Library\Sounds\coin.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+  </ItemGroup>
 </Project>

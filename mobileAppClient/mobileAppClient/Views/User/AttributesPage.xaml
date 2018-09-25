@@ -117,6 +117,15 @@
                         </StackLayout>
                     </ViewCell>
                     <ViewCell>
+                        <StackLayout Orientation="Horizontal" x:Name="timeOfDeathCombo" Padding="15,0,0,0">
+                            <Label Text="Time of Death" VerticalOptions="Center"/>
+                            <TimePicker x:Name="todInput"
+                                
+                                IsEnabled="False"
+                             />
+                        </StackLayout>
+                    </ViewCell>
+                    <ViewCell>
                         <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCountry" Padding="15,0,0,0">
                             <Label Text="Country" VerticalOptions="Center"/>
                             <Picker Title ="Country" x:Name="DODCountryInput" IsEnabled="False">
