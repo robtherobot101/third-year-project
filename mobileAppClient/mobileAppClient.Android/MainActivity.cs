@@ -20,6 +20,7 @@ using Android.Util;
 using Plugin.Toasts;
 using Android.Database;
 using Android.Provider;
+using mobileAppClient.Google;
 
 namespace mobileAppClient.Droid
 {
@@ -283,11 +284,16 @@ namespace mobileAppClient.Droid
             if (intent.Data != null)
             {
                 var data = intent.Data;
-
-                // if data == www...ChangeLogin
-
                 string queryParameter = data.GetQueryParameter("code");
-                await UserController.Instance.PassControlToLoginPage(queryParameter);
+
+                if (data.Path == "/oauth2redirectChangeLogin")
+                {
+                    await UserController.Instance.PassControlToUserSettings(queryParameter);
+                }
+                else
+                {
+                    await UserController.Instance.PassControlToLoginPage(queryParameter);
+                }
             }
         }
     }
