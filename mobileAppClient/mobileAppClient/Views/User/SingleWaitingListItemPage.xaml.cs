@@ -88,7 +88,7 @@ namespace mobileAppClient
                             "There are no un-cured diseases for this user",
                             "OK");
                     }
-                } catch (HttpRequestException e)
+                } catch (HttpRequestException)
                 {
                     await DisplayAlert("Connection Error",
                                        "Failed to reach the server",
@@ -111,7 +111,7 @@ namespace mobileAppClient
          * Shows a dialog which allows a user to select a reason for de-registering
          * the selected WaitingListItem.
          */
-        public async void DeregisterButtonClicked(object sender, EventArgs args)
+        public void DeregisterButtonClicked(object sender, EventArgs args)
         {
             showDeregisteringOptions(item);
         }
@@ -138,7 +138,7 @@ namespace mobileAppClient
                             "OK");
                 }
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 await DisplayAlert("Connection Error",
                    "Failed to reach the server",

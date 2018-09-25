@@ -1,9 +1,6 @@
 package seng302.data.database;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -218,5 +215,31 @@ public class UsersDB implements UsersDAO {
         if (response.getStatusCode() != 200)
             throw new HttpResponseException(response.getStatusCode(), response.getAsString());
         return Integer.parseInt(response.getAsString());
+    }
+
+    /**
+     * Updates a user's username, email and password
+     * @param id The id of the user
+     * @param username The new username to update too
+     * @param email The new email
+     * @param password The new password
+     * @param token The login token
+     * @throws HttpResponseException If something goes wrong
+     */
+    @Override
+    public void updateAccount(long id, String username, String email, String password, String token) throws HttpResponseException {
+        JsonObject jo = new JsonObject();
+        jo.addProperty("username", username);
+        jo.addProperty("email", email);
+        jo.addProperty("password", password);
+
+        APIResponse response = server.patchRequest(jo, new HashMap<>(), token, users, String.valueOf(id), "account");
+        if(response == null){
+            throw new HttpResponseException(0, "Could not reach server");
+        }
+        if (response.getStatusCode() != 201) {
+            throw new HttpResponseException(response.getStatusCode(), response.getAsString());
+        }
+
     }
 }

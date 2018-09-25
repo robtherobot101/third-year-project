@@ -32,4 +32,6 @@ public interface UsersDAO {
     void removeUser(long id, String token) throws HttpResponseException;
 
     int count(String token) throws HttpResponseException;
+
+    void updateAccount(long id, String username, String email, String password, String token) throws HttpResponseException;
 }

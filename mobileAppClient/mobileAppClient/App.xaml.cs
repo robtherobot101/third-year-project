@@ -49,7 +49,7 @@ namespace mobileAppClient
             VSAppCenter.Setup();
         }
 
-        async protected override void OnSleep()
+        protected override void OnSleep()
         {
             // Handle when your app sleeps
 

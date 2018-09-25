@@ -96,6 +96,7 @@ namespace mobileAppClient
             var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png",TargetType = typeof(MedicationsPage) };
             var userSettingsPage = new MasterPageItem() { Title = "Settings", Icon = "settings_icon.png", TargetType = typeof(UserSettings) };
             var livesSavedPage = new MasterPageItem() { Title = "Lives Saved", Icon = "score_icon.png", TargetType = typeof(PointsPage) };
+            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(MessageThreadsListPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -105,6 +106,7 @@ namespace mobileAppClient
             menuList.Add(medicationsPage);
             menuList.Add(diseasesPage);
             menuList.Add(proceduresPage);
+            menuList.Add(messagesPage);
             menuList.Add(waitingListItemsPage);
             menuList.Add(userSettingsPage);
             menuList.Add(logoutPage);
@@ -126,7 +128,7 @@ namespace mobileAppClient
             var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "waitinglist_icon.png", TargetType = typeof(TransplantListPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
             var mapPage = new MasterPageItem() { Title = "Map", Icon = "map_icon.png", TargetType = typeof(ClinicianMapPage) };
-            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(ClinicianMessagingPage) };
+            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(MessageThreadsListPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -206,7 +208,6 @@ namespace mobileAppClient
                     {
                         Console.WriteLine("Exception: " + ie.InnerException);
                         Console.WriteLine("Exception: " + ie.InnerException.InnerException);
-                        Console.WriteLine("Exception: " + ie.InnerException.InnerException.InnerException);
                     }
                     break;
             }
@@ -221,9 +222,9 @@ namespace mobileAppClient
 
         private void updateUserViewerProfileBar()
         {
+            ProfilePhotoImage.Source = ImageSource.FromFile("viewing_user_photo.png");
             BindingContext = new
             {
-                ProfileImage = "viewing_user_photo.png",
                 FullName = "Viewing User: " + UserController.Instance.LoggedInUser.FullName,
                 BorderColor = "White"
             };
@@ -231,32 +232,37 @@ namespace mobileAppClient
         private void updateUserProfileBar()
         {
             // Update for a logged in user
-            string profileImagePath;
             if (UserController.Instance.ProfilePhotoSource == null)
             {
                 // No photo provided, use default
-                profileImagePath = "default_user_photo.png";
+                ProfilePhotoImage.Source = ImageSource.FromFile("default_user_photo.png");
+                BindingContext = new
+                {
+                    FullName = UserController.Instance.LoggedInUser.FullName,
+                    BorderColor = "White",
+                };
             }
             else
             {
                 // Use photo from server
                 ProfilePhotoImage.Source = UserController.Instance.ProfilePhotoSource;
+                BindingContext = new
+                {
+                    FullName = UserController.Instance.LoggedInUser.FullName,
+                    BorderColor = "White"
+                };
             }
 
-            BindingContext = new
-            {
-                FullName = UserController.Instance.LoggedInUser.FullName,
-                BorderColor = "White"
-            };
+
             
         }
 
         private void updateClinicianProfileBar()
         {
             // Update for a logged in clinician
+            ProfilePhotoImage.Source = ImageSource.FromFile("default_user_photo.png");
             BindingContext = new
             {
-                ProfileImage = "default_clinician_photo.png",
                 FullName = "Clinician: " + ClinicianController.Instance.LoggedInClinician.name,
                 BorderColor = "White"
             };
@@ -275,7 +281,7 @@ namespace mobileAppClient
                 return;
             }
 
-            await Navigation.PushModalAsync(new NavigationPage(new PhotoSettingsPage()));
+            await Navigation.PushModalAsync(new NavigationPage(new PhotoSettingsPage(true)));
         }
     }
 }

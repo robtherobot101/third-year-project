@@ -1,6 +1,7 @@
 package seng302.Controllers;
 
 import seng302.Logic.Database.Administration;
+import seng302.Server;
 import spark.Request;
 import spark.Response;
 
@@ -22,9 +23,9 @@ public class DatabaseController {
             model.reset();
             return "RESET SUCCESSFUL";
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
-            return "RESET FAILURE";
+            return e.getMessage();
         }
 
     }
@@ -41,7 +42,7 @@ public class DatabaseController {
             model.resample();
             return "RESAMPLE SUCCESS";
         } catch (SQLException | IOException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return "RESAMPLE FAILURE";
         }
@@ -60,7 +61,7 @@ public class DatabaseController {
             model.status();
             return "DATABASE ONLINE";
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return "DATABASE OFFLINE";
         }

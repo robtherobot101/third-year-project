@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="mobileAppClient.CreateConversationPage">
+    <StackLayout>
+        <ActivityIndicator x:Name="LoadingIndicator" AbsoluteLayout.LayoutFlags="PositionProportional" AbsoluteLayout.LayoutBounds="0,0,-1,-1" VerticalOptions="Center" HorizontalOptions="Center"/>
+        <SearchBar x:Name="UserSearchBar" Placeholder="Search..."/>
+        <ListView x:Name="UserListView"
+                  ItemsSource="{Binding UserList}"
+                  ItemTapped="Handle_UserTapped"
+                  CachingStrategy="RecycleElement"
+                  IsPullToRefreshEnabled="True"
+                  RefreshCommand="{Binding RefreshCommand}"
+                  AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                  AbsoluteLayout.LayoutFlags="All">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="12, 0, 12, 0">
+                            <Label Text="{Binding FullName}" FontAttributes="Bold" VerticalOptions="CenterAndExpand" />
+                            <Label Text="{Binding region}" FontAttributes="Italic" VerticalOptions="CenterAndExpand" HorizontalOptions="End" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+</ContentPage>

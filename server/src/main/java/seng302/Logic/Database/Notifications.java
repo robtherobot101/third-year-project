@@ -20,13 +20,11 @@ public class Notifications extends DatabaseMethods {
         if (device_id == null) return;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            System.out.println(device_id);
-            System.out.println(token);
             String query = "INSERT INTO PUSH_DEVICE (device_id, user_token) VALUES(?, ?) ON DUPLICATE KEY UPDATE user_token=?";
             statement = connection.prepareStatement(query);
             statement.setString(1, device_id);
             statement.setString(2, token);
-            statement.setString(3, device_id);
+            statement.setString(3, token);
             statement.execute();
         } finally {
             close(statement);

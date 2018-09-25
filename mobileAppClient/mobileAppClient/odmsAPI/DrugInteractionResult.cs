@@ -121,7 +121,7 @@ namespace mobileAppClient.odmsAPI
             JArray interactions;
             try {
                 interactions = (JArray)jObject[fieldName];
-            } catch (NullReferenceException e) {
+            } catch (NullReferenceException) {
                 List<string> emptyInteractions = new List<string> { "No interactions" };
                 return emptyInteractions;
             } 

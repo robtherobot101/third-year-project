@@ -122,7 +122,7 @@ namespace mobileAppClient
          * Handles when a single procedure is tapped, sending a user to the single procedure page 
          * of that given procedure.
          */ 
-        async void Handle_ProcedureTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
+        async void Handle_ProcedureTapped(object sender, ItemTappedEventArgs e)
         {
             if (e == null)
             {
@@ -136,7 +136,7 @@ namespace mobileAppClient
          * Handles when a user selects a given attribute of the sorting dropdown 
          * to sort by, sorting the given items in the list view.
          */ 
-        void Handle_SelectedIndexChanged(object sender, System.EventArgs e)
+        void Handle_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (SortingInput.SelectedItem)
             {
@@ -190,7 +190,7 @@ namespace mobileAppClient
          * Handles when a user changes the orientation of the sorting to be either ascending or 
          * descending, changing the order in which items are sorted in the list view.
          */ 
-        void Handle_UpDownChanged(object sender, System.EventArgs e)
+        void Handle_UpDownChanged(object sender, EventArgs e)
         {
             List<Procedure> currentList = (System.Collections.Generic.List<Procedure>)ProceduresList.ItemsSource;
             switch (SortingInput.SelectedItem)
@@ -231,7 +231,7 @@ namespace mobileAppClient
             }
         }
 
-        async void Handle_DeleteClicked(object sender, System.EventArgs e)
+        async void Handle_DeleteClicked(object sender, EventArgs e)
         {
             var mi = ((MenuItem)sender);
             Procedure selectedProcedure = mi.CommandParameter as Procedure;

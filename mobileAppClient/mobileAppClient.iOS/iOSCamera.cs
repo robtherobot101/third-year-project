@@ -63,7 +63,7 @@ namespace mobileAppClient.iOS
 
                 vc.PresentViewController(imagePicker, true, null);
 
-                imagePicker.FinishedPickingMedia += (sender, e) =>
+                imagePicker.FinishedPickingMedia += (sender,) =>
                 {
                     UIImage originalImage = e.Info[UIImagePickerController.EditedImage] as UIImage;
                     if (originalImage != null)
@@ -87,9 +87,9 @@ namespace mobileAppClient.iOS
                     });
                 };
 
-                imagePicker.Canceled += (sender, e) => vc.DismissViewController(true, null);
+                imagePicker.Canceled += (sender,) => vc.DismissViewController(true, null);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 System.Diagnostics.Debug.WriteLine(e);
             }
@@ -108,7 +108,7 @@ namespace mobileAppClient.iOS
 
             vc.PresentViewController(imagePicker, true, null);
 
-            imagePicker.FinishedPickingMedia += (sender, e) =>
+            imagePicker.FinishedPickingMedia += (sender,) =>
             {
                 UIImage image = (UIImage)e.Info.ObjectForKey(new NSString("UIImagePickerControllerOriginalImage"));
                 UIImage rotateImage = RotateImage(image, image.Orientation);
@@ -135,7 +135,7 @@ namespace mobileAppClient.iOS
                 });
             };
 
-            imagePicker.Canceled += (sender, e) => vc.DismissViewController(true, null);
+            imagePicker.Canceled += (sender,) => vc.DismissViewController(true, null);
         }
 
         public void SavePhoto(UIImage photo, string imageName, FileFormatEnum imageType)

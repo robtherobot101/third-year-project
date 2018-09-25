@@ -11,6 +11,7 @@ namespace mobileAppClient
         public int id { get; set; }
         public bool expired { get; set; }
         public List<User> topReceivers { get; set; }
+        public int inTransfer { get; set; }
 
         public DonatableOrgan()
         {
@@ -52,14 +53,14 @@ namespace mobileAppClient
                     t = TimeSpan.FromSeconds(timeRemaining);
                     timeString += t.ToString(@"dd\:hh\:mm\:ss") + " days";
                     break;
-                case("middle-ear"):
+                case("ear"):
                 case("skin"):
-                case("bone-marrow"):
+                case("bone"):
                     timeRemaining = 315360000 - timeBurning;
                     t = TimeSpan.FromSeconds(timeRemaining);
                     timeString += t.ToString(@"dd\:hh\:mm\:ss") + " days";
                     break;
-                case ("connective-tissue"):
+                case ("tissue"):
                     timeRemaining = 157680000 - timeBurning;
                     t = TimeSpan.FromSeconds(timeRemaining);
                     timeString += t.ToString(@"dd\:hh\:mm\:ss") + " days";

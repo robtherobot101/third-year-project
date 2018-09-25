@@ -78,9 +78,9 @@ namespace mobileAppClient
         /**
          * Fill the image carousel with images and captions
          */
-        private async void fillFeed(IEnumerable<string> feeds)
+        private void fillFeed(IEnumerable<string> feeds)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return;
             }

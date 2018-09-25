@@ -1,6 +1,7 @@
 package seng302.Logic.Database;
 
 import seng302.Config.DatabaseConfiguration;
+import seng302.Logic.SaltHash;
 import seng302.Model.Attribute.*;
 import seng302.Model.*;
 import seng302.Model.Medication.Medication;
@@ -66,7 +67,6 @@ public class GeneralUser extends DatabaseMethods {
             ArrayList<User> users = new ArrayList<>();
 
             String query = buildUserQuery(params);
-            System.out.println(query);
             System.out.println(query);
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
@@ -425,7 +425,6 @@ public class GeneralUser extends DatabaseMethods {
                     resultSet.getString("profile_image_type"));
             user.setLastModifiedForDatabase(resultSet.getTimestamp("last_modified").toLocalDateTime());
             user.setCreationTime(resultSet.getTimestamp("creation_time").toLocalDateTime());
-            user.setPassword(resultSet.getString("password"));
             user.setUsername(resultSet.getString("username"));
 
             int userId = (int) user.getId();
@@ -562,6 +561,51 @@ public class GeneralUser extends DatabaseMethods {
             statement.setString(25, user.getCountryOfDeath());
             statement.setInt(26, userId);
             System.out.println("Update user Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
+        } finally {
+            close(statement);
+        }
+    }
+
+
+    /**
+     * Update account details
+     * @param id The id of the user account
+     * @param username The new username to associate with the account
+     * @param email The new email
+     */
+    public void updateAccount(long id, String username, String email) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "UPDATE USER JOIN ACCOUNT ON USER.id = ACCOUNT.id AND USER.id = ? SET username = ?, email = ?";
+            statement = connection.prepareStatement(update);
+            statement.setLong(1, id);
+            statement.setString(2, username);
+            statement.setString(3, email);
+            statement.executeUpdate();
+        } finally {
+            close(statement);
+        }
+    }
+
+
+    /**
+     * Update account details
+     * @param id The id of the user account
+     * @param username The new username to associate with the account
+     * @param password The new password
+     * @param email The new email
+     */
+    public void updateAccount(long id, String username, String email, String password) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            password = SaltHash.createHash(password);
+            String update = "UPDATE USER JOIN ACCOUNT ON USER.id = ACCOUNT.id AND USER.id = ? SET username = ?, email = ?, password = ?";
+            statement = connection.prepareStatement(update);
+            statement.setLong(1, id);
+            statement.setString(2, username);
+            statement.setString(3, email);
+            statement.setString(4, password);
+            statement.executeUpdate();
         } finally {
             close(statement);
         }

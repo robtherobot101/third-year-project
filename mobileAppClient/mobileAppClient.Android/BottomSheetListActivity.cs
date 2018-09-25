@@ -45,8 +45,6 @@ namespace mobileAppClient.Droid
             //var listView = FindViewById<ListView>(Resource.Id.listView);
             //listView.Adapter = this.adapter;
             //listView.OnItemClickListener = this;
-            ShowBottomSheet();
-
         }
 
         //public override bool OnOptionsItemSelected(IMenuItem item)
@@ -62,15 +60,6 @@ namespace mobileAppClient.Droid
         //    this.selectedPosition = position;
         //    this.ShowBottomSheet(this.selectedPosition);
         //}
-
-        public void ShowBottomSheet()
-        {
-            BottomSheetFragment fragment =
-                BottomSheetFragment.NewInstance();
-
-            fragment.Show(this.SupportFragmentManager, "dialog");
-
-        }
 
         //public void OnClick(IDialogInterface dialog, int which)
         //{

@@ -20,6 +20,11 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<DrugInteractionResult> RetrieveDrugInteractions(string drugA, string drugB)
         {
+            if (!ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new DrugInteractionResult(false, HttpStatusCode.BadRequest);
+            }
+
             HttpClient client = ServerConfig.Instance.client;
             User loggedInUser = UserController.Instance.LoggedInUser;
 
@@ -34,7 +39,7 @@ namespace mobileAppClient.odmsAPI
             try
             {
                 response = await client.GetAsync(apiEndpoint + query);
-            } catch (HttpRequestException e) {
+            } catch (HttpRequestException) {
                 return new DrugInteractionResult(false, HttpStatusCode.BadRequest);
             }
 

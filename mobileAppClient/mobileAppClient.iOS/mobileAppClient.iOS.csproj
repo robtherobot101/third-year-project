@@ -173,16 +173,7 @@
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
-    <Compile Include="Messaging\Cells\BubbleCell.cs" />
-    <Compile Include="Messaging\Cells\IncomingCell.cs" />
-    <Compile Include="Messaging\Cells\OutgoingCell.cs" />
-    <Compile Include="Messaging\ChatInput\ChatInputView.cs" />
-    <Compile Include="Messaging\ChatSource.cs" />
-    <Compile Include="Messaging\ChatViewController.cs" />
-    <Compile Include="Messaging\ChatViewController.designer.cs">
-      <DependentUpon>ChatViewController.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Messaging\MessagingEntryClass.cs" />
+    <Compile Include="Notifications\iOSToast.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="iOSCamera.cs" />
     <Compile Include="CustomMapRenderer.cs" />
@@ -198,7 +189,6 @@
       <DependentUpon>PotentialMatchesBottomSheetViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="RecipientsTableSource.cs" />
-    <InterfaceDefinition Include="Messaging\ChatViewController.xib" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -269,6 +259,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.2</Version>
     </PackageReference>
+    <PackageReference Include="Toasts.Forms.Plugin">
+      <Version>3.3.2</Version>
+    </PackageReference>
     <PackageReference Include="Xam.Plugins.Forms.ImageCircle">
       <Version>3.0.0.5</Version>
     </PackageReference>
@@ -307,8 +300,8 @@
     <BundleResource Include="Resources\arrow_icon.png" />
     <BundleResource Include="Resources\facebook_icon.png" />
     <BundleResource Include="Resources\map_icon.png" />
-    <BundleResource Include="Resources\bone-marrow_icon.png" />
-    <BundleResource Include="Resources\middle-ear_icon.png" />
+    <BundleResource Include="Resources\bone_icon.png" />
+    <BundleResource Include="Resources\ear_icon.png" />
     <BundleResource Include="Resources\cornea_icon.png" />
     <BundleResource Include="Resources\heart_icon.png" />
     <BundleResource Include="Resources\intestine_icon.png" />
@@ -317,7 +310,7 @@
     <BundleResource Include="Resources\lung_icon.png" />
     <BundleResource Include="Resources\pancreas_icon.png" />
     <BundleResource Include="Resources\skin_icon.png" />
-    <BundleResource Include="Resources\connective-tissue_icon.png" />
+    <BundleResource Include="Resources\tissue_icon.png" />
     <BundleResource Include="Resources\man1.png" />
     <BundleResource Include="Resources\man2.png" />
     <BundleResource Include="Resources\man3.png" />
@@ -346,6 +339,7 @@
     <BundleResource Include="Resources\other.png" />
     <BundleResource Include="Resources\users_icon.png" />
     <BundleResource Include="Resources\add_icon.png" />
+    <BundleResource Include="Resources\messages_icon.png" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\score_icon.png" />
