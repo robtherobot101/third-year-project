@@ -9,9 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Android;
 using CarouselView.FormsPlugin.Abstractions;
-using Java.Lang;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using String = System.String;
@@ -28,7 +26,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> LoginUser(String usernameEmail, String password)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -52,7 +50,7 @@ namespace mobileAppClient.odmsAPI
             try
             {
                 response = await client.PostAsync(url + "/login" + queries, content);
-            } catch (HttpRequestException e)
+            } catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -110,7 +108,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> LoginUser(String api_id)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -135,7 +133,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.PostAsync(url + "/login" + queries, content);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -193,7 +191,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> Logout(bool isClinician)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -213,12 +211,11 @@ namespace mobileAppClient.odmsAPI
                 request.Headers.Add("token", UserController.Instance.AuthToken);
             }
 
-
             try
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -296,7 +293,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> RegisterUser(User user)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -310,12 +307,21 @@ namespace mobileAppClient.odmsAPI
             String registerUserRequestBody = JsonConvert.SerializeObject(user);
 
             HttpContent body = new StringContent(registerUserRequestBody);
-            var response = await client.PostAsync(url + "/users", body);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(url + "/users", body);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
 
             if (response.StatusCode == HttpStatusCode.Created)
             {
                 Console.WriteLine("Success on creating user");
-                user.id = Integer.ParseInt((String)response.Headers.GetValues("id").GetItem(0));
+                user.id = Int32.Parse((String)response.Headers.GetValues("id").GetItem(0));
             }
             else
             {
@@ -327,9 +333,9 @@ namespace mobileAppClient.odmsAPI
         /*
          * Returns response status code of the attempted user registration
          */
-        public async Task<HttpStatusCode> FacebookRegisterUser(User user, String api_id)
+        public async Task<HttpStatusCode> FacebookRegisterUser(int userId, string api_id)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -342,10 +348,62 @@ namespace mobileAppClient.odmsAPI
             HttpClient client = ServerConfig.Instance.client;
 
             HttpContent body = new StringContent("");
-            String queries = $"?api_id={api_id}&id={user.id}";
-            var response = await client.PostAsync(url + "/facebookaccount" + queries, body);
+            String queries = $"?api_id={api_id}&id={userId}";
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(url + "/facebookaccount" + queries, body);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
 
             if (response.StatusCode == HttpStatusCode.Created)
+            {
+                Console.WriteLine("Success on editing user");
+            }
+            else
+            {
+                Console.WriteLine($"Failed register ({response.StatusCode})");
+            }
+            return response.StatusCode;
+        }
+
+
+
+        /*
+         * Returns response status code of the attempted user registration
+         */
+        public async Task<HttpStatusCode> GoogleRegisterUser(int userId, string api_id)
+        {
+            if (!ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            // Get the single userController instance
+            UserController userController = UserController.Instance;
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpContent body = new StringContent("");
+            String queries = $"?api_id={api_id}&id={userId}";
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(url + "/googleaccount" + queries, body);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
             {
                 Console.WriteLine("Success on editing user");
             }

@@ -7,23 +7,21 @@
         <StackLayout VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" Spacing="10">
             <Image Source="google_logo.png" 
                    WidthRequest="272"
-                   HeightRequest="92"
-            />
+                   HeightRequest="92"/>
+            
             <Label Text="Please complete your donor profile" HorizontalTextAlignment="Center"/>
             
             <Entry x:Name="firstNameInput" Placeholder="First Name"
                    VerticalOptions="CenterAndExpand"
-                   IsVisible="False"
-            />
+                   IsVisible="False"/>
 
             <Entry x:Name="lastNameInput" Placeholder="Last Name"
                    VerticalOptions="CenterAndExpand"
-                   IsVisible="False"
-            />
+                   IsVisible="False"/>
+            
             <DatePicker x:Name="dobInput"
                         Format="D"
-                        MinimumDate="01/01/1900"
-            />
+                        MinimumDate="01/01/1900"/>
 
             <Picker Title ="Birth Gender" x:Name="BirthGenderInput">
                 <Picker.ItemsSource>
@@ -34,6 +32,8 @@
                     </x:Array>
                 </Picker.ItemsSource>
             </Picker>
+
+            <Entry x:Name="NHIEntry" Placeholder="NHI Number" VerticalOptions="CenterAndExpand"/>
 
             <Button Clicked="Button_OnClicked" Text="Continue"/>
         </StackLayout>

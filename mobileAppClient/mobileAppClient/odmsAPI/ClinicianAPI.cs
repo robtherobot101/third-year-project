@@ -24,10 +24,11 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> UpdateClinician()
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
+
             // Fetch the url and client from the server config class
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
@@ -81,9 +82,9 @@ namespace mobileAppClient.odmsAPI
             List<Hospital> resultHospitals = new List<Hospital>();
 
             // Check connection
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
-                return new Tuple<HttpStatusCode, List<Hospital>>(HttpStatusCode.ServiceUnavailable, null);
+                return new Tuple<HttpStatusCode, List<Hospital>>(HttpStatusCode.ServiceUnavailable, resultHospitals);
             }
 
             // Fetch the url and client from the server config class
@@ -98,7 +99,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return new Tuple<HttpStatusCode, List<Hospital>>(HttpStatusCode.ServiceUnavailable, resultHospitals);
             }
@@ -124,7 +125,7 @@ namespace mobileAppClient.odmsAPI
         public async Task<Tuple<HttpStatusCode, Clinician>> GetSingleClinician(string id)
         {
             // Check internet connection
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return new Tuple<HttpStatusCode, Clinician>(HttpStatusCode.ServiceUnavailable, null);
             }
@@ -132,8 +133,6 @@ namespace mobileAppClient.odmsAPI
             // Fetch the url and client from the server config class
             String url = ServerConfig.Instance.serverAddress;
             HttpClient client = ServerConfig.Instance.client;
-
-            String queries = null;
 
             HttpResponseMessage response;
             var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/clinicians/" + id);
@@ -152,7 +151,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return new Tuple<HttpStatusCode, Clinician>(HttpStatusCode.ServiceUnavailable, null);
             }

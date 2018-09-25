@@ -106,7 +106,7 @@ public class UserSettingsController implements Initializable {
             }
             currentUser.setUsername(usernameField.getText());
             currentUser.setEmail(emailField.getText());
-            currentUser.setPassword(passwordField.getText());
+            currentUser.setPassphrase(passwordField.getText());
 
             userController.addHistoryEntry("Account settings updated", "Profile account settings were updated.");
             Stage stage = (Stage) updateButton.getScene().getWindow();
