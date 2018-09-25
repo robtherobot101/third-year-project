@@ -7,6 +7,7 @@ import seng302.Model.Attribute.ProfileType;
 import seng302.Model.Conversation;
 import seng302.Model.Message;
 import seng302.Model.User;
+import seng302.Server;
 
 import java.sql.*;
 import java.util.*;
@@ -34,8 +35,8 @@ public class Conversations {
                 while (resultSet.next()) {
                     conversations.add(getSingleConversation(resultSet.getInt(1)));
                 }
-            } catch (SQLException ignored) {
-                ignored.printStackTrace();
+            } catch (SQLException e) {
+                Server.getInstance().log.error(e.getMessage());
             } finally {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
@@ -110,7 +111,7 @@ public class Conversations {
                 }
                 conversation = new Conversation(conversationId, messages, participants);
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             } finally {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
@@ -192,6 +193,9 @@ public class Conversations {
             PreparedStatement statement = null;
 
             try {
+                statement = connection.prepareStatement("SET NAMES utf8mb4");
+                statement.executeUpdate();
+                statement.close();
                 statement = connection.prepareStatement("INSERT INTO MESSAGE(conversation_id, text, date_time, user_id) VALUES(?, ?, ?, ?);");
                 statement.setInt(1, conversationId);
                 statement.setString(2, message.getText());
@@ -215,34 +219,35 @@ public class Conversations {
         int id = -1;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             PreparedStatement statement = null;
+            ResultSet resultSet = null;
 
             try {
-                statement = connection.prepareStatement("INSERT INTO CONVERSATION VALUES(0, ?)");
+                statement = connection.prepareStatement("INSERT INTO CONVERSATION(token) VALUES(?)");
                 String token = UUID.randomUUID().toString();
                 statement.setString(1, token);
                 statement.execute();
                 DbUtils.closeQuietly(statement);
                 statement = connection.prepareStatement("SELECT id FROM CONVERSATION WHERE token = ?");
                 statement.setString(1, token);
-                ResultSet resultSet = statement.executeQuery();
+                resultSet = statement.executeQuery();
                 resultSet.next();
                 id = resultSet.getInt(1);
                 DbUtils.closeQuietly(resultSet);
-                DbUtils.closeQuietly(statement);
 
                 for (Integer participant: participants) {
+                    PreparedStatement statement1 = null;
                     try {
-                        statement = connection.prepareStatement("INSERT INTO CONVERSATION_MEMBER VALUES(?, ?);");
-                        statement.setInt(1, id);
-                        statement.setInt(2, participant);
-                        statement.execute();
+                        statement1 = connection.prepareStatement("INSERT INTO CONVERSATION_MEMBER VALUES(?, ?);");
+                        statement1.setInt(1, id);
+                        statement1.setInt(2, participant);
+                        statement1.execute();
                     } catch (SQLIntegrityConstraintViolationException ignored) {
                     } finally {
-                        DbUtils.closeQuietly(statement);
+                        DbUtils.closeQuietly(statement1);
                     }
                 }
-            } catch (SQLException ignored) {
             } finally {
+                DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
             }
         }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using mobileAppClient.Models;
 using mobileAppClient.Models.CustomObjects;
 using mobileAppClient.odmsAPI;
+using mobileAppClient.Notifications;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -19,7 +20,10 @@ namespace mobileAppClient
 
         private bool isClinicianAccessing { get; set; }
 
+        private List<int> activeConversations;
+
         public CustomObservableCollection<Conversation> conversationList { get; set; }
+
 
         // Loading represents fetching more users at the bottom of the list
         private bool _IsLoading;
@@ -33,11 +37,17 @@ namespace mobileAppClient
                 {
                     LoadingIndicator.IsVisible = true;
                     LoadingIndicator.IsRunning = true;
+                    NewConversationButton.IsVisible = false;
                 }
                 else
                 {
                     LoadingIndicator.IsVisible = false;
                     LoadingIndicator.IsRunning = false;
+
+                    if (isClinicianAccessing)
+                    {
+                        NewConversationButton.IsVisible = true;
+                    }      
                 }
             }
         }
@@ -53,8 +63,12 @@ namespace mobileAppClient
             CheckIfClinicianAccessing();
 
             conversationList = new CustomObservableCollection<Conversation>();
-            ConversationsListView.ItemsSource = conversationList;  
+            activeConversations = new List<int>();
+
+            ConversationsListView.ItemsSource = conversationList;
+            VSAppCenter.setConversationListController(this);
         }
+
 
         /// <summary>
         /// Activated whenever focus is on this page
@@ -67,7 +81,7 @@ namespace mobileAppClient
             {
                 localClinician = ClinicianController.Instance.LoggedInClinician;
                 await LoadClinicianConversations();
-                NewConversationButton.IsEnabled = true;
+                
             }
             else
             {
@@ -77,6 +91,12 @@ namespace mobileAppClient
             }
             IsLoading = false;
         }
+
+        protected override void OnDisappearing()
+        {
+            VSAppCenter.setConversationListController(null);
+        }
+
 
         /// <summary>
         /// Checks whether the clinician is viewing this page, important for fetching the correct profiles of participants
@@ -91,12 +111,19 @@ namespace mobileAppClient
 
         async void Handle_Conversation_Tapped(object sender, ItemTappedEventArgs e)
         {
+            Conversation tappedConversation = (Conversation)e.Item;
             var localId = localUser?.id ?? localClinician.staffID;
-            await Navigation.PushAsync(new ConversationPage((Conversation)e.Item, localId));
+
+            foreach (Message m in tappedConversation.messages) {
+                m.SetType(localId);
+            }
+
+            await Navigation.PushAsync(new ConversationPage(tappedConversation, localId));
         }
 
         private async Task LoadClinicianConversations()
         {
+            
             List<Conversation> rawConversations;
             MessagingAPI messagingApi = new MessagingAPI();
 
@@ -111,15 +138,18 @@ namespace mobileAppClient
                     return;
             }
 
+            activeConversations.Clear();
             foreach (Conversation currentConversation in rawConversations)
             {
                 currentConversation.getParticipantNames(localClinician.staffID);
+                activeConversations.Add(currentConversation.externalId);
                 conversationList.Add(currentConversation);
             }
         }
 
         private async Task LoadUserConversations()
         {
+            
             List<Conversation> rawConversations;
             MessagingAPI messagingApi = new MessagingAPI();
 
@@ -134,16 +164,18 @@ namespace mobileAppClient
                     return;
             }
 
+            activeConversations.Clear();
             foreach (Conversation currentConversation in rawConversations)
             {
                 currentConversation.getParticipantNames(localUser.id);
+                activeConversations.Add(currentConversation.externalId);
                 conversationList.Add(currentConversation);
             }
         }
 
         private async void NewConversationTapped(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new CreateConversationPage());
+            await Navigation.PushAsync(new CreateConversationPage(activeConversations));
         }
     }
 }

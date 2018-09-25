@@ -42,7 +42,7 @@ public class AuthorizationController {
                 matchedPassword = SaltHash.checkHash(password, hash);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
         }
         if (!foundUser) {
             try {
@@ -51,7 +51,7 @@ public class AuthorizationController {
                     matchedPassword = SaltHash.checkHash(password, hash);
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
         }
         if (matchedPassword) {
@@ -93,7 +93,7 @@ public class AuthorizationController {
                 System.out.println("LoginController: Logging in as user...");
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
         }
 
         if (loginToken == null) { //if user login was unsuccessful
@@ -106,7 +106,7 @@ public class AuthorizationController {
                     System.out.println("LoginController: Logging in as clinician...");
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
         }
 
@@ -120,7 +120,7 @@ public class AuthorizationController {
                     System.out.println("LoginController: Logging in as admin...");
                 }
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
         }
 
@@ -130,7 +130,7 @@ public class AuthorizationController {
                 notifications.register(request.headers("device_id"), loginToken);
             } catch (SQLException e) {
                 Server.getInstance().log.error("Could not register device!");
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
             switch (typeMatched) {
                 case ADMIN:

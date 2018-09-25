@@ -31,7 +31,6 @@ namespace mobileAppClient
 
         async void Handle_Clicked(object sender, System.EventArgs e)
         {
-
             string email = InputValidation.Trim(emailInput.Text);
             if (!InputValidation.IsValidEmail(email))
             {

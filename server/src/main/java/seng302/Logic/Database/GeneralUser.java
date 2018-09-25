@@ -68,7 +68,6 @@ public class GeneralUser extends DatabaseMethods {
 
             String query = buildUserQuery(params);
             System.out.println(query);
-            System.out.println(query);
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
@@ -568,6 +567,28 @@ public class GeneralUser extends DatabaseMethods {
             close(statement);
         }
     }
+
+
+    /**
+     * Update account details
+     * @param id The id of the user account
+     * @param username The new username to associate with the account
+     * @param email The new email
+     */
+    public void updateAccount(long id, String username, String email) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "UPDATE USER JOIN ACCOUNT ON USER.id = ACCOUNT.id AND USER.id = ? SET username = ?, email = ?";
+            statement = connection.prepareStatement(update);
+            statement.setLong(1, id);
+            statement.setString(2, username);
+            statement.setString(3, email);
+            statement.executeUpdate();
+        } finally {
+            close(statement);
+        }
+    }
+
 
     /**
      * Update account details

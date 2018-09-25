@@ -164,19 +164,19 @@ namespace mobileAppClient
             {
                 return;
             }
-
-            //deselect item
+            // Deselect item
             ((ListView)sender).SelectedItem = null;
 
-            if(e.Item == "You could donate more organs")
+            string tappedRecommendation = (string)e.Item;
+            if (tappedRecommendation == "Donate more organs")
             {
                 await Navigation.PushAsync(new OrgansPage());
             }
-            else if(e.Item == "You could add a profile photo")
+            else if(tappedRecommendation == "Add a profile photo")
             {
-                await Navigation.PushAsync(new PhotoSettingsPage());
+                await Navigation.PushAsync(new PhotoSettingsPage(false));
             }
-            else if (e.Item == "You could add in more details about yourself")
+            else if (tappedRecommendation == "Add in more details about yourself")
             {
                 await Navigation.PushAsync(new AttributesPage());
             }

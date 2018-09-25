@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using mobileAppClient.Models;
 using Xamarin.Forms;
+using mobileAppClient.Notifications;
 using Xamarin.Forms.Xaml;
 using mobileAppClient.Models.CustomObjects;
 using mobileAppClient.odmsAPI;
@@ -22,10 +23,10 @@ namespace mobileAppClient
 
         private bool isClinicianAccessing { get; set; }
 
-	    private Conversation conversation;
+	    public Conversation conversation;
+
         private CustomObservableCollection<Message> conversationMessages;
 
-	    private Timer t;
 
 		public ConversationPage(Conversation conversationToDisplay, int localId)
 		{
@@ -36,51 +37,35 @@ namespace mobileAppClient
 		    this.localId = localId;
 
 		    Title = conversation.externalName;
-
-            conversationMessages = new CustomObservableCollection<Message>();
+            conversationMessages = conversation.messages;
+            conversationMessages.CollectionChanged += ConversationMessages_CollectionChanged;
 
             MessagesListView.ItemsSource = conversationMessages;
 		    MessagesListView.ItemTapped += OnMessageTapped;
 
-            populateMessages();
-
-            StartTimer(4000);
+            MessagesListView.ScrollTo(conversationMessages.LastOrDefault(), ScrollToPosition.End, true);
+            VSAppCenter.seConversationController(this);
         }
 
-	    private void StartTimer(int interval)
-	    {
-            t = new Timer(timerTick, null, 100, interval);
-	    }
+        private void ConversationMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems.Count == 0) {
+                return;
+            }
+            Message newMessage = (Message) e.NewItems[0];
+            //MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
+        }
 
-	    public async void timerTick(object o)
-	    {
-	        Tuple<HttpStatusCode, Conversation> refreshedConversation = await new MessagingAPI().GetConversation(localId, conversation.id, isClinicianAccessing);
-	        if (refreshedConversation.Item1 == HttpStatusCode.OK)
-	        {
-	            List<Message> newConversationMessages = refreshedConversation.Item2.messages;
-                if (conversation.messages.Union(newConversationMessages).Count() != conversation.messages.Count())
-                {
-                    conversation.messages.AddRange(newConversationMessages.Except(conversation.messages));
-                }
-
-                if (conversationMessages.Count > 0)
-                {
-                    MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
-                }
-	        }
-	    }
-
-	    protected async override void OnDisappearing()
-	    {
-	        t.Dispose();
-	    }
+        protected override void OnDisappearing()
+        {  
+            VSAppCenter.seConversationController(null);
+        }
 
 
-
-	    /// <summary>
+        /// <summary>
         /// Checks whether the clinician is viewing this page, important for fetching the correct profiles of participants
         /// </summary>
-	    private void CheckIfClinicianAccessing()
+        private void CheckIfClinicianAccessing()
 	    {
 	        if (ClinicianController.Instance.isLoggedIn())
 	        {
@@ -98,16 +83,6 @@ namespace mobileAppClient
 	        if (e.Item == null) return;
 	        ((ListView)sender).SelectedItem = null;
 	    }
-
-        private void populateMessages()
-        {
-            conversationMessages.Clear();
-            foreach (Message currentMessage in conversation.messages)
-            {
-                currentMessage.SetType(localId);
-                conversationMessages.Add(currentMessage);
-            } 
-        }
 
         /// <summary>
         /// Handles the sending of a message
@@ -140,8 +115,8 @@ namespace mobileAppClient
 	        };
 
             conversationMessages.Add(newMessage);
-            MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
 	        chatTextInput.Text = "";
-	    }
+            chatTextInput.Keyboard = null;
+        }
 	}
 }
