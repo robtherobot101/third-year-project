@@ -41,19 +41,14 @@ namespace mobileAppClient
             conversationMessages.CollectionChanged += ConversationMessages_CollectionChanged;
 
             MessagesListView.ItemsSource = conversationMessages;
-		    MessagesListView.ItemTapped += OnMessageTapped;
 
-            MessagesListView.ScrollTo(conversationMessages.LastOrDefault(), ScrollToPosition.End, true);
+            //MessagesListView.ScrollToLast();
             VSAppCenter.seConversationController(this);
         }
 
         private void ConversationMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (e.NewItems.Count == 0) {
-                return;
-            }
-            Message newMessage = (Message) e.NewItems[0];
-            //MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
+            //MessagesListView.ScrollToLast();
         }
 
         protected override void OnDisappearing()
@@ -71,17 +66,6 @@ namespace mobileAppClient
 	        {
 	            isClinicianAccessing = true;
 	        }
-	    }
-
-        /// <summary>
-        /// When a message is tapped fire this event
-        /// Just deselects the item immediately, giving the appearance of not being tappable
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public void OnMessageTapped(object sender, ItemTappedEventArgs e) {
-	        if (e.Item == null) return;
-	        ((ListView)sender).SelectedItem = null;
 	    }
 
         /// <summary>
@@ -114,7 +98,7 @@ namespace mobileAppClient
                 timestamp = new CustomDateTime(DateTime.Now)
 	        };
 
-            conversationMessages.Add(newMessage);
+            conversationMessages.Insert(0, newMessage);
 	        chatTextInput.Text = "";
             chatTextInput.Keyboard = null;
         }

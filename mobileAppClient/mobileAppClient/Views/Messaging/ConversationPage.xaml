@@ -10,12 +10,17 @@
     </ContentPage.Resources>
     <ContentPage.Content>
         <StackLayout>
-            <ListView x:Name="MessagesListView" 
+            <mobileAppClient:ExtendedListView x:Name="MessagesListView" 
                       ItemTemplate="{StaticResource MessageTemplateSelector}" 
-                      HasUnevenRows="True" 
+                      Margin="0"
+                      Rotation="180" 
+                      FlowDirection="RightToLeft"
+                      HasUnevenRows="True"
+                      VerticalOptions="FillAndExpand" 
+                      SeparatorColor="Transparent"
                       SeparatorVisibility="None"
                       RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-            </ListView>
+            </mobileAppClient:ExtendedListView>
 
             <Grid RowSpacing="0" 
                   ColumnSpacing="0">
