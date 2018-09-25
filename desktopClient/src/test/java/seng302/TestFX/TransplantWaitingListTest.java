@@ -379,8 +379,8 @@ public class TransplantWaitingListTest extends TestFXTest {
                 LocalDate.of(1969, 8, 4),
                 "bflame",
                 "flameman@hotmail.com",
-                "cfj3742",
-                "password123");
+                "cfj3742"
+        );
         testUser.setRegion("Canterbury");
         try{
             WindowManager.getDataManager().getUsers().insertUser(testUser);
@@ -392,8 +392,8 @@ public class TransplantWaitingListTest extends TestFXTest {
                 LocalDate.of(1957, 12, 12),
                 "bobr",
                 "bob@live.com",
-                "cfj3742",
-                "password");
+                "cfj3742"
+        );
         try{
             WindowManager.getDataManager().getUsers().insertUser(testUser);
         } catch (HttpResponseException e) {

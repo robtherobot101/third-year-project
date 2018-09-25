@@ -54,8 +54,8 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
             LocalDate.of(1969, 8, 4),
             "bflame",
             "flameman@hotmail.com",
-                "cfj3772",
-            "password123");
+                "cfj3772"
+        );
         testUserBobby.setGender(Gender.MALE);
         testUserBobby.setRegion("Auckland");
         testUserBobby.setOrgan(Organ.PANCREAS);
@@ -65,8 +65,8 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
             LocalDate.of(1997, 1, 4),
             "andy",
             "andy@hotmail.com",
-                "lsj4940",
-            "andyANDY");
+                "lsj4940"
+        );
         testUserAndy.setGender(Gender.FEMALE);
         testUserAndy.setRegion("Arrowtown");
         testUserAndy.setOrgan(Organ.HEART);
@@ -77,8 +77,8 @@ public class ClinicianFilterSearchGUITest extends TestFXTest {
             LocalDate.of(1996, 8, 4),
             "test",
             "test@hotmail.com",
-                "cfj3769",
-            "tester123");
+                "cfj3769"
+        );
         testUserTest.setGender(Gender.MALE);
         testUserTest.setRegion("Canterbury");
 

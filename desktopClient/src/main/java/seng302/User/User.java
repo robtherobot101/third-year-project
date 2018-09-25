@@ -26,7 +26,7 @@ public class User {
     private String nhi;
     private EnumSet<Organ> organs = EnumSet.noneOf(Organ.class);
     private int zipCode=0;
-    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, password, bloodPressure = "", profileImageType = "";
+    private String currentAddress = "", region = "", city="", country="", homePhone="", mobilePhone="", username, email, bloodPressure = "", profileImageType = "";
     private SmokerStatus smokerStatus;
     private AlcoholConsumption alcoholConsumption;
     private ArrayList<Medication> currentMedications = new ArrayList<>(), historicMedications = new ArrayList<>();
@@ -48,7 +48,7 @@ public class User {
         this.id = 1;
     }
 
-    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String nhi, String password) {
+    public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, String username, String email, String nhi) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         this.name = new String[1 + middleNames.length + isLastName];
         this.name[0] = firstName;
@@ -61,7 +61,6 @@ public class User {
         this.creationTime = LocalDateTime.now();
         this.username = username;
         this.email = email;
-        this.password = password;
         // TODO Add functionality to DAOs for getting next id.
         this.id = 1;
         this.nhi = nhi;
@@ -102,14 +101,13 @@ public class User {
         this.mobilePhone = mobilePhone;
 
         this.email = email;
-        this.password = "password";
         // TODO Add functionality to DAOs for getting next id.
         this.id = 1;
         this.nhi= nhi;
     }
 
     public User(String firstName, String[] middleNames, String lastName, LocalDate dateOfBirth, LocalDateTime dateOfDeath, Gender gender, double height,
-                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String nhi, String password, String country, String cityOfDeath, String regionOfDeath, String countryOfdeath) {
+                double weight, BloodType bloodType, String region, String currentAddress, String username, String email, String nhi, String country, String cityOfDeath, String regionOfDeath, String countryOfdeath) {
         int isLastName = lastName == null || lastName.isEmpty() ? 0 : 1;
         int lenMiddleNames = middleNames == null ? 0 : middleNames.length;
         this.name = new String[1 + lenMiddleNames + isLastName];
@@ -134,7 +132,6 @@ public class User {
         this.username = username;
         this.email = email;
         this.nhi = nhi;
-        this.password = password;
         this.country = country;
         this.cityOfDeath = cityOfDeath;
         this.regionOfDeath = regionOfDeath;
@@ -334,10 +331,6 @@ public class User {
         this.email = email;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public LocalDateTime getCreationTime() {
         return creationTime;
     }
@@ -356,10 +349,6 @@ public class User {
 
     public String getEmail() {
         return email;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public EnumSet<Organ> getOrgans() {
