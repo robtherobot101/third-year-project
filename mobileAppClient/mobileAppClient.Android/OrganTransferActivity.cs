@@ -57,42 +57,63 @@ namespace mobileAppClient.Droid
                     selectedReceiver = receiver;
                 }
             }
+            ClinicianMapPage clinicianMapPage = new ClinicianMapPage();
 
-            AlertDialog.Builder alert = new AlertDialog.Builder(this);
-            alert.SetTitle("Confirm Transfer");
-            alert.SetMessage("Are you sure you want to transfer " + organ.organType + " to " + selectedReceiver.FullName + "?");
-            alert.SetPositiveButton("Yes", async (senderAlert, args) => {
-                Toast.MakeText(this, "Transfer process started.", ToastLength.Short).Show();
-                Console.WriteLine("LET US BEGIN");
+            bool canArrive = await clinicianMapPage.CheckGetToReceiverInTime(organ, selectedReceiver);
 
-                //Update bottom sheet to show In transfer - empty table and update countdown
+            if (!canArrive)
+            {
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.SetTitle("Cannot Transfer");
+                alert.SetMessage("Cannot transfer " + organ.organType + " to " + selectedReceiver.FullName + " as it will expire before it arrives.");
+                alert.SetPositiveButton("confirm", (senderAlert, args) =>{});
 
-                organTimerText.Text = "IN TRANSIT";
-                organTimerText.SetTextColor(Android.Graphics.Color.Orange);
+                Dialog dialog = alert.Create();
+                dialog.Show();
+            }
+            else
+            {
 
-                transferText.Text = "This organ is currently in transit.";
-                receiverTable.RemoveAllViews();
 
-                //Update map to get rid of overlays and recipients 
-                timer.Dispose();
-                timer = null;
-                organ.inTransfer = 1;
 
-                //Insert transfer into database and add new helicopter.
-                ClinicianMapPage clinicianMapPage = new ClinicianMapPage();
-                double donorLat = Convert.ToDouble(Intent.GetStringExtra("donorLat"));
-                double donorLong = Convert.ToDouble(Intent.GetStringExtra("donorLong"));
-                Position pos = new Position(donorLat, donorLong);
-                clinicianMapPage.NewTransferWithoutAddingHelicpoter(organ, selectedReceiver, pos);
-            });
+                AlertDialog.Builder alert = new AlertDialog.Builder(this);
+                alert.SetTitle("Confirm Transfer");
+                alert.SetMessage("Are you sure you want to transfer " + organ.organType + " to " + selectedReceiver.FullName + "?");
+                alert.SetPositiveButton("Yes", async (senderAlert, args) =>
+                {
+                    Toast.MakeText(this, "Transfer process started.", ToastLength.Short).Show();
+                    Console.WriteLine("LET US BEGIN");
 
-            alert.SetNegativeButton("No", (senderAlert, args) => {
-                Toast.MakeText(this, "Transfer Cancelled!", ToastLength.Short).Show();
-            });
+                    //Update bottom sheet to show In transfer - empty table and update countdown
 
-            Dialog dialog = alert.Create();
-            dialog.Show();
+                    organTimerText.Text = "IN TRANSIT";
+                    organTimerText.SetTextColor(Android.Graphics.Color.Orange);
 
+                    transferText.Text = "This organ is currently in transit.";
+                    receiverTable.RemoveAllViews();
+
+                    //Update map to get rid of overlays and recipients 
+                    timer.Dispose();
+                    timer = null;
+                    organ.inTransfer = 1;
+
+                    //Insert transfer into database and add new helicopter.
+
+                    double donorLat = Convert.ToDouble(Intent.GetStringExtra("donorLat"));
+                    double donorLong = Convert.ToDouble(Intent.GetStringExtra("donorLong"));
+                    Position pos = new Position(donorLat, donorLong);
+                    clinicianMapPage.NewTransferWithoutAddingHelicpoter(organ, selectedReceiver, pos);
+                });
+
+                alert.SetNegativeButton("No", (senderAlert, args) =>
+                {
+                    Toast.MakeText(this, "Transfer Cancelled!", ToastLength.Short).Show();
+                });
+
+                Dialog dialog = alert.Create();
+                dialog.Show();
+
+            }
         }
 
         private async void prepareList()

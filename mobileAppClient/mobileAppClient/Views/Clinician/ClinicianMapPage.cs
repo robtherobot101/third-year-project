@@ -13,7 +13,7 @@ using System.Linq;
 using System.Threading;
 using mobileAppClient.Maps;
 using mobileAppClient.Models;
-
+using Xamarin.Essentials;
 
 namespace mobileAppClient.Views.Clinician
 {
@@ -670,6 +670,48 @@ namespace mobileAppClient.Views.Clinician
             transplantListAPI.DeleteWaitingListItem(waitingListItemId);
             transplantListAPI.SetInTransfer(organId, 2);
 
+        }
+
+        public async Task<bool> CheckGetToReceiverInTime(DonatableOrgan organ, User receiver) {
+
+            UserAPI userAPI = new UserAPI();
+
+            User donor = await userAPI.getUser(organ.donorId, ClinicianController.Instance.AuthToken);
+            double startLat = 0;
+            double startLon = 0;
+            try
+            {
+                var address = donor.cityOfDeath + ", " + donor.regionOfDeath + ", " + donor.countryOfDeath;
+                var locations = await Geocoding.GetLocationsAsync(address);
+
+                var location = locations?.FirstOrDefault();
+                if (location != null)
+                {
+                    startLat = location.Latitude;
+                    startLon = location.Longitude;
+                    Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            Hospital receiverHospital = null;
+
+            foreach (Hospital hospital in hospitals) {
+                if (hospital.region == receiver.region){
+                    receiverHospital = hospital;
+                }
+            }
+            double dist = distance(
+                    startLat,
+                    receiverHospital.latitude,
+                    startLon,
+                    receiverHospital.latitude, 0, 0);
+
+            DateTime arrivalTime = DateTime.Now.AddSeconds((long)(dist / 69.444444));
+
+            return arrivalTime < (DateTime.Now.AddSeconds(organ.getTimeRemaining().Item2));
         }
 
     }
