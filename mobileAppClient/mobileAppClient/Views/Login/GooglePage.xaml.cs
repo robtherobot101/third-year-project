@@ -39,7 +39,27 @@ namespace mobileAppClient
             }
         }
 
-        async void Handle_CancelClicked(object sender, EventArgs e)
+
+
+
+
+
+
+
+        // Used for changing the login type to Google login
+        public GooglePage(int userId)
+        {
+            InitializeComponent();
+        }
+
+
+
+
+
+
+
+
+        async void Handle_CancelClicked(object sender, System.EventArgs e)
         {
             await Navigation.PopModalAsync();
         }

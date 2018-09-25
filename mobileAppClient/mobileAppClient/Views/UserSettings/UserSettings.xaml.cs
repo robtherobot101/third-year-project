@@ -24,16 +24,15 @@ namespace mobileAppClient
         async void Handle_FacebookSettingsTapped(object sender, System.EventArgs e)
         {
             //Do a thing
-            await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(UserController.Instance.LoggedInUser)));
+            await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(UserController.Instance.LoggedInUser.id)));
+            
         }
 
 
         async void Handle_GoogleSettingsTapped(object sender, System.EventArgs e)
         {
             //Do a thing
-
-            //await Navigation.PushModalAsync(new NavigationPage(new GooglePage(this, true)));
-
+            await Navigation.PushModalAsync(new NavigationPage(new GooglePage(UserController.Instance.LoggedInUser.id)));
 
         }
 
