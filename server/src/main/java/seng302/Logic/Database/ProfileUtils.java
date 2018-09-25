@@ -175,11 +175,13 @@ public class ProfileUtils extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             String query = "UPDATE USER " +
-                    "SET acc_type = \"google\", api_id = ?" +
+                    "SET acc_type = ?, api_id = ?" +
                     "WHERE id = ?";
             statement = connection.prepareStatement(query);
-            statement.setString(1, apiId);
-            statement.setInt(2, userId);
+            statement.setString(1, "google");
+            statement.setString(2, apiId);
+            statement.setInt(3, userId);
+            statement.execute();
         } finally {
             close(statement);
         }
