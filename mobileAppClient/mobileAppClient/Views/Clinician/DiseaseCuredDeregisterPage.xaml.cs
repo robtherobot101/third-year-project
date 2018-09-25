@@ -45,7 +45,7 @@ namespace mobileAppClient.Views
                     List<Disease> diseases = user.currentDiseases;
                     DiseasesList.ItemsSource = diseases;
                 }
-            } catch (HttpRequestException e)
+            } catch (HttpRequestException)
             {
                 await DisplayAlert("Connection Error",
                    "Failed to reach the server",
@@ -116,7 +116,7 @@ namespace mobileAppClient.Views
                 await parentWaitingListItemPage.Navigation.PopAsync();
                 MessagingCenter.Send<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS");
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 await DisplayAlert("Connection Error",
                                    "Failed to reach the server",

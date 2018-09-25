@@ -15,9 +15,10 @@ namespace mobileAppClient.odmsAPI
 
         public async Task<MedicationResponseObject> apiRequest(string url) 
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 Console.WriteLine("Not connected");
+                return new MedicationResponseObject();
             }
 
             // Fetch the url and client from the server config class
@@ -35,11 +36,13 @@ namespace mobileAppClient.odmsAPI
             catch (HttpRequestException e)
             {
                 Console.WriteLine(e.StackTrace);
+                return new MedicationResponseObject();
             }
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
                 Console.WriteLine("Status code was: " + response.StatusCode);
+                return new MedicationResponseObject();
             }
 
             string responseContent = await response.Content.ReadAsStringAsync();

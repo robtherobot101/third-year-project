@@ -53,7 +53,6 @@ namespace mobileAppClient
 	            }
 	        }
 	    }
-        private bool loginClicked;
 
 	    public bool rememberLogin;
 
@@ -133,15 +132,6 @@ namespace mobileAppClient
         async void LoginButtonClicked(object sender, EventArgs args)
         {
             rememberLogin = RememberMeSwitch.IsToggled;
-
-            // Prevents multiple presses of the login button
-            if (loginClicked)
-            {
-                return;
-            } else
-            {
-                loginClicked = true;
-            }
             IsLoading = true;
             string givenUsernameEmail = InputValidation.Trim(usernameEmailInput.Text);
             string givenPassword = InputValidation.Trim(passwordInput.Text);
@@ -214,9 +204,7 @@ namespace mobileAppClient
                         "User is deceased. Please consult a Registered Clinician",
                         "OK");
                     break;
-            }
-            loginClicked = false;
-            
+            }            
         }
 
         /// <summary>
@@ -298,8 +286,6 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
-            loginClicked = false;
-
         }
 
         /*
@@ -314,7 +300,7 @@ namespace mobileAppClient
         async void Handle_LoginWithFacebookClicked(object sender, System.EventArgs e)
         {
             rememberLogin = RememberMeSwitch.IsToggled;
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 await DisplayAlert(
                 "Failed to Login",
@@ -330,7 +316,7 @@ namespace mobileAppClient
         async void Handle_LoginWithGoogleClicked(object sender, System.EventArgs e)
         {
             rememberLogin = RememberMeSwitch.IsToggled;
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 await DisplayAlert(
                     "Failed to Login",

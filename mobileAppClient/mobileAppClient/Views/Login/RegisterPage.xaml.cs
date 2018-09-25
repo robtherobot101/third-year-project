@@ -40,6 +40,14 @@ namespace mobileAppClient
             string givenUsername = InputValidation.Trim(usernameInput.Text);
             string givenNhi = InputValidation.Trim(nhiInput.Text);
 
+            if (!ServerConfig.Instance.IsConnectedToInternet())
+            {
+                await DisplayAlert("",
+                    "Server unavailable, please check connection",
+                    "OK");
+                return;
+            }
+
             // Check for valid inputs
             if (!InputValidation.IsValidTextInput(givenFirstName, false, false))
             {
@@ -100,6 +108,7 @@ namespace mobileAppClient
                         "",
                         "Email/username/NHI is taken",
                         "OK");
+                return;
             }
 
             LoginAPI loginAPI = new LoginAPI();
@@ -237,6 +246,14 @@ namespace mobileAppClient
 
         async void CheckCredentials(object sender, EventArgs e)
         {
+            if (!ServerConfig.Instance.IsConnectedToInternet())
+            {
+                await DisplayAlert("",
+                    "Server unavailable, please check connection",
+                    "OK");
+                return;
+            }
+
             string givenEmail = InputValidation.Trim(emailInput.Text);
             string givenUsername = InputValidation.Trim(usernameInput.Text);
 

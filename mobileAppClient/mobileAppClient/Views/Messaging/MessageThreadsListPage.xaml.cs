@@ -43,7 +43,11 @@ namespace mobileAppClient
                 {
                     LoadingIndicator.IsVisible = false;
                     LoadingIndicator.IsRunning = false;
-                    NewConversationButton.IsVisible = true;
+
+                    if (isClinicianAccessing)
+                    {
+                        NewConversationButton.IsVisible = true;
+                    }      
                 }
             }
         }
@@ -71,7 +75,6 @@ namespace mobileAppClient
         /// </summary>
         protected override async void OnAppearing()
         {
-            ConversationPage.currentConversation = null;
             conversationList.Clear();
             IsLoading = true;
             if (isClinicianAccessing)
@@ -89,6 +92,11 @@ namespace mobileAppClient
             IsLoading = false;
         }
 
+        protected override void OnDisappearing()
+        {
+            VSAppCenter.setConversationListController(null);
+        }
+
 
         /// <summary>
         /// Checks whether the clinician is viewing this page, important for fetching the correct profiles of participants
@@ -103,12 +111,14 @@ namespace mobileAppClient
 
         async void Handle_Conversation_Tapped(object sender, ItemTappedEventArgs e)
         {
+            Conversation tappedConversation = (Conversation)e.Item;
             var localId = localUser?.id ?? localClinician.staffID;
-            foreach (Message m in ((Conversation)e.Item).messages) {
+
+            foreach (Message m in tappedConversation.messages) {
                 m.SetType(localId);
             }
-            ConversationPage.currentConversation = (Conversation)e.Item;
-            await Navigation.PushAsync(new ConversationPage((Conversation)e.Item, localId));
+
+            await Navigation.PushAsync(new ConversationPage(tappedConversation, localId));
         }
 
         private async Task LoadClinicianConversations()
@@ -166,11 +176,6 @@ namespace mobileAppClient
         private async void NewConversationTapped(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new CreateConversationPage(activeConversations));
-        }
-
-        public async void refreshConversationsExternally()
-        {
-            OnAppearing();
         }
     }
 }

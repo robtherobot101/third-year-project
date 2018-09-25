@@ -38,7 +38,7 @@ namespace mobileAppClient
          * Event Handler to handle the selection of a single medication
          * to populate the correct selected medication field.
          */ 
-        void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
+        void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             Medication selectedMedication = (Medication)MedicationsList.SelectedItem;
 
@@ -64,7 +64,7 @@ namespace mobileAppClient
          * Event handler to handle when a user selects medications and 
          * wishes to compare them, sending a call off to the interactions API.
          */ 
-        async void Handle_ComparePressed(object sender, System.EventArgs e)
+        async void Handle_ComparePressed(object sender, EventArgs e)
         {
             Console.WriteLine("Compare pressed!");
             DrugInteractionAPI drugInteractionAPI = new DrugInteractionAPI();
@@ -115,7 +115,7 @@ namespace mobileAppClient
         /*
          * Resets the selected item 1 field to be blank.
          */ 
-        void Handle_Clear1Pressed(object sender, System.EventArgs e)
+        void Handle_Clear1Pressed(object sender, EventArgs e)
         {
             selectedItem1.Text = "";
         }
@@ -123,7 +123,7 @@ namespace mobileAppClient
         /*
          * Resets the selected item 2 field to be blank.
          */ 
-        void Handle_Clear2Pressed(object sender, System.EventArgs e)
+        void Handle_Clear2Pressed(object sender, EventArgs e)
         {
             selectedItem2.Text = "";
         }

@@ -39,7 +39,7 @@ namespace mobileAppClient
             }
         }
 
-        async void Handle_CancelClicked(object sender, System.EventArgs e)
+        async void Handle_CancelClicked(object sender, EventArgs e)
         {
             await Navigation.PopModalAsync();
         }

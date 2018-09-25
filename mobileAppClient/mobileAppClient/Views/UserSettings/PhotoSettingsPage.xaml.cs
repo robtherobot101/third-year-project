@@ -150,7 +150,7 @@ namespace mobileAppClient
             }
         }
 
-        async void Handle_DeleteTapped(object sender, System.EventArgs e)
+        async void Handle_DeleteTapped(object sender, EventArgs e)
         {
             UserAPI userAPI = new UserAPI();
             HttpStatusCode photoUpdated = await userAPI.DeleteUserPhoto();

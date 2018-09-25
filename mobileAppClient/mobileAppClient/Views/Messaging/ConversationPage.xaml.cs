@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using mobileAppClient.Models;
 using Xamarin.Forms;
+using mobileAppClient.Notifications;
 using Xamarin.Forms.Xaml;
 using mobileAppClient.Models.CustomObjects;
 using mobileAppClient.odmsAPI;
@@ -22,10 +23,7 @@ namespace mobileAppClient
 
         private bool isClinicianAccessing { get; set; }
 
-	    private Conversation conversation;
-
-        // The current conversation being displayed
-        public static Conversation currentConversation = null;
+	    public Conversation conversation;
 
         private CustomObservableCollection<Message> conversationMessages;
 
@@ -40,21 +38,34 @@ namespace mobileAppClient
 
 		    Title = conversation.externalName;
             conversationMessages = conversation.messages;
+            conversationMessages.CollectionChanged += ConversationMessages_CollectionChanged;
 
             MessagesListView.ItemsSource = conversationMessages;
 		    MessagesListView.ItemTapped += OnMessageTapped;
 
-            if (conversationMessages.Count > 0)
-            {
-                MessagesListView.ScrollTo(conversationMessages.Last(), ScrollToPosition.End, true);
+            MessagesListView.ScrollTo(conversationMessages.LastOrDefault(), ScrollToPosition.End, true);
+            VSAppCenter.seConversationController(this);
+        }
+
+        private void ConversationMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems.Count == 0) {
+                return;
             }
+            Message newMessage = (Message) e.NewItems[0];
+            //MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
+        }
+
+        protected override void OnDisappearing()
+        {  
+            VSAppCenter.seConversationController(null);
         }
 
 
-	    /// <summary>
+        /// <summary>
         /// Checks whether the clinician is viewing this page, important for fetching the correct profiles of participants
         /// </summary>
-	    private void CheckIfClinicianAccessing()
+        private void CheckIfClinicianAccessing()
 	    {
 	        if (ClinicianController.Instance.isLoggedIn())
 	        {
@@ -104,10 +115,8 @@ namespace mobileAppClient
 	        };
 
             conversationMessages.Add(newMessage);
-            MessagesListView.ScrollTo(newMessage, ScrollToPosition.End, true);
 	        chatTextInput.Text = "";
-	    }
-
-        
+            chatTextInput.Keyboard = null;
+        }
 	}
 }
