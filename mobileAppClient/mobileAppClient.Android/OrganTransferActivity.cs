@@ -247,7 +247,26 @@ namespace mobileAppClient.Droid
 
                     //TODO Get the users profile picture and set the imageView
 
-                    recipientImage.SetImageResource(Resource.Drawable.donationIcon);
+                    UserAPI userAPI = new UserAPI();
+                    Tuple<System.Net.HttpStatusCode, String> tuple = await userAPI.GetUserPhotoForMapObjects(recipient.id);
+                    if (tuple.Item1 == System.Net.HttpStatusCode.OK)
+                    {
+                        if (tuple.Item2.Length == 0)
+                        {
+                            recipientImage.SetImageResource(Resource.Drawable.donationIcon);
+                        }
+                        else
+                        {
+                            var imageBytes = Convert.FromBase64String(tuple.Item2);
+                            var imageData = Android.Graphics.BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
+                            recipientImage.SetImageBitmap(imageData);
+                        }
+                        
+                    }
+                    else
+                    {
+                        recipientImage.SetImageResource(Resource.Drawable.donationIcon);
+                    }
 
                     recipientName.Text = recipient.FullName;
 

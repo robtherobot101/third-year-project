@@ -545,7 +545,8 @@ namespace mobileAppClient.Views.Clinician
             newOrganTransfer.startLon = donorPosition.Longitude;
 
             Hospital receiverHospital = null;
-            foreach(Hospital hospital in hospitals) {
+            await InitialiseHospitalsWithoutAddingToMap();
+            foreach (Hospital hospital in hospitals) {
                 if(hospital.region.Equals(selectedRecipient.region)) {
                     receiverHospital = hospital;
                 }
@@ -593,6 +594,7 @@ namespace mobileAppClient.Views.Clinician
             newOrganTransfer.startLon = donorPosition.Longitude;
 
             Hospital receiverHospital = null;
+            await InitialiseHospitalsWithoutAddingToMap();
             foreach (Hospital hospital in hospitals)
             {
                 if (hospital.region.Equals(selectedRecipient.region))
@@ -697,6 +699,8 @@ namespace mobileAppClient.Views.Clinician
                 Console.WriteLine(ex.StackTrace);
             }
             Hospital receiverHospital = null;
+
+            await InitialiseHospitalsWithoutAddingToMap();
 
             foreach (Hospital hospital in hospitals) {
                 if (hospital.region == receiver.region){
