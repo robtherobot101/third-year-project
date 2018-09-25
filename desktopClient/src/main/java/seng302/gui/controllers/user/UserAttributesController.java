@@ -629,7 +629,7 @@ public class UserAttributesController extends UserTabController implements Initi
             }
             countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
         } catch (HttpResponseException e) {
-            e.printStackTrace();
+            Debugger.error(e.getMessage());
             Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
         }
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());

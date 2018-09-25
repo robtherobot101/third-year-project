@@ -23,8 +23,6 @@ public class UserHistoryController extends UserTabController implements Initiali
     @FXML
     private TreeTableColumn<Object, String> dateColumn, actionColumn;
 
-    private User currentUser;
-
     private static final DateTimeFormatter timeFormat = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     /**

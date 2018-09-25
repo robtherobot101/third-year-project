@@ -47,14 +47,14 @@ public class PushAPI {
     }
 
     /**
-     * Sends a notification to each device on which the user with the given IF is logged in
+     * Sends a notification to each device on which the user with the given ID is logged in
      *
      * @param notification The notification object containing title, message etc.
-     * @param user_ids      The IDs of the users to which the notification is being sent
+     * @param user_id      The ID of the user to which the notification is being sent
      */
-    public void sendNotification(Notification notification, String... user_ids) {
+    public void sendNotification(Notification notification, long user_id) {
         // Get the devices on which the users are logged on
-        List<String> devices = getDevices(user_ids);
+        List<String> devices = getDevices(user_id);
         if(devices.size() > 0) {
             for (String url : urls) {
                 // Get the notification JSON
@@ -82,7 +82,7 @@ public class PushAPI {
         for (Map.Entry<String, String> entry : message.messageMap().entrySet()) {
             n.addCustomData(entry.getKey(), entry.getValue());
         }
-        sendNotification(n, String.valueOf(userAccountId));
+        sendNotification(n, userAccountId);
     }
 
 
@@ -96,21 +96,21 @@ public class PushAPI {
     public void sendTextNotification(int userId, String title, String message) {
         Notification n = new Notification(title, message);
         n.addCustomData("waitingListItem", null);
-        sendNotification(n, Integer.toString(userId));
+        sendNotification(n, userId);
     }
 
     /**
-     * Gets a list of device ids on which the given users are logged in
-     * @param user_ids The IDs of the users
+     * Gets a list of device ids on which the given user is logged in
+     * @param user_id The IDs of the user
      * @return A list of Strings representing the IDs of each device the user with the given ID is logged in on
      */
-    private List<String> getDevices(String[] user_ids) {
+    private List<String> getDevices(long user_id) {
         try {
-            Server.getInstance().log.info("Getting devices logged in by users with ids " + Arrays.toString(user_ids));
-            return notificationsDatabase.getDevices(user_ids);
+            Server.getInstance().log.info("Getting devices logged in by users with id " + user_id);
+            return notificationsDatabase.getDevices(user_id);
         } catch (SQLException e) {
             Server.getInstance().log.info("Failed to get devices");
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
             return new ArrayList<>();
         }
     }

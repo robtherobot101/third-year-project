@@ -26,14 +26,15 @@ namespace mobileAppClient
 		{
             InitializeComponent();
 
-            setupItems();
-
-
             MessagingCenter.Subscribe<ContentPage>(this, "REFRESH_WAITING_LIST_ITEMS", (sender) => {
                refreshPage();
             });
+        }
 
-
+        protected async override void OnAppearing()
+        {
+            base.OnAppearing();
+            await setupItems();
         }
 
         /*
@@ -74,7 +75,7 @@ namespace mobileAppClient
                 items = style(items);
                 return items;
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 await DisplayAlert("Connection Error",
                                    "Failed to reach the server",
@@ -178,7 +179,7 @@ namespace mobileAppClient
         /*
          * Refetches and filters the latest WaitingListItems, styles and sorts them, then displays them
          */
-        async void Handle_FilterChange(object sender, System.EventArgs e)
+        async void Handle_FilterChange(object sender, EventArgs e)
         {
             await setupItems();
             Handle_SelectedIndexChanged(null,null);
@@ -189,7 +190,7 @@ namespace mobileAppClient
          * Handles when a user selects a given attribute of the sorting dropdown 
          * to sort by, sorting the given items in the list view.
          */
-        void Handle_SelectedIndexChanged(object sender, System.EventArgs e)
+        void Handle_SelectedIndexChanged(object sender, EventArgs e)
         {
             List<WaitingListItem> currentList = (List<WaitingListItem>)TransplantList.ItemsSource;
             switch (SortingInput.SelectedItem)
@@ -220,7 +221,7 @@ namespace mobileAppClient
          * Handles when a user changes the orientation of the sorting to be either ascending or 
          * descending, changing the order in which items are sorted in the list view.
          */
-        void Handle_UpDownChanged(object sender, System.EventArgs e)
+        void Handle_UpDownChanged(object sender, EventArgs e)
         {
             List<WaitingListItem> currentList = (List<WaitingListItem>)TransplantList.ItemsSource;
             switch (SortingInput.SelectedItem)

@@ -7,6 +7,7 @@ import seng302.Model.Attribute.ProfileType;
 import seng302.Model.Conversation;
 import seng302.Model.Message;
 import seng302.Model.User;
+import seng302.Server;
 
 import java.sql.*;
 import java.util.*;
@@ -34,8 +35,8 @@ public class Conversations {
                 while (resultSet.next()) {
                     conversations.add(getSingleConversation(resultSet.getInt(1)));
                 }
-            } catch (SQLException ignored) {
-                ignored.printStackTrace();
+            } catch (SQLException e) {
+                Server.getInstance().log.error(e.getMessage());
             } finally {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
@@ -110,7 +111,7 @@ public class Conversations {
                 }
                 conversation = new Conversation(conversationId, messages, participants);
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             } finally {
                 DbUtils.closeQuietly(resultSet);
                 DbUtils.closeQuietly(statement);
@@ -221,7 +222,7 @@ public class Conversations {
             ResultSet resultSet = null;
 
             try {
-                statement = connection.prepareStatement("INSERT INTO CONVERSATION VALUES(0, ?)");
+                statement = connection.prepareStatement("INSERT INTO CONVERSATION(token) VALUES(?)");
                 String token = UUID.randomUUID().toString();
                 statement.setString(1, token);
                 statement.execute();

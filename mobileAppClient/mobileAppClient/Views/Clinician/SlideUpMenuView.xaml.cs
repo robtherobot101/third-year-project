@@ -66,7 +66,7 @@ namespace mobileAppClient.Views.Clinician
 //                System.Diagnostics.Debug.WriteLine("Attempting InitComp....");
 //                InitializeComponent();
 //                System.Diagnostics.Debug.WriteLine("InitComp Succeeded...");
-//            } catch (System.Exception e)
+//            } catch (System.Exception)
 //            {
 //                System.Diagnostics.Debug.WriteLine(e);
 //            }

@@ -82,16 +82,6 @@ public class CommandLineInterfaceTest extends GenericTest {
         assertEquals(numberOfClinicians+1, generalClinician.getAllClinicians().size());
     }
 
-    @Ignore
-    @Test
-    public void cannotDeleteDefaultClinician() throws SQLException {
-        int numberOfClinicians = generalClinician.getAllClinicians().size();
-        commandLine.readCommand("deleteClinician "+0);
-        commandLine.readCommand("y");
-        assertEquals(numberOfClinicians, generalClinician.getAllClinicians().size());
-    }
-
-
     @Test
     public void deleteUser() throws SQLException {
         int beforeSize = generalUser.getUsers(new HashMap<>()).size();
@@ -100,47 +90,4 @@ public class CommandLineInterfaceTest extends GenericTest {
         commandLine.readCommand("y");
         assertEquals(beforeSize, generalUser.getUsers(new HashMap<>()).size());
     }
-
-/*
-    @Ignore
-    @Test
-    public void removeWaitingListOrgan() {
-        commandLine.readCommand("addUser \"Bob Ross\" 10/10/2010");
-        commandLine.readCommand("addWaitingListOrgan 0 heart");
-        commandLine.readCommand("removeWaitingListOrgan 0 heart");
-        assertFalse(DataManager.users.get(0).isReceiver());
-    }
-
-    @Test
-    public void addClinicianBadArguments(){
-        int numberOfClinicians = DataManager.clinicians.size();
-        commandLine.readCommand("addClinician \"bobbr45\" \"paint\" \"Bob Ross\" \"fourth arg\"");
-        assertEquals(numberOfClinicians,DataManager.clinicians.size());
-    }
-
-    @Test
-    public void updateUser(){
-        int numberOfUsers = DataManager.users.size();
-        commandLine.readCommand("addUser \"Bob Ross\" 10/10/2010");
-        commandLine.readCommand("updateUser "+numberOfUsers+" \"region\" \"Chch\"");
-        assertEquals("Chch",DataManager.users.get(numberOfUsers).getRegion());
-    }
-
-    @Test
-    public void updateClinician(){
-        int numberOfClinicians = DataManager.clinicians.size();
-        commandLine.readCommand("addClinician \"bobbr45\" \"paint\" \"Bob Ross\"");
-        commandLine.readCommand("updateClinician "+numberOfClinicians+" \"region\" \"Chch\"");
-        assertEquals("Chch",DataManager.clinicians.get(numberOfClinicians).getRegion());
-    }
-
-    @Test
-    public void deleteClinician(){
-        int numberOfClinicians = DataManager.clinicians.size();
-        commandLine.readCommand("addClinician \"bobbr45\" \"paint\" \"Bob Ross\"");
-        commandLine.readCommand("deleteClinician " + numberOfClinicians);
-        commandLine.readCommand("y");
-        assertEquals(numberOfClinicians,DataManager.clinicians.size());
-    }
-*/
 }
