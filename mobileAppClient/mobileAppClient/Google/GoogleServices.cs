@@ -13,6 +13,7 @@ namespace mobileAppClient.Google
     {
         private static HttpClient client;
         private static readonly string redirect_uri = "https://csse-s302g3.canterbury.ac.nz/oauth2redirect";
+        private static readonly string redirect_uri_change_login = "https://csse-s302g3.canterbury.ac.nz/oauth2redirectChangeLogin";
         private static readonly string client_id = "990254303378-hompkeqv6gthfgaut6j0bipdu6bf9ef0.apps.googleusercontent.com";
         private static readonly string client_secret = "yHw2OvqSYK4ocE0SH5-AHfJc";
 
@@ -23,6 +24,15 @@ namespace mobileAppClient.Google
                 $"&redirect_uri={redirect_uri}" +
                 $"&client_id={client_id}";
         }
+
+        public static string ChangeToGoogleLoginAddr()
+        {
+            return
+                $"https://accounts.google.com/o/oauth2/v2/auth?response_type=code&scope=email" +
+                $"&redirect_uri={redirect_uri_change_login}" +
+                $"&client_id={client_id}";
+        }
+
 
         private static string GetTokenAddr(string code)
         {

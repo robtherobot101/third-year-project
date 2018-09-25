@@ -1,4 +1,4 @@
-FROM team300_app
+FROM airdock/oracle-jdk-maven
 
 RUN ln -sf /usr/share/zoneinfo/Pacific/Auckland /etc/localtime
 RUN rm -r /code/*
@@ -11,8 +11,8 @@ WORKDIR /code/server
 ADD pom.xml /code/pom.xml
 ADD server /code/server
 
-RUN ["mvn", "dependency:resolve"]
-RUN ["mvn", "verify", "-DskipTests"]
+#RUN ["mvn", "dependency:resolve"]
+#RUN ["mvn", "verify", "-DskipTests"]
 
 RUN ["mvn", "package", "-DskipTests"]
 

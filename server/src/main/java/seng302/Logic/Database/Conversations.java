@@ -222,7 +222,7 @@ public class Conversations {
             ResultSet resultSet = null;
 
             try {
-                statement = connection.prepareStatement("INSERT INTO CONVERSATION VALUES(0, ?)");
+                statement = connection.prepareStatement("INSERT INTO CONVERSATION(token) VALUES(?)");
                 String token = UUID.randomUUID().toString();
                 statement.setString(1, token);
                 statement.execute();

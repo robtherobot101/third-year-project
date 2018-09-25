@@ -26,7 +26,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> LoginUser(String usernameEmail, String password)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -50,7 +50,7 @@ namespace mobileAppClient.odmsAPI
             try
             {
                 response = await client.PostAsync(url + "/login" + queries, content);
-            } catch (HttpRequestException e)
+            } catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -191,7 +191,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> Logout(bool isClinician)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -215,7 +215,7 @@ namespace mobileAppClient.odmsAPI
             {
                 response = await client.SendAsync(request);
             }
-            catch (HttpRequestException e)
+            catch (HttpRequestException)
             {
                 return HttpStatusCode.ServiceUnavailable;
             }
@@ -293,7 +293,7 @@ namespace mobileAppClient.odmsAPI
          */
         public async Task<HttpStatusCode> RegisterUser(User user)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return HttpStatusCode.ServiceUnavailable;
             }

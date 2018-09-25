@@ -378,7 +378,7 @@ namespace mobileAppClient
         /*
          * Fills the address entry with the value in the autocomplete field when it is tapped
          */
-        void Handle_StreetAutoCompleteItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
+        void Handle_StreetAutoCompleteItemTapped(object sender, ItemTappedEventArgs e)
         {
             if(StreetAutoCompleteStAddr.Text != "")
             {
@@ -442,7 +442,7 @@ namespace mobileAppClient
         /*
          * Fills the city of death entry with the value in the autocomplete field when it is tapped
          */
-        void Handle_DODCityAutoCompleteItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
+        void Handle_DODCityAutoCompleteItemTapped(object sender, ItemTappedEventArgs e)
         {
             if(DODCityAutoCompleteLabel.Text != "" && hasDiedSwitch.On)
             {

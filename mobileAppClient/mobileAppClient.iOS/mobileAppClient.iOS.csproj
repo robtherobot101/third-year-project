@@ -30,6 +30,7 @@
     <CodesignKey>iPhone Developer: Andrew French (ZQ5Y84Y455)</CodesignKey>
     <MtouchFloat32>true</MtouchFloat32>
     <CodesignProvision>uctdTEST</CodesignProvision>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
     <DebugType>none</DebugType>
@@ -55,7 +56,7 @@
     <CodesignKey>iPhone Developer: Andrew French (ZQ5Y84Y455)</CodesignKey>
     <MtouchDebug>true</MtouchDebug>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>iOS Team Provisioning Profile: *</CodesignProvision>
+    <CodesignProvision>uctdTEST</CodesignProvision>
     <MtouchSdkVersion>11.4</MtouchSdkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
@@ -189,6 +190,7 @@
       <DependentUpon>PotentialMatchesBottomSheetViewController.cs</DependentUpon>
     </Compile>
     <Compile Include="RecipientsTableSource.cs" />
+    <Compile Include="IosForceKeyboardDismissalService.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

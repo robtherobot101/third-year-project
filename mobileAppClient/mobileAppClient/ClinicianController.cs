@@ -51,12 +51,6 @@ namespace mobileAppClient
         {
             this.LoggedInClinician = loggedInClinician;
             this.AuthToken = authToken;
-
-            if (UserController.Instance.loginPageController.rememberLogin)
-            {
-                SecureStorage.SetAsync("usernameEmail", loggedInClinician.username);
-                SecureStorage.SetAsync("password", loggedInClinician.password);
-            }
         }
 
         private ClinicianController()

@@ -9,45 +9,54 @@
         </ResourceDictionary>
     </ContentPage.Resources>
     <ContentPage.Content>
-        <StackLayout>
-            <ListView x:Name="MessagesListView" 
-                      ItemTemplate="{StaticResource MessageTemplateSelector}" 
-                      HasUnevenRows="True" 
-                      SeparatorVisibility="None"
-                      RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}">
-            </ListView>
+        <ScrollView x:Name="ScrollViewContainer">
+            <StackLayout>
+                <mobileAppClient:ExtendedListView x:Name="MessagesListView" 
+                          ItemTemplate="{StaticResource MessageTemplateSelector}" 
+                          Margin="0"
+                          Rotation="180" 
+                          FlowDirection="RightToLeft"
+                          HasUnevenRows="True"
+                          VerticalOptions="FillAndExpand" 
+                          SeparatorColor="Transparent"
+                          SeparatorVisibility="None"
+                          RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent,Property=Height,Factor=1,Constant=0}"
+                          ItemTapped="Handle_ItemTapped"
+                                         >
+                </mobileAppClient:ExtendedListView>
 
-            <Grid RowSpacing="0" 
-                  ColumnSpacing="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Entry x:Name="chatTextInput" 
-                       Margin="1"  
-                       TextColor="Black" 
-                       Keyboard="Chat"  
-                       HorizontalOptions="FillAndExpand" 
-                       PlaceholderColor="LightGray"
-                       Placeholder="Message"
-                       Grid.Row="0"
-                       Completed="Handle_SendMessage"
-                       ReturnType="Send"
-                       Grid.Column="0"
-                       />
-                <Label Text="Send"
-                       Grid.Row="0"
-                       Grid.Column="1"
-                       VerticalTextAlignment="Center">
-                    <Label.GestureRecognizers>
-                        <TapGestureRecognizer
-                            Tapped="Handle_SendMessage"/>
-                    </Label.GestureRecognizers>
-                </Label>
-            </Grid>
-        </StackLayout>
+                <Grid RowSpacing="0" 
+                      ColumnSpacing="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Entry x:Name="chatTextInput" 
+                           Margin="1"  
+                           TextColor="Black" 
+                           Keyboard="Chat"  
+                           HorizontalOptions="FillAndExpand" 
+                           PlaceholderColor="LightGray"
+                           Placeholder="Message"
+                           Grid.Row="0"
+                           Completed="Handle_SendMessage"
+                           ReturnType="Send"
+                           Grid.Column="0"
+                           />
+                    <Label Text="Send"
+                           Grid.Row="0"
+                           Grid.Column="1"
+                           VerticalTextAlignment="Center">
+                        <Label.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Tapped="Handle_SendMessage"/>
+                        </Label.GestureRecognizers>
+                    </Label>
+                </Grid>
+            </StackLayout>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
