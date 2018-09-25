@@ -25,7 +25,7 @@ public class UserTest {
     @Before
     public void setup() {
         testUser = new User("Test er", new String[]{"Middle", "Names"}, "lName", LocalDate.parse("21/02/1890", User.dateFormat), null, Gender.NONBINARY,
-        1.8, 64, BloodType.O_POS, "Canterbury", "12345 Ilam Road", "tstr1", "tester@test.com", "fao3751", "New Zealand",
+        1.8, 64, BloodType.O_POS, "Canterbury", "12345 Ilam Road", "tstr1", "tester@test.com", "fao3751", "testeriscool", "New Zealand",
                 null, null, null);
     }
 

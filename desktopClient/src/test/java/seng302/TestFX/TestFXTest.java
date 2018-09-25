@@ -22,6 +22,7 @@ import seng302.gui.TFScene;
 import seng302.generic.DataManager;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
+import seng302.User.Admin;
 import seng302.User.Clinician;
 import seng302.User.User;
 import java.time.LocalDate;
@@ -88,8 +89,8 @@ abstract class TestFXTest extends ApplicationTest {
                 LocalDate.of(1969, 8, 4),
                 "bflame",
                 "flameman@hotmail.com",
-                "cfj3742"
-        );
+                "cfj3742",
+                "password123");
         try {
             WindowManager.getDataManager().getUsers().insertUser(testUser);
         } catch (HttpResponseException e) {
