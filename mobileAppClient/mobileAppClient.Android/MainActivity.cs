@@ -13,6 +13,7 @@ using Android.Widget;
 using Android.Support.V4.Content;
 using Android;
 using ImageCircle.Forms.Plugin.Droid;
+using Plugin.CurrentActivity;
 
 using Firebase.Messaging;
 using Firebase.Iid;
@@ -46,7 +47,7 @@ namespace mobileAppClient.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(bundle);
-
+            CrossCurrentActivity.Current.Init(this, bundle);
             global::Xamarin.Forms.Forms.Init(this, bundle);
             global::SegmentedControl.FormsPlugin.Android.SegmentedControlRenderer.Init();
             global::Plugin.CrossPlatformTintedImage.Android.TintedImageRenderer.Init();
@@ -58,6 +59,8 @@ namespace mobileAppClient.Droid
             // For circular images (on menu drawer)
             ImageCircleRenderer.Init();
 
+            //Enables reference of the main activity from interface contexts
+            
 
             LoadApplication(new App());
         }

@@ -504,6 +504,11 @@
     <BundleResource Include="Resources\viewing_user_photo.png" />
   </ItemGroup>
   <ItemGroup>
+    <BundleResource Include="Library\Sounds\coin.wav">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+  </ItemGroup>
+  <ItemGroup>
     <BundleResource Include="Resources\facebook_cell_icon.png" />
   </ItemGroup>
   <ItemGroup>
