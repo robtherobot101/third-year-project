@@ -106,20 +106,23 @@ namespace mobileAppClient
                     facebookProfile.Birthday = UserController.Instance.FacebookDateOfBirth;
                     facebookProfile.NHI = UserController.Instance.NHI;
 
-                    User inputUser = new User();
-                    inputUser.name = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
-                    inputUser.preferredName = new List<string> { facebookProfile.FirstName, "", facebookProfile.LastName };
-                    inputUser.email = facebookProfile.Email;
-                    inputUser.username = facebookProfile.Email;
-                    inputUser.password = password;
-                    inputUser.dateOfBirth = new CustomDate(DateTime.Parse(facebookProfile.Birthday));
-                    inputUser.creationTime = new CustomDateTime(DateTime.Now);
-                    inputUser.gender = facebookProfile.Gender.ToUpper();
-                    inputUser.region = facebookProfile.Location.Name;
+                    User inputUser = new User
+                    {
+                        name = new List<string> {facebookProfile.FirstName, "", facebookProfile.LastName},
+                        preferredName = new List<string> {facebookProfile.FirstName, "", facebookProfile.LastName},
+                        email = facebookProfile.Email,
+                        username = facebookProfile.Email,
+                        password = password,
+                        dateOfBirth = new CustomDate(DateTime.Parse(facebookProfile.Birthday)),
+                        creationTime = new CustomDateTime(DateTime.Now),
+                        gender = facebookProfile.Gender.ToUpper(),
+                        region = facebookProfile.Location.Name,
+                        organs = new List<Organ>(),
+                        userHistory = new List<HistoryItem>(),
+                        nhi = facebookProfile.NHI
+                    };
+
                     //Server requires to initialise the organs and user history items on creation
-                    inputUser.organs = new List<Organ>();
-                    inputUser.userHistory = new List<HistoryItem>();
-                    inputUser.nhi = facebookProfile.NHI;
 
                     HttpStatusCode registerUserResult = await loginAPI.RegisterUser(inputUser);
 

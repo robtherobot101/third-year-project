@@ -49,13 +49,7 @@ namespace mobileAppClient
         public void Login(User loggedInUser, string authToken)
         {
             this.LoggedInUser = loggedInUser;
-            this.AuthToken = authToken;
-
-            if (Instance.loginPageController.rememberLogin)
-            {
-                SecureStorage.SetAsync("usernameEmail", loggedInUser.email);
-                SecureStorage.SetAsync("password", loggedInUser.password);
-            }           
+            this.AuthToken = authToken;           
         }
 
         /// <summary>

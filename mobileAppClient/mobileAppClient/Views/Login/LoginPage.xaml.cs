@@ -56,6 +56,8 @@ namespace mobileAppClient
 
 	    public bool rememberLogin;
 
+	    public bool secureStorageSupported;
+
 	    private MainPage baseMainPage;
 
         public LoginPage()
@@ -75,10 +77,11 @@ namespace mobileAppClient
             }
 
             // Hide the poorly sized Facebook logo on Android
-            if (Device.RuntimePlatform == Device.Android) {
-                FacebookButton.Image = null;
-            }
-        }
+		    if (Device.RuntimePlatform == Device.Android)
+		    {
+		        FacebookButton.Image = null;
+		    }
+		}
 
 	    /// <summary>
 	    /// Activated whenever focus is on this page
@@ -86,27 +89,58 @@ namespace mobileAppClient
 	    protected override async void OnAppearing()
 	    {
 	        RememberMeSwitch.IsToggled = false;
-            // Check for previously stored login details
-            try
+	        secureStorageSupported = await testSecureStorage();
+
+            // Check support for storage, if not supported hide all buttons regarding remember me
+	        if (secureStorageSupported)
 	        {
-	            var usernameEmail = await SecureStorage.GetAsync("usernameEmail");
-	            var password = await SecureStorage.GetAsync("password");
-
-	            if (usernameEmail != null && password != null)
-	            {
-	                RememberMeSwitch.IsToggled = true;
-	                usernameEmailInput.Text = usernameEmail;
-	                passwordInput.Text = password;
-
-                    LoginStoredUser(usernameEmail, password);
-	            }
+	            await checkForStoredLoginDetails();
 	        }
-	        catch (Exception)
+	        else
 	        {
-	            // Possible that device doesn't support secure storage on device.
+	            RememberMeLabel.IsVisible = false;
+	            RememberMeSwitch.IsToggled = false;
+	            RememberMeSwitch.IsVisible = false;
+	        }
+	    }
+
+        /// <summary>
+        /// Checks for a previously stored log on, then logs them in
+        /// </summary>
+        /// <returns></returns>
+	    private async Task checkForStoredLoginDetails()
+	    {
+	        var usernameEmail = await SecureStorage.GetAsync("usernameEmail");
+	        var password = await SecureStorage.GetAsync("password");
+
+	        if (usernameEmail != null && password != null)
+	        {
+	            RememberMeSwitch.IsToggled = true;
+	            usernameEmailInput.Text = usernameEmail;
+	            passwordInput.Text = password;
+
+	            LoginStoredUser(usernameEmail, password);
 	        }
         }
 
+        /// <summary>
+        /// Checks device support for secureStorage
+        /// </summary>
+        /// <returns></returns>
+	    private async Task<bool> testSecureStorage()
+	    {
+	        try
+	        {
+	            await SecureStorage.SetAsync("test", "test");
+	        }
+	        catch (NotSupportedException)
+	        {
+	            return false;
+	        }
+
+	        SecureStorage.Remove("test");
+	        return true;
+	    }
 
         /*
          * Called when the Sign Up button is pressed
@@ -125,17 +159,32 @@ namespace mobileAppClient
 	        baseMainPage.userLoggedIn();
 	        await Navigation.PushModalAsync(baseMainPage);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="usernameEmail"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+	    private async Task<bool> storeLoginDetails(string usernameEmail, string password)
+	    {
+
+	        await SecureStorage.SetAsync("usernameEmail", usernameEmail);
+	        await SecureStorage.SetAsync("password", password);
+	        
+            return false;
+	    }
  
         /*
          * Called when the Login button is pressed
          */
         async void LoginButtonClicked(object sender, EventArgs args)
         {
-            rememberLogin = RememberMeSwitch.IsToggled;
             IsLoading = true;
             string givenUsernameEmail = InputValidation.Trim(usernameEmailInput.Text);
             string givenPassword = InputValidation.Trim(passwordInput.Text);
 
+            rememberLogin = RememberMeSwitch.IsToggled;
 
             if (!InputValidation.IsValidTextInput(givenUsernameEmail, true, false) || !InputValidation.IsValidTextInput(givenPassword, true, false))
             {
@@ -147,6 +196,7 @@ namespace mobileAppClient
             }
 
             LoginAPI loginAPI = new LoginAPI();
+
             HttpStatusCode statusCode = await loginAPI.LoginUser(givenUsernameEmail, givenPassword);
 
             switch(statusCode)
@@ -166,6 +216,11 @@ namespace mobileAppClient
                     else
                     {
                         baseMainPage.userLoggedIn();
+                    }
+
+                    if (rememberLogin)
+                    {
+                        await storeLoginDetails(givenUsernameEmail, givenPassword);
                     }
 
                     await Navigation.PushModalAsync(baseMainPage);
