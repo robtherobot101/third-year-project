@@ -16,7 +16,6 @@ import java.net.URL;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.regex.Pattern;
 
 /**
  * A controller class for the create account screen.
@@ -128,7 +127,7 @@ public class CreateUserController implements Initializable {
             if (background.getScene().getWindow() == WindowManager.getStage()) {
                 try {
                     WindowManager.getDataManager().getUsers().insertUser(user);
-                    Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(user.getNhi(), user.getPassword());
+                    Map<Object, String> response = WindowManager.getDataManager().getGeneral().loginUser(user.getNhi(), user.getPassphrase());
                     User fromResponse = (User)response.keySet().iterator().next();
                     String token = response.values().iterator().next();
 

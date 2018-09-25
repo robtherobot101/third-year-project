@@ -170,9 +170,9 @@ public class CreateAndLoginGUITest extends TestFXTest {
         TextField textField = lookup("#identificationInput").query();
         textField.setText(testUser.getUsername());
 //        clickOn("#passwordInput");
-//        write(testUser.getPassword());
+//        write(testUser.getPassphrase());
         textField = lookup("#passwordInput").query();
-        textField.setText(testUser.getPassword());
+        textField.setText(testUser.getPassphrase());
         clickOn("#loginButton");
         //Make sure that the user gui is now showing
         assertNotNull(lookup("#undoBannerButton").query());
@@ -185,13 +185,13 @@ public class CreateAndLoginGUITest extends TestFXTest {
         clickOn("#identificationInput");
         write(testUser.getUsername());
         clickOn("#passwordInput");
-        write(testUser.getPassword().substring(0, 3));
+        write(testUser.getPassphrase().substring(0, 3));
         clickOn("#loginButton");
         //Make sure that the user gui is not showing
         assertNull(lookup("#undoBannerButton").query());
 
         clickOn("#passwordInput");
-        write(testUser.getPassword().substring(3));
+        write(testUser.getPassphrase().substring(3));
         clickOn("#loginButton");
         //Make sure that the user gui is now showing
         assertNotNull(lookup("#undoBannerButton").query());
