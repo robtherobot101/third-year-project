@@ -40,7 +40,7 @@ namespace mobileAppClient.iOS
             this.customPin = pin;
             holdView = new UIView();
             fullView = 360;
-            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 60;
+            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 80;
             this.currentOrganCell = currentOrganCell;
             this.customMapRenderer = customMapRenderer;
             foreach (DonatableOrgan donatableOrgan in customPin.donatableOrgans)
