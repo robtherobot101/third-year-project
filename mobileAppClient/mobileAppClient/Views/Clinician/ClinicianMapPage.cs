@@ -32,7 +32,7 @@ namespace mobileAppClient.Views.Clinician
 
 
 
-        public async void displayUserDialog(string organString, string id)
+        public async Task displayUserDialog(string organString, string id)
         {
             //if Android, use the SlideOverKit stuff
             if (Device.RuntimePlatform == Device.Android)
@@ -133,7 +133,7 @@ namespace mobileAppClient.Views.Clinician
 
             await InitialiseHospitals();
 
-            //StartTransfers();
+            await StartTransfers();
 
             //AddTestHelicopter();
             //AddTest2Helicopter();
@@ -394,7 +394,7 @@ namespace mobileAppClient.Views.Clinician
             // Add the main helichopper pin to our list of custom heli pins we can track (heli pin contains the transported organ custom pin)
 
             Dictionary<string, CustomPin> testDictionary = new Dictionary<string, CustomPin>(customMap.HelicopterPins);
-            testDictionary.Add(heliID, heliPin);
+            testDictionary[heliID] = heliPin;
 
             customMap.HelicopterPins = testDictionary;
 
@@ -419,7 +419,7 @@ namespace mobileAppClient.Views.Clinician
         /// Processes each live helicopter and moves it one step, disposing of the helicopter in case of reaching the destination
         /// </summary>
         /// <param name="o"></param>
-        private void RefreshHelipcopterPositions(object o)
+        private async void RefreshHelipcopterPositions(object o)
         {
             Dictionary<String, CustomPin> intermediateHeliPins = new Dictionary<String, CustomPin>();
 
@@ -469,7 +469,7 @@ namespace mobileAppClient.Views.Clinician
                         // remove the pin as it will have been tidied up on the map renderer side
                         customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
 
-                        HelicopterFinished(singleHelicopterPin.HelicopterDetails.waitingListItemId, singleHelicopterPin.HelicopterDetails.organId);
+                        await HelicopterFinished(singleHelicopterPin.HelicopterDetails.waitingListItemId, singleHelicopterPin.HelicopterDetails.organId);
 
                         return;
                     }
@@ -484,7 +484,7 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
-        public async void StartTransfers()
+        public async Task StartTransfers()
         {
             TransplantListAPI transplantListAPI = new TransplantListAPI();
             List<OrganTransfer> transfers = await transplantListAPI.GetAllTransfers();
@@ -495,7 +495,7 @@ namespace mobileAppClient.Views.Clinician
 
                 if (transfer.arrivalTime.ToDateTimeWithSeconds() < DateTime.Now)
                 {
-                    HelicopterFinished(waitingListId, transfer.id);
+                    await HelicopterFinished(waitingListId, transfer.id);
                 }
                 else
                 {
@@ -541,7 +541,7 @@ namespace mobileAppClient.Views.Clinician
             return new Position(currentLat / degToRad, currentLon / degToRad);
         }
 
-        public async void NewTransfer(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition) {
+        public async Task NewTransfer(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition) {
             OrganTransfer newOrganTransfer = new OrganTransfer();
             newOrganTransfer.id = currentOrgan.id;
             newOrganTransfer.receiverId = selectedRecipient.id;
@@ -605,7 +605,7 @@ namespace mobileAppClient.Views.Clinician
                           );
         }
 
-        public async void NewTransferWithoutAddingHelicpoter(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition)
+        public async Task NewTransferWithoutAddingHelicpoter(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition)
         {
             await InitialiseHospitalsWithoutAddingToMap();
 
@@ -640,7 +640,7 @@ namespace mobileAppClient.Views.Clinician
 
             TransplantListAPI transplantListAPI = new TransplantListAPI();
             await transplantListAPI.InsertTransfer(newOrganTransfer);
-            transplantListAPI.SetInTransfer(currentOrgan.id, 1);
+            await transplantListAPI.SetInTransfer(currentOrgan.id, 1);
         }
 
         public async Task InitialiseHospitalsWithoutAddingToMap()
@@ -689,12 +689,12 @@ namespace mobileAppClient.Views.Clinician
             return Math.Sqrt(interDistance);
         }
 
-        private void HelicopterFinished(int waitingListItemId, int organId)
+        private async Task HelicopterFinished(int waitingListItemId, int organId)
         {
             TransplantListAPI transplantListAPI = new TransplantListAPI();
-            transplantListAPI.DeleteTransfer(organId);
-            transplantListAPI.DeleteWaitingListItem(waitingListItemId);
-            transplantListAPI.SetInTransfer(organId, 2);
+            await transplantListAPI.DeleteTransfer(organId);
+            await transplantListAPI.DeleteWaitingListItem(waitingListItemId);
+            await transplantListAPI.SetInTransfer(organId, 2);
 
         }
 
