@@ -61,6 +61,7 @@ namespace mobileAppClient
                 switch (facebookRegisterStatus)
                 {
                     case HttpStatusCode.Created:
+                        await Navigation.PopModalAsync();
                         await DisplayAlert("",
                         "Login method changed to Facebook",
                         "OK");
@@ -87,7 +88,6 @@ namespace mobileAppClient
                         break;
                 }
             }
-            await Navigation.PopModalAsync();
         }
 
         async void Handle_CancelClicked(object sender, System.EventArgs e)
