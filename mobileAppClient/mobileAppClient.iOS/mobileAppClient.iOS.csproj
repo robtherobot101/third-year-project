@@ -191,6 +191,7 @@
     </Compile>
     <Compile Include="RecipientsTableSource.cs" />
     <Compile Include="IosForceKeyboardDismissalService.cs" />
+    <Compile Include="RemoveBottomSheetService.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
