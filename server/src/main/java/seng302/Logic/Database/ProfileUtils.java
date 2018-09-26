@@ -24,30 +24,6 @@ import static spark.Spark.halt;
 public class ProfileUtils extends DatabaseMethods {
 
     /**
-     * Gets required information to log in with just an app_id
-     * @param api_id The user's app_id
-     * @return A Pair containing the
-     * @throws SQLException When something goes wrong
-     */
-    public Pair<String, String> loginFromId(String api_id) throws SQLException {
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT username, password FROM ACCOUNT JOIN USER ON USER.id = ACCOUNT.id WHERE api_id = ? AND acc_type IN ('facebook', 'google') ";
-            statement = connection.prepareStatement(query);
-            statement.setString(1, api_id);
-            resultSet = statement.executeQuery();
-            resultSet.next();
-            Pair<String, String> pair = new Pair<>(resultSet.getString(1), resultSet.getString(2));
-            return pair;
-        }
-        finally {
-            close(statement, resultSet);
-        }
-    }
-
-
-    /**
      * change a account to a team300 account
      * @param request the request received
      * @param response the response to send
