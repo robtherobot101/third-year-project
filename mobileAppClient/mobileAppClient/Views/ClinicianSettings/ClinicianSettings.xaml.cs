@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using mobileAppClient.odmsAPI;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -8,21 +9,24 @@ namespace mobileAppClient
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ClinicianSettings : ContentPage
     {
-        private bool changingPassword = false;
+        private bool changingPassword = true;
         public ClinicianSettings()
         {
             InitializeComponent();
-            passwordInput.IsVisible = false;
-            confirmPasswordInput.IsVisible = false;
-
             UsernameEntry.Text = ClinicianController.Instance.LoggedInClinician.username;
         }
 
-        async void Handle_ChangePasswordTapped(object sender, System.EventArgs e)
+        protected override void OnAppearing()
         {
-            passwordInput.IsVisible = !passwordInput.IsVisible;
-            confirmPasswordInput.IsVisible = !confirmPasswordInput.IsVisible;
-            changingPassword = !changingPassword;
+            ChangePasswordSwitch.On = false;
+        }
+
+        void PasswordSwitchChanged(object sender, ToggledEventArgs e)
+        {
+            Console.WriteLine(e.Value);
+            passwordInput.IsEnabled = e.Value;
+            confirmPasswordInput.IsEnabled = e.Value;
+            changingPassword = e.Value;
         }
 
         async void Handle_ConfirmButtonClicked(object sender, System.EventArgs e)

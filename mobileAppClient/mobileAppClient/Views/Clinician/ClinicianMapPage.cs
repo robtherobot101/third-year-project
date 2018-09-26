@@ -389,6 +389,7 @@ namespace mobileAppClient.Views.Clinician
 	            Address = heliID,
                 Url = "Heli" + "," + heliID
             };
+            customMap.HelicopterPins.Add(heliPin.Address, heliPin);
 
             // Add the main helichopper pin to our list of custom heli pins we can track (heli pin contains the transported organ custom pin)
 
@@ -398,6 +399,7 @@ namespace mobileAppClient.Views.Clinician
             customMap.HelicopterPins = testDictionary;
 
             customMap.Pins.Add(heliPin);
+
 
 
             // Add the pin we want visible on the map (but cant track these)

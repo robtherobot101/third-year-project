@@ -357,7 +357,7 @@ namespace mobileAppClient.odmsAPI
             HttpClient client = ServerConfig.Instance.client;
 
 
-            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/" + userId + "/waitingListOrgan/" + organ);
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users/" + userId + "/waitingListOrgan/" + organ);
             request.Headers.Add("token", ClinicianController.Instance.AuthToken);
 
             HttpResponseMessage response;

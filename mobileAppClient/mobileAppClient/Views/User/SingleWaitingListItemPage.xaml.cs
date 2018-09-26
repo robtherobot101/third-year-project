@@ -47,8 +47,16 @@ namespace mobileAppClient
 
         protected override async void OnAppearing()
         {
-            user = await new UserAPI().getUser(item.userId, ClinicianController.Instance.AuthToken);
-            UserName.Text = user.FullName.ToString();
+            if (ClinicianController.Instance.isLoggedIn())
+            {
+                user = await new UserAPI().getUser(item.userId, ClinicianController.Instance.AuthToken);
+                UserName.Text = user.FullName.ToString();
+            }
+            else
+            {
+                user = await new UserAPI().getUser(item.userId, UserController.Instance.AuthToken);
+                UserName.Text = user.FullName.ToString();
+            }
         }
 
         /*

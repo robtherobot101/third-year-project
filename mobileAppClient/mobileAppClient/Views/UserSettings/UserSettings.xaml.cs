@@ -72,7 +72,7 @@ namespace mobileAppClient
         {
             //Do a thing
             await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(UserController.Instance.LoggedInUser.id)));
-            
+            OnAppearing();
         }
 
         void Handle_GoogleAccountTypeTapped(object sender, System.EventArgs e)
@@ -151,10 +151,7 @@ namespace mobileAppClient
                     break;
             }
 
-            passwordInput.IsVisible = false;
-            confirmPasswordInput.IsVisible = false;
-            UsernameEntry.IsVisible = false;
-            ConfirmTeam300LoginMethodChanged.IsVisible = false;
+            OnAppearing();
         }
 
         public async Task Handle_RedirectUriCaught(string code)
@@ -192,6 +189,7 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
+            OnAppearing();
         }
     }
 }

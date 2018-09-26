@@ -50,32 +50,41 @@
 		android:paddingTop="20dp"
 		cardview:cardElevation="4dp"
 		cardview:cardCornerRadius="5dp">
-		<TableLayout
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_marginLeft="5dp"
-			android:paddingTop="40dp"
-			android:id="@+id/organTableLayout">
-			<TableRow
-				android:id="@+id/transferText"
-				android:layout_marginLeft="3dp"
-				android:padding="8dp"
-				android:layout_height="21.0dp">
-				<TextView
-					android:paddingBottom = "10dp"
-					android:text="Tap on an organ to transfer it."/>
-			</TableRow>
-		</TableLayout>
-		<TextView
+		<RelativeLayout
 			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:textAppearance="?android:attr/textAppearanceMedium"
-			android:textColor="#333333"
-			android:text="Currently Donating:"
-			android:id="@+id/textView"
-			android:layout_gravity="center_horizontal"
-			android:layout_marginLeft="5dp"
-			android:padding="8dp"/>
+			android:layout_height="wrap_content">
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textAppearance="?android:attr/textAppearanceMedium"
+				android:textColor="#333333"
+				android:text="Currently Donating:"
+				android:id="@+id/textView"
+				android:layout_marginLeft="5dp"
+				android:padding="8dp"/>
+			<TextView
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="13dp"
+				android:orientation="horizontal"
+				android:text="Tap on an organ to transfer it."
+				android:id="@+id/transferText"
+				android:layout_below="@id/textView"/>	
+			<TableLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:layout_marginLeft="5dp"
+				android:layout_marginTop="40dp"
+				android:orientation="horizontal"
+				android:id="@+id/organTableLayout"
+				android:layout_below="@id/transferText">
+		</TableLayout>
+
+		</RelativeLayout>
+		
+
+
+		
 	</android.support.v7.widget.CardView>
 	
 </RelativeLayout>
