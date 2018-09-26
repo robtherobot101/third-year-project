@@ -396,7 +396,7 @@ namespace mobileAppClient.odmsAPI
             HttpResponseMessage response;
             try
             {
-                response = await client.PostAsync(url + "/team300account" + queries, body);
+                response = await client.PostAsync(url + "/googleaccount" + queries, body);
             }
             catch (HttpRequestException)
             {
