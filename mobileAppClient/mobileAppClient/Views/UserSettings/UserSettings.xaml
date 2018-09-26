@@ -8,19 +8,19 @@
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
 
-            <TableView Intent="Menu" >
+            <TableView Intent="Menu" HasUnevenRows="True">
                 <TableRoot>
                     <TableSection Title="Profile Settings">
 
-                        <ViewCell x:Name="PhotoListItem"  Tapped="Handle_PhotoSettingsTapped">
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,10,0">
+                        <ViewCell x:Name="PhotoListItem"  Tapped="Handle_PhotoSettingsTapped" >
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,15,10,15">
                                 <Label Text="Photo" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
                                 <controls:TintedImage Source="arrow_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25"/>
                             </StackLayout>
                         </ViewCell>
 
                         <ViewCell x:Name="AccountSettings" Tapped="Handle_AccountSettingsTapped">
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,10,0">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,15,10,15">
                                 <Label Text="Account Settings" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
                                 <controls:TintedImage Source="arrow_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25" TintColor="Transparent"/>
                             </StackLayout>
@@ -31,27 +31,27 @@
                     <TableSection Title="Switch Login Method">
 
                         <ViewCell x:Name="FacebookAccountType" Tapped="Handle_FacebookAccountTypeTapped">
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,10,0">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,15,10,15">
                                 <Label Text="Facebook SignIn" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
                                 <controls:TintedImage Source="facebook_cell_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25" TintColor="Transparent"/>
                             </StackLayout>
                         </ViewCell>
 
                         <ViewCell x:Name="GoogleAccountType" Tapped="Handle_GoogleAccountTypeTapped">
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,10,0">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,15,10,15">
                                 <Label Text="Google SignIn" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
                                 <controls:TintedImage Source="google_cell_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25" TintColor="Transparent"/>
                             </StackLayout>
                         </ViewCell>
 
                         <ViewCell x:Name="RegularAccountType" Tapped="Handle_RegularAccountType">
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="Start" Padding="15,0,10,0">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="Start" Padding="15,15,10,15">
                                 <Label Text="Regular SignIn" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
                             </StackLayout>
                         </ViewCell>
 
                         <ViewCell x:Name="Team300AccountChangeViewCell">
-                            <StackLayout Orientation="Vertical">
+                            <StackLayout Orientation="Vertical" Padding="15,15,10,15">
                                 <Entry Placeholder="Username" x:Name="UsernameEntry"/>
                                 <Entry Placeholder="Email" x:Name="EmailEntry"/>
 
