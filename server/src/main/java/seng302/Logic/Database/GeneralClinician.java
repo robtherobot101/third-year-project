@@ -161,18 +161,23 @@ public class GeneralClinician extends DatabaseMethods {
      * @param clinicianId The ID of the
      * @throws SQLException If there is a problem working with the database.
      */
-    public void updateClinicianDetails(Clinician clinician, int clinicianId) throws SQLException {
+    public void updateClinicianDetails(Clinician clinician, int clinicianId, String password) throws SQLException {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String update = "UPDATE CLINICIAN JOIN ACCOUNT SET name = ?, work_address = ?, region = ?, username = ?, password = ? WHERE staff_id = id AND staff_id = ?";
+            String update;
+            if(password == null) {
+                update = "UPDATE CLINICIAN JOIN ACCOUNT SET name = ?, work_address = ?, region = ?, username = ? WHERE staff_id = id AND staff_id = ?";
+            }
+            update = "UPDATE CLINICIAN JOIN ACCOUNT SET name = ?, work_address = ?, region = ?, username = ?, password = ? WHERE staff_id = id AND staff_id = ?";
             statement = connection.prepareStatement(update);
+            int index = 0;
 
-            statement.setString(1, clinician.getName());
-            statement.setString(2, clinician.getWorkAddress());
-            statement.setString(3, clinician.getRegion());
-            statement.setString(4, clinician.getUsername());
-            statement.setString(5, clinician.getPassword());
-            statement.setInt(6, clinicianId);
+            statement.setString(++index, clinician.getName());
+            statement.setString(++index, clinician.getWorkAddress());
+            statement.setString(++index, clinician.getRegion());
+            statement.setString(++index, clinician.getUsername());
+            if(password != null) statement.setString(++index, clinician.getPassword());
+            statement.setInt(++index, clinicianId);
             System.out.println("Update clinician Attributes -> Successful -> Rows Updated: " + statement.executeUpdate());
         } finally {
             close(statement);

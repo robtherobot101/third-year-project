@@ -82,7 +82,7 @@ namespace mobileAppClient.Notifications
             VSAppCenter.messageThreadsListPageController = messageThreadsListPageController;
         }
 
-        public static void seConversationController(ConversationPage conversationController)
+        public static void setConversationController(ConversationPage conversationController)
         {
             VSAppCenter.conversationController = conversationController;
         }

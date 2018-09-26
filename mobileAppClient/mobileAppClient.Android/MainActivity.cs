@@ -21,12 +21,15 @@ using Android.Util;
 using Plugin.Toasts;
 using Android.Database;
 using Android.Provider;
+using mobileAppClient.Google;
 
 namespace mobileAppClient.Droid
 {
     [Activity(Label = "mobileAppClient.Android", Icon = "@drawable/donationIcon", LaunchMode = LaunchMode.SingleInstance, Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
 
     [IntentFilter(new [] {Intent.ActionView}, Categories = new [] {Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "https", DataHost = "csse-s302g3.canterbury.ac.nz", DataPath = "/oauth2redirect")]
+
+    [IntentFilter(new[] { Intent.ActionView }, Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable }, DataScheme = "https", DataHost = "csse-s302g3.canterbury.ac.nz", DataPath = "/oauth2redirectChangeLogin")]
 
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
@@ -284,9 +287,16 @@ namespace mobileAppClient.Droid
             if (intent.Data != null)
             {
                 var data = intent.Data;
-
                 string queryParameter = data.GetQueryParameter("code");
-                await UserController.Instance.PassControlToLoginPage(queryParameter);
+
+                if (data.Path == "/oauth2redirectChangeLogin")
+                {
+                    await UserController.Instance.PassControlToUserSettings(queryParameter);
+                }
+                else
+                {
+                    await UserController.Instance.PassControlToLoginPage(queryParameter);
+                }
             }
         }
     }

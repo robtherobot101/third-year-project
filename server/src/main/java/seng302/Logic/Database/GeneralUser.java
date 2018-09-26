@@ -1,5 +1,6 @@
 package seng302.Logic.Database;
 
+import org.apache.http.client.HttpResponseException;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Logic.SaltHash;
 import seng302.Model.Attribute.*;
@@ -319,7 +320,7 @@ public class GeneralUser extends DatabaseMethods {
      * @param user The given user which will be inserted.
      * @throws SQLException If there is a problem working with the database.
      */
-    public void insertUser(User user, String passwordHash) throws SQLException {
+    public int insertUser(User user, String passwordHash) throws SQLException {
         User fromDb;
         ResultSet resultSet = null;
         PreparedStatement statement = null;
@@ -349,18 +350,21 @@ public class GeneralUser extends DatabaseMethods {
             statement.close();
             statement = connection.prepareStatement(createUserStatement(user));
             System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
-//            statement.close();
+            statement.close();
+            statement = connection.prepareStatement("SELECT id FROM ACCOUNT WHERE username = ?");
+            statement.setString(1,user.getUsername());
 //            statement = connection.prepareStatement("SELECT * FROM USER JOIN ACCOUNT WHERE USER.id = ACCOUNT.id AND (username = ? OR email = ? OR nhi = ?) AND password = ?");
 //            statement.setString(1, user.getUsername());
 //            statement.setString(2, user.getEmail());
 //            statement.setString(3, user.getNhi());
 //            statement.setString(4, user.getPassword());
-//            resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
-//            if (!resultSet.next()) {
-//                close(resultSet, statement);
-//                throw new SQLException("Could not fetch user directly after insertion.");
-//            } else {
+            if (resultSet.next()) {
+                return resultSet.getInt("id");
+            } else {
+                throw new SQLException();
+            }
 //                GeneralUser generalUser = new GeneralUser();
 //                fromDb = generalUser.getUserFromResultSet(resultSet);
 //            }

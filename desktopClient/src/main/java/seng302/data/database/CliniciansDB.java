@@ -67,7 +67,9 @@ public class CliniciansDB implements CliniciansDAO {
     public void updateAccount(long id, String username, String password, String token) throws HttpResponseException {
         JsonObject jo = new JsonObject();
         jo.addProperty("username", username);
-        jo.addProperty("password", password);
+        if (!password.equals("")){
+            jo.addProperty("password", password);
+        }
 
         APIResponse response = server.patchRequest(jo, new HashMap<>(), token, clinicians, String.valueOf(id), "account");
         if (response == null) {

@@ -42,15 +42,22 @@ namespace mobileAppClient.iOS
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
-            UITableViewCell cell = tableView.DequeueReusableCell(CellIdentifier);
+
 
             string photoItem = organs[indexPath.Row];
             string item = organs[indexPath.Row].Replace("_icon.png", "");
             item = char.ToUpper(item[0]) + item.Substring(1);
 
+            if (Cells.ContainsKey(item.ToLower()))
+            {
+                return Cells[item.ToLower()];
+            }
+
+            UITableViewCell cell = new UITableViewCell(UITableViewCellStyle.Subtitle, CellIdentifier); ;
+
             //---- if there are no cells to reuse, create a new one
-            if (cell == null)
-            { cell = new UITableViewCell(UITableViewCellStyle.Subtitle, CellIdentifier); }
+            //if (cell == null)
+            //{ cell = new UITableViewCell(UITableViewCellStyle.Subtitle, CellIdentifier); }
 
             cell.TextLabel.Text = item;
             cell.BackgroundColor = UIColor.Clear;
@@ -88,7 +95,7 @@ namespace mobileAppClient.iOS
                     cell.DetailTextLabel.TextColor = UIColor.FromRGB(76, 244, 65);
                 }              }
 
-            if(!Cells.ContainsKey(item.ToLower())) {
+            if(!(Cells.ContainsKey(item.ToLower()))) {
                 Cells.Add(item.ToLower(), cell);
             }
             return cell;

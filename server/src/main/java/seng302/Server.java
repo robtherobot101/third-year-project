@@ -269,6 +269,10 @@ public class Server {
                 get("",      userController::countUsers);
             });
 
+            path("/300Account", () -> post("", profileUtils::changeToTeam300));
+            path("/facebookaccount", () -> post("",      profileUtils::changeToFacebook));
+            path("/googleaccount", () -> post("", profileUtils::changeToGoogle));
+
             path("/countries", () -> {
                 get("", countriesController::getCountries);
                 patch("", countriesController::patchCountries);
