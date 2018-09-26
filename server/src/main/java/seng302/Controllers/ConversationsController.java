@@ -147,7 +147,8 @@ public class ConversationsController {
         } else {
             try {
                 Message messageToSend = new Message(request.body(), userId, conversationId);
-                model.addMessage(conversationId, messageToSend);
+                int id = model.addMessage(conversationId, messageToSend);
+                messageToSend.setId(id);
                 sendMessageNotification(conversationId, userId, messageToSend);
                 response.status(201);
                 return "Success";
