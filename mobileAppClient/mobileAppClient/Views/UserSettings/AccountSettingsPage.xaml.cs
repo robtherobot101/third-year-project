@@ -24,7 +24,6 @@ namespace mobileAppClient.Views.UserSettings
             ChangePasswordMenuItemViewCell.Height = dummyCell.Height;
             UsernameEntry.Text = UserController.Instance.LoggedInUser.username;
             EmailEntry.Text = UserController.Instance.LoggedInUser.email;
-            
         }
 
         async void Handle_ChangePasswordTapped(object sender, System.EventArgs e)

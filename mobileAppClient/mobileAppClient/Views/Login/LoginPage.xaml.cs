@@ -36,8 +36,10 @@ namespace mobileAppClient
 	                LoginButton.IsEnabled = false;
 	                SignUpButton.IsEnabled = false;
 	                RememberMeSwitch.IsEnabled = false;
+                    FacebookButton.IsEnabled = false;
+                    GoogleButton.IsEnabled = false;
 
-	                LoadingIndicator.IsVisible = true;
+                    LoadingIndicator.IsVisible = true;
 	                LoadingIndicator.IsRunning = true;
 	            }
 	            else
@@ -47,6 +49,8 @@ namespace mobileAppClient
 	                LoginButton.IsEnabled = true;
 	                SignUpButton.IsEnabled = true;
 	                RememberMeSwitch.IsEnabled = true;
+                    FacebookButton.IsEnabled = true;
+                    GoogleButton.IsEnabled = true;
 
                     LoadingIndicator.IsVisible = false;
 	                LoadingIndicator.IsRunning = false;
