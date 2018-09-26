@@ -170,11 +170,10 @@ DROP TABLE IF EXISTS `MESSAGE`;
 CREATE TABLE IF NOT EXISTS `MESSAGE` (
   `id` int(11) NOT NULL,
   `conversation_id` int(11) NOT NULL,
-  `text` text NOT NULL,
+  `text` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `date_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 -- --------------------------------------------------------
 
 --
