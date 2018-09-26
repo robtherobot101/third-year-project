@@ -74,6 +74,7 @@ public class OrganMatching {
             }
             return topMatches;
         } catch (SQLException e){
+            e.printStackTrace();
             Server.getInstance().log.debug("Error communicating with the database");
             return new ArrayList<>();
         }

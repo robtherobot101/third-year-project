@@ -671,7 +671,7 @@ public class GeneralUser extends DatabaseMethods {
             String over12 = "TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) > 12*12 AND " + Math.abs(ageMonths) + " - TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) < 12*15)";
             String query = "SELECT * FROM " +
                     "(SELECT * FROM USER WHERE " +
-                        "USER.date_of_death IS NULL AND USER.blood_type = ? AND USER.region IS NOT NULL  AND not USER.region == ''  AND ";
+                        "USER.date_of_death IS NULL AND USER.blood_type = ? AND USER.region IS NOT NULL AND USER.region != '' AND ";
             if (ageMonths <= 144) {
                 query += under12;
             } else {
