@@ -413,5 +413,75 @@ namespace mobileAppClient.odmsAPI
             }
             return response.StatusCode;
         }
+
+        /*
+         * Returns response status code of the attempted user registration
+         */
+        public async Task<HttpStatusCode> Team300RegisterUser(int userId, string password, string username)
+        {
+            if (!ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            // Get the single userController instance
+            UserController userController = UserController.Instance;
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpContent body = new StringContent("");
+            String queries = $"?username={username}&password={password}&id={userId}";
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(url + "/300Account" + queries, body);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                Console.WriteLine("Success on editing user");
+            }
+            else
+            {
+                Console.WriteLine($"Failed register ({response.StatusCode})");
+            }
+            return response.StatusCode;
+        }
+
+        public async Task<String> getAccountType(int userId)
+        {
+
+            // Fetch the url and client from the server config class
+            HttpClient client = ServerConfig.Instance.client;
+            String url = ServerConfig.Instance.serverAddress;
+
+            HttpResponseMessage response = null;
+
+
+            string queries = $"?id={userId}";
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/accounttype" + queries);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine(e.StackTrace);
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+
+            return responseContent;
+
+        }
+
     }
 }

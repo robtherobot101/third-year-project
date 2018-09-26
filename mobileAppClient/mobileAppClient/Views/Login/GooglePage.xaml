@@ -35,7 +35,7 @@
 
             <Entry x:Name="NHIEntry" Placeholder="NHI Number" VerticalOptions="CenterAndExpand"/>
 
-            <Button Clicked="Button_OnClicked" Text="Continue"/>
+            <Button Clicked="Button_OnClicked" Text="Continue" x:Name="ContinueButton"/>
         </StackLayout>
     </ContentPage.Content>
     <ContentPage.ToolbarItems>
