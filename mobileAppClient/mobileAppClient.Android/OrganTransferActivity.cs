@@ -103,6 +103,7 @@ namespace mobileAppClient.Droid
                     double donorLong = Convert.ToDouble(Intent.GetStringExtra("donorLong"));
                     Position pos = new Position(donorLat, donorLong);
                     clinicianMapPage.NewTransferWithoutAddingHelicpoter(organ, selectedReceiver, pos);
+                    
                 });
 
                 alert.SetNegativeButton("No", (senderAlert, args) =>
@@ -117,7 +118,8 @@ namespace mobileAppClient.Droid
         }
 
         private async void prepareList()
-        { 
+        {
+            //getSupportActionBar.Show();
             receiverTable = FindViewById<TableLayout>(Resource.Id.ReceiverTableLayout);
             var organText = FindViewById<TextView>(Resource.Id.Organ_Name);
             organTimerText = FindViewById<TextView>(Resource.Id.Time_Left);
@@ -181,31 +183,31 @@ namespace mobileAppClient.Droid
             long timeRemaining = timeRemainingTuple.Item2;
             if (timeRemaining <= 3600)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 65, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(191, 14, 0));
             }
             else if (timeRemaining <= 10800)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 130, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(186, 68, 1));
             }
             else if (timeRemaining <= 21600)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 190, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(181, 119, 2));
             }
             else if (timeRemaining <= 43200)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 241, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(176, 167, 3));
             }
             else if (timeRemaining <= 86400)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(208, 244, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(131, 171, 4));
             }
             else if (timeRemaining <= 172800)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(160, 244, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(81, 166, 5));
             }
             else
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(76, 244, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(34, 161, 6));
             }
 
 

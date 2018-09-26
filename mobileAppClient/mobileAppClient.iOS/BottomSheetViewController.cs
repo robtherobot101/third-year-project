@@ -30,7 +30,7 @@ namespace mobileAppClient.iOS
             this.pin = pin;
             holdView = new UIView();
             fullView = 300;
-            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 70;
+            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 80;
             this.customMapRenderer = customMapRenderer;
         }
 
@@ -95,6 +95,30 @@ namespace mobileAppClient.iOS
                 var frame = this.View.Frame;
                 var yComponent = UIScreen.MainScreen.Bounds.Height;
                 this.View.Frame = new CGRect(frame.X, yComponent, frame.Width, frame.Height);
+            }));
+        }
+
+        public async Task slideMenuToRight() {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                var xComponent = UIScreen.MainScreen.Bounds.Width - (UIScreen.MainScreen.Bounds.Width / 5);
+                this.View.Frame = new CGRect(xComponent, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
+        public async Task slideMenuBackInFromRight()
+        {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                this.View.Frame = new CGRect(0, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
+        public async Task slideMenuToLeft() {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                var xComponent = UIScreen.MainScreen.Bounds.Width;
+                this.View.Frame = new CGRect(-xComponent, frame.Y, frame.Width, frame.Height);
             }));
         }
 

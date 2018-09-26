@@ -191,6 +191,7 @@
     </Compile>
     <Compile Include="RecipientsTableSource.cs" />
     <Compile Include="IosForceKeyboardDismissalService.cs" />
+    <Compile Include="RemoveBottomSheetService.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -342,6 +343,11 @@
     <BundleResource Include="Resources\users_icon.png" />
     <BundleResource Include="Resources\add_icon.png" />
     <BundleResource Include="Resources\messages_icon.png" />
+    <BundleResource Include="Resources\recipientIcon4.png" />
+    <BundleResource Include="Resources\recipientIcon3.png" />
+    <BundleResource Include="Resources\recipientIcon2.png" />
+    <BundleResource Include="Resources\recipientIcon1.png" />
+    <BundleResource Include="Resources\recipientIcon0.png" />
   </ItemGroup>
   <ItemGroup>
     <BundleResource Include="Resources\score_icon.png" />

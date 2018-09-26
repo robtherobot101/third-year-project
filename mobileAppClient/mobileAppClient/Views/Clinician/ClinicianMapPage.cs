@@ -15,7 +15,7 @@ using Xamarin.Essentials;
 
 namespace mobileAppClient.Views.Clinician
 {
-    public class ClinicianMapPage : MenuContainerPage
+    public class ClinicianMapPage : ContentPage
 	{
 
         List<CustomMapObject> users;
@@ -30,10 +30,6 @@ namespace mobileAppClient.Views.Clinician
 
         }
 
-        public void displayBottomSheet(CustomPin pin, CustomMap map) {
-
-            DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin, map);
-        }
 
 
         public async void displayUserDialog(string organString, string id)
@@ -72,6 +68,8 @@ namespace mobileAppClient.Views.Clinician
 
                             MainPage mainPage = new MainPage(true);
                             mainPage.Title = String.Format("User Viewer: {0}", userTuple.Item2.FullName);
+
+                            DependencyService.Get<BottomSheetMapInterface>().removeBottomSheetWhenViewingAUser();
 
                             await Navigation.PushAsync(mainPage);
                             break;

@@ -95,13 +95,16 @@ namespace mobileAppClient.iOS
             cell.TextLabel.TextColor = UIColor.White;
             //GET USER ICON HERE
 
-            cell.ImageView.Image = UIImage.FromFile("donationIcon.png");
+            string imageString = "recipientIcon" + indexPath.Row + ".png";
+         
+
+            cell.ImageView.Image = UIImage.FromFile(imageString);
 
             cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
             //string bloodTypeString = BloodTypeExtensions.ToString(BloodTypeExtensions.ToBloodTypeJSON(item.bloodType));
             //string genderString = char.ToUpper(item.gender[0]) + item.gender.Substring(1).ToLower();
 
-            cell.DetailTextLabel.Text = "Address: " + item?.currentAddress + ", " + item?.region;
+            cell.DetailTextLabel.Text = item?.currentAddress + ", " + item?.region;
             //Change colour based on severity
             cell.DetailTextLabel.TextColor = UIColor.White;
 
