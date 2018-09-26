@@ -12,7 +12,7 @@
                        Margin="0, 0, 0, 30"
                        />
 
-                <Entry x:Name="usernameEmailInput" Placeholder="Username/Email/NHI" ReturnType="Next"
+                <Entry x:Name="usernameEmailInput" Placeholder="Username/Email/NHI" ReturnType="Next" Keyboard="Plain"
                     />
 
                 <Entry x:Name="passwordInput" Placeholder="Password" ReturnType="Go"

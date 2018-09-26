@@ -56,15 +56,19 @@ namespace CustomRenderer.Droid
             if (e.NewElement != null)
             {
                 formsMap = (CustomMap)e.NewElement;
-                customPins = formsMap.CustomPins;
-                helicopterPins = formsMap.HelicopterPins;
                 intialiseHelicopterIcons();
-
+                updatePins();
                 highlightedFlightPath = new Tuple<CustomPin, Polyline>(null, null);
                 highlightedOrganRange = new Tuple<CustomPin, Circle>(null, null);
 
                 Control.GetMapAsync(this);
             }
+        }
+
+        public void updatePins()
+        {
+            customPins = formsMap.CustomPins;
+            helicopterPins = formsMap.HelicopterPins;
         }
 
         /// <summary>
@@ -555,17 +559,23 @@ namespace CustomRenderer.Droid
         /// <returns></returns>
         CustomPin GetCustomPin(Pin pin)
         {
-            // Search custom pins
-            if (customPins.TryGetValue(pin.Position, out CustomPin foundPin))
+            for (int i = 0; i < 2; i++)
             {
-                return foundPin;
+                // Search custom pins
+                if (customPins.TryGetValue(pin.Position, out CustomPin foundPin))
+                {
+                    return foundPin;
+                }
+
+                // Search helicopter pins
+                if (helicopterPins.TryGetValue(pin.Address, out foundPin))
+                {
+                    return foundPin;
+                }
+
+                updatePins();
             }
 
-            // Search helicopter pins
-            if (helicopterPins.TryGetValue(pin.Address, out foundPin))
-            {
-                return foundPin;
-            }
             return null;
         }
     }

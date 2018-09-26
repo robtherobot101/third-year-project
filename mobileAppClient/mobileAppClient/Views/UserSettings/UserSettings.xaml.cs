@@ -15,13 +15,16 @@ namespace mobileAppClient
         public UserSettings()
         {
             InitializeComponent();
-            passwordInput.IsVisible = false;
-            confirmPasswordInput.IsVisible = false;
-            UsernameEntry.IsVisible = false;
-            ConfirmTeam300LoginMethodChanged.IsVisible = false;
+            passwordInput.IsEnabled = false;
+            
+            confirmPasswordInput.IsEnabled = false;
+            UsernameEntry.IsEnabled = false;
+            ConfirmTeam300LoginMethodChanged.IsEnabled = false;
 
-
-            updateButtons();
+            if(Device.RuntimePlatform == Device.iOS) {
+                GoogleAccountType.IsEnabled = false;
+            }
+            //updateButtons();
             UserController.Instance.userSettingsController = this;
         }
 
@@ -35,83 +38,113 @@ namespace mobileAppClient
             String result = await new LoginAPI().getAccountType(UserController.Instance.LoggedInUser.id);
             if (result.Equals("facebook"))
             {
-                AccountSettingsStackLayout.IsVisible = false;
-                AccountSettings.Tapped -= Handle_AccountSettingsTapped;
+                AccountSettingsLabel.TextColor = Color.Gray;
+                AccountSettings.IsEnabled = false;
 
-                FacebookAccountTypeLabel.TextColor = Color.LightGray;
-                FacebookAccountType.Tapped -= Handle_FacebookAccountTypeTapped;
-
+                FacebookAccountTypeLabel.TextColor = Color.Gray;
+                FacebookAccountType.IsEnabled = false;
 
                 GoogleAccountTypeLabel.TextColor = Color.Black;
-                GoogleAccountType.Tapped += Handle_GoogleAccountTypeTapped;
+                GoogleAccountType.IsEnabled = true;
 
                 RegularAccountTypeLabel.TextColor = Color.Black;
-                RegularAccountType.Tapped += Handle_RegularAccountType;
+                RegularAccountType.IsEnabled = true;
             }
             else if (result.Equals("google"))
             {
-                AccountSettingsStackLayout.IsVisible = false;
-                AccountSettings.Tapped -= Handle_AccountSettingsTapped;
+                AccountSettingsLabel.TextColor = Color.Gray;
+                AccountSettings.IsEnabled = false;
+
 
                 FacebookAccountTypeLabel.TextColor = Color.Black;
-                FacebookAccountType.Tapped += Handle_FacebookAccountTypeTapped;
+                FacebookAccountType.IsEnabled = true;
 
-                GoogleAccountTypeLabel.TextColor = Color.LightGray;
-                GoogleAccountType.Tapped -= Handle_GoogleAccountTypeTapped;
+                GoogleAccountTypeLabel.TextColor = Color.Gray;
+                GoogleAccountType.IsEnabled = false;
 
                 RegularAccountTypeLabel.TextColor = Color.Black;
-                RegularAccountType.Tapped += Handle_RegularAccountType;
+                RegularAccountType.IsEnabled = true;
             }
             else
             {
-                AccountSettingsStackLayout.IsVisible = false;
-                AccountSettings.Tapped += Handle_AccountSettingsTapped;
+                AccountSettingsLabel.TextColor = Color.Black;
+                AccountSettings.IsEnabled = true;
 
                 FacebookAccountTypeLabel.TextColor = Color.Black;
-                FacebookAccountType.Tapped += Handle_FacebookAccountTypeTapped;
+                FacebookAccountType.IsEnabled = true;
 
                 GoogleAccountTypeLabel.TextColor = Color.Black;
-                GoogleAccountType.Tapped += Handle_GoogleAccountTypeTapped;
+                GoogleAccountType.IsEnabled = true;
 
-                RegularAccountTypeLabel.TextColor = Color.LightGray;
-                RegularAccountType.Tapped -= Handle_RegularAccountType;
+                RegularAccountTypeLabel.TextColor = Color.Gray;
+                RegularAccountType.IsEnabled = false;
+            }
+
+            // Google login does not work on iOS
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                GoogleAccountType.IsEnabled = false;
+                GoogleAccountTypeLabel.TextColor = Color.Gray;
             }
         }
 
+        /*
+         * Navigates to the profile photo settings page.
+         */
         async void Handle_PhotoSettingsTapped(object sender, System.EventArgs e)
         {
             await Navigation.PushAsync(new PhotoSettingsPage(false));
 
         }
 
+        /*
+         * Launches Facebook authentication and attempts to switch the 
+         * login method for the the logged in user.
+         */
         async void Handle_FacebookAccountTypeTapped(object sender, System.EventArgs e)
         {
             await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(UserController.Instance.LoggedInUser.id)));
-            updateButtons();
+            //updateButtons();
         }
 
+        /*
+         * Launches Google authentication and attempts to switch the 
+         * login method for the the logged in user.
+         */
         void Handle_GoogleAccountTypeTapped(object sender, System.EventArgs e)
         {
             // Opens the Google login
             Device.OpenUri(new Uri(GoogleServices.ChangeToGoogleLoginAddr()));
             updateButtons();
         }
-
+            
+        /*
+         * Navigates to a new page which allows the user to change
+         * thier username, email, and password.
+         */
         async void Handle_AccountSettingsTapped(object sender, System.EventArgs e)
         {
             await Navigation.PushAsync(new AccountSettingsPage());
         }
 
-
+        /*
+         * Enables fields which allow the user to enter a new username and
+         * password and a confirm button which attempts to switch the login method over 
+         * to a regular login type
+         */
         void Handle_RegularAccountType(object sender, System.EventArgs e)
         {
-            passwordInput.IsVisible = true;
-            confirmPasswordInput.IsVisible = true;
-            UsernameEntry.IsVisible = true;
-            ConfirmTeam300LoginMethodChanged.IsVisible = true;
+            passwordInput.IsEnabled = true;
+            confirmPasswordInput.IsEnabled = true;
+            UsernameEntry.IsEnabled = true;
+            ConfirmTeam300LoginMethodChanged.IsEnabled = true;
             
         }
 
+        /*
+         * Takes the username and password given by the suer
+         * and attempts to switch over the login method to the regular type.
+         */
         async void Handle_ConfirmTeam300LoginMethodChanged(object sender, System.EventArgs e)
         {
             if (passwordInput.Text == "")
@@ -174,6 +207,10 @@ namespace mobileAppClient
             updateButtons();
         }
 
+        /*
+         * Catches the Google login redirect after successful Google authentication.
+         * Attempts to switch login method for the logged in user to Google
+         */
         public async Task Handle_RedirectUriCaught(string code)
         {
             string id = await GoogleServices.GetUserId(code);

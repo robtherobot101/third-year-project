@@ -26,7 +26,7 @@ namespace mobileAppClient
 
 	    public Conversation conversation;
 
-        private CustomObservableCollection<Message> conversationMessages;
+        public CustomObservableCollection<Message> conversationMessages;
 
 
 		public ConversationPage(Conversation conversationToDisplay, int localId)
@@ -78,7 +78,9 @@ namespace mobileAppClient
 
         void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
-            DependencyService.Get<IForceKeyboardDismissalService>().DismissKeyboard();
+            if(Device.RuntimePlatform == Device.iOS) {
+                DependencyService.Get<IForceKeyboardDismissalService>().DismissKeyboard();
+            }
 
         }
 

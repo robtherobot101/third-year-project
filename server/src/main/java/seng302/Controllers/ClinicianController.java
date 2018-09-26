@@ -153,8 +153,8 @@ public class ClinicianController {
 
         Clinician receivedClinician = gson.fromJson(request.body(), Clinician.class);
         String password = null;
-        if (gson.toJsonTree(request.body()).getAsJsonObject().has("password")) {
-            password = gson.toJsonTree(request.body()).getAsJsonObject().getAsJsonPrimitive("password").getAsString();
+        if (receivedClinician.getPassword() != null) {
+            password = receivedClinician.getPassword();
             password = SaltHash.createHash(password);
         }
         if (receivedClinician == null) {

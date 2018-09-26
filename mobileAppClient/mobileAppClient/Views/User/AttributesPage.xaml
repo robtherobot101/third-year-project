@@ -22,9 +22,9 @@
                 </TableSection>
                 <TableSection Title="Gender">
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" Padding="15,0,0,0">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,0,0">
                             <Label Text="Birth Gender" VerticalOptions="Center"/>
-                            <Picker Title ="Birth Gender" x:Name="BirthGenderInput">
+                            <Picker Title ="Birth Gender" x:Name="BirthGenderInput" HorizontalOptions="FillAndExpand">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>Male</x:String>
@@ -36,9 +36,9 @@
                         </StackLayout>
                     </ViewCell>
                     <ViewCell>
-                        <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" Padding="15,0,0,0">
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,0,0,0">
                             <Label Text="Gender Identity"  VerticalOptions="Center"/>
-                            <Picker Title ="Gender Identity" x:Name="GenderIdentityInput">
+                            <Picker Title ="Gender Identity" x:Name="GenderIdentityInput"  HorizontalOptions="FillAndExpand">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>Male</x:String>
@@ -51,11 +51,11 @@
                     </ViewCell>
                 </TableSection>
                 <TableSection Title="Address">
-                    
+
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" x:Name="CountryLayout" Padding="15,0,0,0">
                             <Label Text="Country" VerticalOptions="Center"/>
-                            <Picker Title ="Country" x:Name="CountryInput">
+                            <Picker Title ="Country" x:Name="CountryInput"  HorizontalOptions="FillAndExpand">
 
                                 <Picker.ItemsSource>
 
@@ -66,11 +66,11 @@
                             </Picker>
                         </StackLayout>
                     </ViewCell>
-                    
+
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" x:Name="RegionLayout" Padding="15,0,0,0">
                             <Label Text="Region" VerticalOptions="Center"/>
-                            <Picker Title ="Region" x:Name="RegionInput">
+                            <Picker Title ="Region" x:Name="RegionInput"  HorizontalOptions="FillAndExpand">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>Northland</x:String>
@@ -87,7 +87,7 @@
                     <EntryCell Label="" Placeholder="Line 2" x:Name="AddressLine2Input" PropertyChanged="Handle_StreetAutoCompleteValueChanged"/>
 
                     <ViewCell x:Name="StreetAutoCompeleteTableCell" Tapped="Handle_StreetAutoCompleteItemTapped">
-                        <StackLayout Orientation="Vertical" Padding="15,5,0,0" BackgroundColor="LightBlue" x:Name="StreetAutoCompeleteLayout">
+                        <StackLayout Orientation="Vertical" Padding="15,5,0,0" x:Name="StreetAutoCompeleteLayout">
                             <Label  TextColor="DeepPink" FontAttributes="Bold" x:Name="StreetAutoCompleteStAddr"/>
                             <Label TextColor="Pink" x:Name="StreetAutoCompleteLocation"/>
                         </StackLayout>
@@ -101,6 +101,7 @@
                             <DatePicker x:Name="dobInput"
                                 Format="D"
                                 MinimumDate="01/01/1900"
+                                HorizontalOptions="FillAndExpand"
                              />
                         </StackLayout>
                     </ViewCell>
@@ -112,6 +113,7 @@
                                 Format="D"
                                 MinimumDate="01/01/1900"
                                 IsEnabled="False"
+                                HorizontalOptions="FillAndExpand"
                              />
                         </StackLayout>
                     </ViewCell>
@@ -119,7 +121,7 @@
                         <StackLayout Orientation="Horizontal" x:Name="timeOfDeathCombo" Padding="15,0,0,0">
                             <Label Text="Time of Death" VerticalOptions="Center"/>
                             <TimePicker x:Name="todInput"
-                                
+                                HorizontalOptions="FillAndExpand"
                                 IsEnabled="False"
                              />
                         </StackLayout>
@@ -127,7 +129,7 @@
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" x:Name="dateOfDeathCountry" Padding="15,0,0,0">
                             <Label Text="Country" VerticalOptions="Center"/>
-                            <Picker Title ="Country" x:Name="DODCountryInput" IsEnabled="False">
+                            <Picker Title ="Country" x:Name="DODCountryInput" IsEnabled="False"  HorizontalOptions="FillAndExpand">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>New Zealand</x:String>
@@ -139,7 +141,7 @@
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" x:Name="dateOfDeathRegion" Padding="15,0,0,0">
                             <Label Text="Region" VerticalOptions="Center"/>
-                            <Picker Title ="Region" x:Name="DODRegionInput" IsEnabled="False">
+                            <Picker Title ="Region" x:Name="DODRegionInput" IsEnabled="False"  HorizontalOptions="FillAndExpand">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>Northland</x:String>
@@ -154,8 +156,8 @@
 
                     <EntryCell x:Name="DODCityInput" Label="City" PropertyChanged="Handle_DODCityAutoCompleteValueChanged" IsEnabled="False"/>
 
-                    <ViewCell x:Name="DODCityAutoCompeleteTableCell" Tapped="Handle_DODCityAutoCompleteItemTapped" >
-                        <StackLayout Orientation="Vertical" Padding="15,5,0,0" BackgroundColor="LightBlue" x:Name="DODCityAutoCompleteLayout">
+                    <ViewCell x:Name="DODCityAutoCompleteTableCell" Tapped="Handle_DODCityAutoCompleteItemTapped" >
+                        <StackLayout Orientation="Vertical" Padding="15,15,0,15" x:Name="DODCityAutoCompleteLayout">
                             <Label  TextColor="DeepPink" FontAttributes="Bold" x:Name="DODCityAutoCompleteLabel"/>
                         </StackLayout>
                     </ViewCell>
@@ -164,13 +166,13 @@
                 <TableSection Title="Physical Attributes">
                     <EntryCell Keyboard="Numeric" Label="Height (cm)" x:Name="HeightInput"/>
                     <EntryCell Keyboard="Numeric" Label="Weight (kg)" x:Name="WeightInput"/>
-                    <EntryCell Label="Blood Pressure" x:Name="BloodPressureInput"/>
+                    <EntryCell Label="Blood Pressure" x:Name="BloodPressureInput" Placeholder="20/30"/>
                 </TableSection>
                 <TableSection Title="Other Attributes">
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
                             <Label Text="Blood Type" VerticalOptions="Center"/>
-                            <Picker Title ="Blood Type" x:Name="BloodTypeInput">
+                            <Picker Title ="Blood Type" x:Name="BloodTypeInput" HorizontalOptions="FillAndExpand">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>A-</x:String>
@@ -189,7 +191,7 @@
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
                             <Label Text="Smoker Status" VerticalOptions="Center"/>
-                            <Picker Title ="Smoker Status" x:Name="SmokerStatusInput">
+                            <Picker Title ="Smoker Status" x:Name="SmokerStatusInput" HorizontalOptions="FillAndExpand">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>Never</x:String>
@@ -203,7 +205,7 @@
                     <ViewCell>
                         <StackLayout Orientation="Horizontal" Padding="15,0,0,0">
                             <Label Text="Alcohol Consumption" VerticalOptions="Center"/>
-                            <Picker Title ="Alcohol Consumption" x:Name="AlcoholConsumptionInput">
+                            <Picker Title ="Alcohol Consumption" x:Name="AlcoholConsumptionInput" HorizontalOptions="FillAndExpand">
                                 <Picker.ItemsSource>
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>None</x:String>
@@ -217,7 +219,7 @@
                             </Picker>
                         </StackLayout>
                     </ViewCell>
-                    
+
                 </TableSection>
             </TableRoot>
         </TableView>
