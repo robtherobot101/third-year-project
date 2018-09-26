@@ -44,6 +44,9 @@ namespace mobileAppClient
                 if (changingPassword)
                 {
                     ClinicianController.Instance.LoggedInClinician.password = passwordInput.Text;
+                } else
+                {
+                    ClinicianController.Instance.LoggedInClinician.password = null;
                 }
                 ClinicianController.Instance.LoggedInClinician.username = UsernameEntry.Text;
                 HttpStatusCode status = await new ClinicianAPI().updateAccountSettings(ClinicianController.Instance.LoggedInClinician, ClinicianController.Instance.AuthToken, changingPassword);

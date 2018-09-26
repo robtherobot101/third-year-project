@@ -22,30 +22,29 @@ namespace mobileAppClient.Droid
     [Activity]
     public class BottomSheetListActivity : AppCompatActivity, Android.Views.View.IOnClickListener
     {
-        private Android.Views.View lastClicked = null;
-        private Android.Views.View lastAdded = null;
         private TableLayout organTable;
         private List<TableRow> allRows;
+        private Timer timer;
+        private DonatableOrgan lastClicked;
 
         List<DonatableOrgan> organs;
         protected override void OnCreate(Bundle bundle)
         {
             base.OnCreate(bundle);
             SetContentView(Resource.Layout.UserOrganOverview);
-
             PrepareSheet();
+        }
 
+        protected override void OnResume()
+        {
+            organTable = FindViewById<TableLayout>(Resource.Id.organTableLayout);
+            
         }
 
         public void OnClick(Android.Views.View view)
         {
-            int rowIndex = view.Id;
-            String organName = null;
-            String organTimeLeft = null;
-            int organTimeLeftColour = 0;
             Android.Views.View nextChild = ((ViewGroup)view).GetChildAt(1);
-
-            organName = ((TextView)nextChild).Text;
+            String organName = ((TextView)nextChild).Text;
 
             string donorLat = Intent.GetStringExtra("donorLat");
             string donorLong = Intent.GetStringExtra("donorLong");
@@ -60,7 +59,7 @@ namespace mobileAppClient.Droid
                     intent.PutExtra("organ", OrganString);
                     intent.PutExtra("donorLat", donorLat);
                     intent.PutExtra("donorLong", donorLong);
-                    this.StartActivity(intent);
+                    StartActivity(intent);
                     break;
                 }
             }
@@ -72,11 +71,6 @@ namespace mobileAppClient.Droid
 
         public void PrepareSheet()
         {
-            /* TODO:
-                - Countdowns
-                - Hospital support
-                - Recipient support
-            */
             var name = FindViewById<TextView>(Resource.Id.User_Name);
             var address = FindViewById<TextView>(Resource.Id.Address);
             var profilePicture = FindViewById<ImageView>(Resource.Id.ProfilePictureFrame);
@@ -158,19 +152,6 @@ namespace mobileAppClient.Droid
                         organImage.SetImageResource(Resource.Drawable.tissue_icon);
                         break;
                 }
-                organText.SetTextAppearance(this, Android.Resource.Style.TextAppearanceMedium);
-
-                organImage.SetAdjustViewBounds(true);
-
-
-                organImage.SetMaxHeight(80);
-                organImage.SetMaxWidth(10);
-                organImage.SetPadding(0, 0, 0, 0);
-                //organImage.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 0.2f);
-                //organTable.ShrinkAllColumns = true;
-                organTable.SetColumnShrinkable(0, true);
-
-
                
                 if (organ.expired)
                 {
@@ -194,40 +175,55 @@ namespace mobileAppClient.Droid
                     long timeRemaining = timeRemainingTuple.Item2;
                     if (timeRemaining <= 3600)
                     {
-                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(244, 65, 65));
+                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(191, 14, 0));
                     }
                     else if (timeRemaining <= 10800)
                     {
-                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(244, 130, 65));
+                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(186, 68, 1));
                     }
                     else if (timeRemaining <= 21600)
                     {
-                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(244, 190, 65));
+                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(181, 119, 2));
                     }
                     else if (timeRemaining <= 43200)
                     {
-                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(244, 241, 65));
+                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(176, 167, 3));
                     }
                     else if (timeRemaining <= 86400)
                     {
-                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(208, 244, 65));
+                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(131, 171, 4));
                     }
                     else if (timeRemaining <= 172800)
                     {
-                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(160, 244, 65));
+                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(81, 166, 5));
                     }
                     else
                     {
-                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(76, 244, 65));
+                        organTimer.SetTextColor(Android.Graphics.Color.Rgb(34, 161, 6));
                     }
-
-           
                 }
 
+
+                //---Text Formatting
+                organText.SetTextAppearance(this, Android.Resource.Style.TextAppearanceMedium);
+                organText.SetPadding(0, 0, 2, 0);
                 //organText.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 0.4f);
+
+                //---Image Formatting
+                organImage.SetAdjustViewBounds(true);
+                organImage.SetMaxHeight(80);
+                organImage.SetMaxWidth(10);
+                organImage.SetPadding(0, 0, 0, 0);
+                //organImage.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 0.2f);
+
+                //---Table Formatting
+                //organTable.ShrinkAllColumns = true;
+                organTable.SetColumnShrinkable(0, true);
+
+                
                 //organTimer.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 0.4f);
 
-                organText.SetPadding(0,0,2,0);
+                //---Add Views together then to main table
                 organRow.AddView(organImage);
                 organRow.AddView(organText);
                 organRow.AddView(organTimer);
@@ -235,60 +231,13 @@ namespace mobileAppClient.Droid
                 organRow.SetOnClickListener(this);
                 organTable.AddView(organRow);
                 allRows.Add(organRow);
-                i++;
-
-                
             }
             StartTickingTimer(1000);
-
-        }
-
-        private void transferOrgan(List<DonatableOrgan> organs, String organName, int index)
-        {
-            var organTable = FindViewById<TableLayout>(Resource.Id.organTableLayout);
-            TableLayout recipientTable = new TableLayout(this);
-            //Get list of recipients
-            //Iterate and create rows for each
-
-            foreach(DonatableOrgan organ in organs)
-            {
-                if (organName.ToLower().Equals(organ.organType.ToLower()))
-                {
-                    if (organ.topReceivers.IsEmpty())
-                    {
-                        TableRow tableRow = new TableRow(this);
-                        TextView noReceivers = new TextView(this);
-
-                        noReceivers.Text = "No valid receivers found";
-
-                        tableRow.AddView(noReceivers);
-                        recipientTable.AddView(tableRow);
-
-                        lastAdded = recipientTable;
-                    }
-                    else
-                    {
-                        foreach (User recipient in organ.topReceivers)
-                        {
-                            TableRow recipientRow = new TableRow(this);
-                            TextView recipientName = new TextView(this);
-
-                            recipientName.Text = recipient.FullName;
-
-                            recipientRow.AddView(recipientName);
-                            recipientTable.AddView(recipientRow);
-                        }
-                    }
-                }
-            }
-
-            //Add null check to show "No Valid Receivers" or something
-            organTable.AddView(recipientTable, index + 1);
         }
 
         public void StartTickingTimer(int interval)
         {
-            Timer timer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
+            timer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
         }
 
         public void RefreshCountdownsInTableView(object o)
@@ -325,14 +274,10 @@ namespace mobileAppClient.Droid
                         {
                             timeLeft = timeLeft.Subtract(new TimeSpan(0, 0, 1));
                             detailString = detailString.Substring(0, 16) + timeLeft.ToString(@"dd\:hh\:mm\:ss") + " days";
-
                         }
                         ((TextView)(row.GetChildAt(2))).Text = detailString;
                     }
-
-
                 }
-
             });
         }
     }

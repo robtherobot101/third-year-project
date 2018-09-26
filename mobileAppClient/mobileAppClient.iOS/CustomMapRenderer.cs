@@ -127,7 +127,8 @@ namespace CustomRenderer.iOS
             var customPin = GetCustomPin(annotation as MKPointAnnotation);
             if (customPin == null)
             {
-                throw new Exception("NOT WORKING");
+                Console.WriteLine("Pin added incorrectly! KNOWN BUG");
+                return null;
             }
 
             

@@ -117,7 +117,7 @@ public class ClinicianSettingsController implements Initializable {
      * updates the state of the update button
      */
     private void updateUpdateButtonState() {
-        updateButton.setDisable(usernameField.getText().isEmpty() || passwordField.getText().isEmpty());
+        updateButton.setDisable(usernameField.getText().isEmpty());
     }
 
     /**
