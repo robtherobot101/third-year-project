@@ -121,10 +121,12 @@ namespace mobileAppClient.iOS
 
             if (!canArrive)
             {
-                UIAlertController okAlertController = UIAlertController.Create("Begin transfer process?",
+                UIAlertController okAlertController = UIAlertController.Create("Cannot begin transfer process",
                                                                                "Cannot transfer " + currentOrgan.organType + " to " + selectedRecipient.FullName + " as it will expire before it arrives.",
                                                                                UIAlertControllerStyle.Alert);
-                okAlertController.AddAction(UIAlertAction.Create("confirm", UIAlertActionStyle.Cancel, null));
+                okAlertController.AddAction(UIAlertAction.Create("Confirm", UIAlertActionStyle.Cancel, null));
+                owner.PresentViewController(okAlertController, true, null);
+                tableView.DeselectRow(indexPath, true);
             }
             else
             {

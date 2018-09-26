@@ -60,6 +60,9 @@ public class OrganMatching {
      * @return the list of users ids
      */
     public List<User> getTop5Matches(DonatableOrgan organ, String receiverNameQuery){
+        if (receiverNameQuery == null) {
+            receiverNameQuery = "";
+        }
         try {
             User donor = model.getUserFromId((int) organ.getDonorId());
             List<User> matches = model.getMatchingUsers(organ, (int)ChronoUnit.MONTHS.between(donor.getDateOfBirth(), LocalDate.now()), donor.getBloodType());
@@ -74,6 +77,7 @@ public class OrganMatching {
             }
             return topMatches;
         } catch (SQLException e){
+            e.printStackTrace();
             Server.getInstance().log.debug("Error communicating with the database");
             return new ArrayList<>();
         }

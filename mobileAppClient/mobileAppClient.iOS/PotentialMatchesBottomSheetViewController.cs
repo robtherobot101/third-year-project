@@ -28,7 +28,7 @@ namespace mobileAppClient.iOS
         public double organTimeLeft;
         public CustomMapRenderer customMapRenderer;
         public DonatableOrgan currentOrgan;
-        public Timer OrganTimeTickingTimer;
+        public Timer IndividualOrganTimeTickingTimer;
         public Timer OrganRadiusTickingTimer;
 
         public PotentialMatchesBottomSheetViewController(CustomPin pin, CustomMap map, MKMapView nativeMap, 
@@ -91,7 +91,7 @@ namespace mobileAppClient.iOS
 
         public void StartOrganTimeTickingTimer(int interval)
         {
-            OrganTimeTickingTimer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
+            IndividualOrganTimeTickingTimer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
         }
 
         public void StartOrganCircleRadiusCountdown(int interval)
@@ -170,6 +170,32 @@ namespace mobileAppClient.iOS
             }));
         }
 
+        public async Task slideMenuToRight()
+        {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                var xComponent = UIScreen.MainScreen.Bounds.Width - (UIScreen.MainScreen.Bounds.Width / 5);
+                this.View.Frame = new CGRect(xComponent, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
+        public async Task slideMenuBackInFromRight()
+        {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                this.View.Frame = new CGRect(0, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
+        public async Task slideMenuToLeft()
+        {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                var xComponent = UIScreen.MainScreen.Bounds.Width;
+                this.View.Frame = new CGRect(-xComponent, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
         public void RefreshOrganCircleOnMap(object o) {
 
             Device.BeginInvokeOnMainThread(() =>
@@ -215,10 +241,10 @@ namespace mobileAppClient.iOS
         }
 
         public void StopTimers() {
-            OrganRadiusTickingTimer.Dispose();
+            OrganRadiusTickingTimer?.Dispose();
             OrganRadiusTickingTimer = null;
-            OrganTimeTickingTimer.Dispose();
-            OrganTimeTickingTimer = null;
+            IndividualOrganTimeTickingTimer?.Dispose();
+            IndividualOrganTimeTickingTimer = null;
         }
 
         async void prepareRecipientsOnMap(Position position) {

@@ -98,6 +98,30 @@ namespace mobileAppClient.iOS
             }));
         }
 
+        public async Task slideMenuToRight() {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                var xComponent = UIScreen.MainScreen.Bounds.Width - (UIScreen.MainScreen.Bounds.Width / 5);
+                this.View.Frame = new CGRect(xComponent, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
+        public async Task slideMenuBackInFromRight()
+        {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                this.View.Frame = new CGRect(0, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
+        public async Task slideMenuToLeft() {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                var xComponent = UIScreen.MainScreen.Bounds.Width;
+                this.View.Frame = new CGRect(-xComponent, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
         public void StopTimers()
         {
             OrganTimeTickingTimer.Dispose();
