@@ -21,64 +21,80 @@ namespace mobileAppClient
             ConfirmTeam300LoginMethodChanged.IsVisible = false;
 
 
-
+            updateButtons();
             UserController.Instance.userSettingsController = this;
         }
 
         protected async override void OnAppearing()
         {
+            updateButtons();
+        }
+
+        public async void updateButtons()
+        {
             String result = await new LoginAPI().getAccountType(UserController.Instance.LoggedInUser.id);
             if (result.Equals("facebook"))
             {
-                AccountSettings.IsEnabled = false;
-                AccountSettings.View.IsVisible = false;
-                FacebookAccountType.IsEnabled = false;
-                FacebookAccountType.View.IsVisible = false;
-                GoogleAccountType.IsEnabled = true;
-                GoogleAccountType.View.IsVisible = true;
-                RegularAccountType.IsEnabled = true;
-                RegularAccountType.View.IsVisible = true;
+                AccountSettingsStackLayout.IsVisible = false;
+                AccountSettings.Tapped -= Handle_AccountSettingsTapped;
+
+                FacebookAccountTypeLabel.TextColor = Color.LightGray;
+                FacebookAccountType.Tapped -= Handle_FacebookAccountTypeTapped;
+
+
+                GoogleAccountTypeLabel.TextColor = Color.Black;
+                GoogleAccountType.Tapped += Handle_GoogleAccountTypeTapped;
+
+                RegularAccountTypeLabel.TextColor = Color.Black;
+                RegularAccountType.Tapped += Handle_RegularAccountType;
             }
             else if (result.Equals("google"))
             {
-                AccountSettings.IsEnabled = false;
-                AccountSettings.View.IsVisible = false;
-                GoogleAccountType.IsEnabled = false;
-                GoogleAccountType.View.IsVisible = false;
-                FacebookAccountType.IsEnabled = true;
-                FacebookAccountType.View.IsVisible = true;
-                RegularAccountType.IsEnabled = true;
-                RegularAccountType.View.IsVisible = false;
+                AccountSettingsStackLayout.IsVisible = false;
+                AccountSettings.Tapped -= Handle_AccountSettingsTapped;
+
+                FacebookAccountTypeLabel.TextColor = Color.Black;
+                FacebookAccountType.Tapped += Handle_FacebookAccountTypeTapped;
+
+                GoogleAccountTypeLabel.TextColor = Color.LightGray;
+                GoogleAccountType.Tapped -= Handle_GoogleAccountTypeTapped;
+
+                RegularAccountTypeLabel.TextColor = Color.Black;
+                RegularAccountType.Tapped += Handle_RegularAccountType;
             }
             else
             {
-                RegularAccountType.IsEnabled = false;
-                RegularAccountType.View.IsVisible = false;
-                AccountSettings.IsEnabled = true;
-                AccountSettings.View.IsVisible = true;
-                GoogleAccountType.IsEnabled = true;
-                GoogleAccountType.View.IsVisible = true;
-                FacebookAccountType.IsEnabled = true;
-                FacebookAccountType.View.IsVisible = true;
+                AccountSettingsStackLayout.IsVisible = false;
+                AccountSettings.Tapped += Handle_AccountSettingsTapped;
+
+                FacebookAccountTypeLabel.TextColor = Color.Black;
+                FacebookAccountType.Tapped += Handle_FacebookAccountTypeTapped;
+
+                GoogleAccountTypeLabel.TextColor = Color.Black;
+                GoogleAccountType.Tapped += Handle_GoogleAccountTypeTapped;
+
+                RegularAccountTypeLabel.TextColor = Color.LightGray;
+                RegularAccountType.Tapped -= Handle_RegularAccountType;
             }
         }
 
         async void Handle_PhotoSettingsTapped(object sender, System.EventArgs e)
         {
             await Navigation.PushAsync(new PhotoSettingsPage(false));
+
         }
 
         async void Handle_FacebookAccountTypeTapped(object sender, System.EventArgs e)
         {
-            //Do a thing
             await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(UserController.Instance.LoggedInUser.id)));
-            
+            updateButtons();
         }
 
         void Handle_GoogleAccountTypeTapped(object sender, System.EventArgs e)
         {
             // Opens the Google login
             Device.OpenUri(new Uri(GoogleServices.ChangeToGoogleLoginAddr()));
+            updateButtons();
         }
 
         async void Handle_AccountSettingsTapped(object sender, System.EventArgs e)
@@ -155,6 +171,7 @@ namespace mobileAppClient
             confirmPasswordInput.IsVisible = false;
             UsernameEntry.IsVisible = false;
             ConfirmTeam300LoginMethodChanged.IsVisible = false;
+            updateButtons();
         }
 
         public async Task Handle_RedirectUriCaught(string code)
@@ -192,6 +209,7 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
+            updateButtons();
         }
     }
 }

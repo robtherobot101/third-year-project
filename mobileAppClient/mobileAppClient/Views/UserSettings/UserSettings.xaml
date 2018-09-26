@@ -30,23 +30,23 @@
 
                     <TableSection Title="Switch Login Method">
 
-                        <ViewCell x:Name="FacebookAccountType" Tapped="Handle_FacebookAccountTypeTapped">
+                        <ViewCell x:Name="FacebookAccountType">
                             <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,15,10,15">
-                                <Label Text="Facebook SignIn" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
-                                <controls:TintedImage Source="facebook_cell_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25" TintColor="Transparent"/>
+                                <Label Text="Facebook SignIn" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center" x:Name="FacebookAccountTypeLabel"/>
+                                <controls:TintedImage Source="facebook_cell_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25" TintColor="Transparent" x:Name="FacebookAccountTypeIcon"/>
                             </StackLayout>
                         </ViewCell>
 
-                        <ViewCell x:Name="GoogleAccountType" Tapped="Handle_GoogleAccountTypeTapped">
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,15,10,15">
-                                <Label Text="Google SignIn" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
-                                <controls:TintedImage Source="google_cell_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25" TintColor="Transparent"/>
+                        <ViewCell x:Name="GoogleAccountType">
+                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,15,10,15" >
+                                <Label Text="Google SignIn" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" x:Name="GoogleAccountTypeLabel"/>
+                                <controls:TintedImage Source="google_cell_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25" TintColor="Transparent"  x:Name="GoogleAccountTypeIcon"/>
                             </StackLayout>
                         </ViewCell>
 
-                        <ViewCell x:Name="RegularAccountType" Tapped="Handle_RegularAccountType">
+                        <ViewCell x:Name="RegularAccountType">
                             <StackLayout Orientation="Horizontal" HorizontalOptions="Start" Padding="15,15,10,15">
-                                <Label Text="Regular SignIn" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start"/>
+                                <Label Text="Regular SignIn" TextColor="Black" VerticalOptions="Center" HorizontalOptions="Start" x:Name="RegularAccountTypeLabel"/>
                             </StackLayout>
                         </ViewCell>
 

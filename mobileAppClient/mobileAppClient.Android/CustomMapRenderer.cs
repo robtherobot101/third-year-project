@@ -285,7 +285,6 @@ namespace CustomRenderer.Droid
             return markerToAddOptions;
         }
 
-
         void OnInfoWindowClick(object sender, GoogleMap.InfoWindowClickEventArgs e)
         {
             var customPin = GetCustomPin(e.Marker);
