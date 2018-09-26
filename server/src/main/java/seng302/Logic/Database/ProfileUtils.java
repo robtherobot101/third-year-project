@@ -1,13 +1,16 @@
 package seng302.Logic.Database;
 
+import javafx.util.Pair;
 import org.apache.commons.dbutils.DbUtils;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Logic.Database.DatabaseMethods;
+import seng302.Logic.SaltHash;
 import seng302.Model.Attribute.ProfileType;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
 
+import javax.xml.crypto.Data;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,6 +23,192 @@ import static spark.Spark.halt;
  */
 public class ProfileUtils extends DatabaseMethods {
 
+    /**
+     * change a account to a team300 account
+     * @param request the request received
+     * @param response the response to send
+     * @return String output for success
+     */
+    public String changeToTeam300(Request request, Response response) {
+        int userId = Integer.parseInt(request.queryParams("id"));
+        String username = request.queryParams("username");
+        String password = request.queryParams("password");
+        System.out.println(userId + username + password);
+
+        try {
+            changeToTeam300Account(userId, username, SaltHash.createHash(password));
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
+
+        response.status(200);
+        return "USER WITH ID: " + userId +" CHANGED TO FACEBOOK LOGIN SUCCESSFULLY";
+    }
+
+
+    /**
+     * change requested account to a team 300 account type
+     * @param userId the user id of the user to change
+     * @throws SQLException catch sql errors
+     */
+    public String getAccountType(int userId) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT acc_type FROM USER WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getString("acc_type");
+        } finally {
+            close(statement);
+        }
+    }
+
+
+
+    /**
+     * change a account to a team300 account
+     * @param request the request received
+     * @param response the response to send
+     * @return String output for success
+     */
+    public String getAccountTypeReq(Request request, Response response) {
+        int userId = Integer.parseInt(request.queryParams("id"));
+
+        try {
+            String accType = getAccountType(userId);
+
+            response.status(200);
+            response.body(accType);
+            return accType;
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
+    }
+
+
+    /**
+     * change requested account to a team 300 account type
+     * @param userId the user id of the user to change
+     * @param username the new username of the user
+     * @param password the new password of the user
+     * @throws SQLException catch sql errors
+     */
+    public void changeToTeam300Account(int userId, String username, String password) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "UPDATE USER " +
+                    "SET acc_type = \"team300\" WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            statement.execute();
+            statement.close();
+            query = "UPDATE ACCOUNT " +
+                    "SET username = ?, password = ? WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, username);
+            statement.setString(2,password);
+            statement.setInt(3, userId);
+            statement.execute();
+
+        } finally {
+            close(statement);
+        }
+    }
+
+
+    /**
+     * change a account to a facebook account
+     * @param request the request received
+     * @param response the response to send
+     * @return String output for success
+     */
+    public String changeToFacebook(Request request, Response response) {
+        int userId = Integer.parseInt(request.queryParams("id"));
+        String apiID = request.queryParams("api_id");
+        try {
+            changeToFacebookAccount(userId, apiID);
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
+
+        response.status(201);
+        System.out.println(userId);
+        return "USER WITH ID: " + userId +" CHANGED TO FACEBOOK LOGIN SUCCESSFULLY";
+    }
+
+
+    /**
+     * change account tot facebook type
+     * @param userId the id of the user to change
+     * @param apiId the api id of the account to now use
+     * @throws SQLException catch sql errors
+     */
+    public void changeToFacebookAccount(int userId, String apiId) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "UPDATE USER " +
+                    "SET acc_type = ?, api_id = ?" +
+                    "WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, "facebook");
+            statement.setString(2, apiId);
+            statement.setInt(3, userId);
+            statement.execute();
+        } finally {
+            close(statement);
+        }
+    }
+
+
+    /**
+     * change a account to a google account
+     * @param request the request received
+     * @param response the response to send
+     * @return String output for success
+     */
+    public String changeToGoogle(Request request, Response response) {
+        int userId = Integer.parseInt(request.queryParams("id"));
+        String apiID = request.queryParams("api_id");
+
+        try {
+            changeToGoogleAccount(userId, apiID);
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
+
+        response.status(200);
+        return "USER WITH ID: " + userId +" CHANGED TO FACEBOOK LOGIN SUCCESSFULLY";
+    }
+
+
+    /**
+     * change to google account
+     * @param userId the user id to change
+     * @param apiId the api id to set
+     * @throws SQLException catch sql errors
+     */
+    public void changeToGoogleAccount(int userId, String apiId) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "UPDATE USER " +
+                    "SET acc_type = ?, api_id = ?" +
+                    "WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setString(1, "google");
+            statement.setString(2, apiId);
+            statement.setInt(3, userId);
+            statement.execute();
+        } finally {
+            close(statement);
+        }
+    }
 
     /**
      * Checks the authorisation level of a token.
@@ -30,27 +219,30 @@ public class ProfileUtils extends DatabaseMethods {
     public int checkToken(String token) throws SQLException {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
+        PreparedStatement statement1 = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             // Check all tokens for time expiry
             statement = connection.prepareStatement(
                     "DELETE FROM TOKEN WHERE token != 'masterToken' AND date_time < DATE_SUB(NOW(), INTERVAL 1 DAY)");
             statement.execute();
+            statement.close();
 
             statement = connection.prepareStatement(
                     "SELECT access_level FROM TOKEN WHERE token = ?");
             statement.setString(1, token);
             resultSet = statement.executeQuery();
+
             if (resultSet.next()) {
-                statement = connection.prepareStatement(
+                statement1 = connection.prepareStatement(
                         "UPDATE TOKEN SET date_time = NOW() WHERE token = ?");
-                statement.setString(1, token);
-                statement.execute();
+                statement1.setString(1, token);
+                statement1.execute();
                 return resultSet.getInt("access_level");
             } else {
                 return -1;
             }
         } finally {
-            close(resultSet, statement);
+            close(resultSet, statement, statement1);
         }
     }
 
@@ -90,6 +282,10 @@ public class ProfileUtils extends DatabaseMethods {
         String failure = "Unauthorised: access denied to specific user ";
 
         String token = request.headers("token");
+        if (token.equals("masterToken")) {
+            return true;
+        }
+
         int accessLevel = checkToken(token);
         int id = getId(request.params(":id"));
         if (id == -1) {
@@ -130,15 +326,15 @@ public class ProfileUtils extends DatabaseMethods {
             halt(400, "Bad request");
             return false;
         }
+
         boolean authorized = false;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             statement = connection.prepareStatement(
-                    "SELECT * FROM CONVERSATION_MEMBER WHERE user_id = ? AND access_level = ? AND conversation_id = ?");
+                    "SELECT * FROM CONVERSATION_MEMBER WHERE user_id = ? AND conversation_id = ?");
             statement.setInt(1, id);
-            statement.setInt(2, profileType.getAccessLevel());
-            statement.setInt(3, conversationId);
+            statement.setInt(2, conversationId);
 
             resultSet = statement.executeQuery();
             authorized = resultSet.next();

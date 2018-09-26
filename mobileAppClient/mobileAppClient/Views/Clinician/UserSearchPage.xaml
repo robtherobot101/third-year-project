@@ -14,15 +14,7 @@
                 RefreshCommand="{Binding RefreshCommand}"
                 AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
                 AbsoluteLayout.LayoutFlags="All">
-            
-        <!--Built in Cells-->
-        <!--<ListView.ItemTemplate>
-            <DataTemplate>
-                <TextCell Text="{Binding FullName}" />
-            </DataTemplate>
-        </ListView.ItemTemplate>-->
-
-        <ListView.ItemTemplate>
+            <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <Grid Padding="12, 0, 12, 0">
@@ -32,22 +24,6 @@
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
-
-            <!--Custom View Cells-->
-        <!--
-        <ListView.ItemTemplate>
-          <DataTemplate>
-            <ViewCell>
-              <StackLayout>
-                <Label Text="{Binding Text}" 
-                       Style="{DynamicResource ListItemTextStyle}" />
-                <Label Text="{Binding Detail}" 
-                       Style="{DynamicResource ListItemDetailTextStyle}"/>
-              </StackLayout>
-            </ViewCell>
-          </DataTemplate>
-        </ListView.ItemTemplate>
-        -->
-      </ListView>
+        </ListView>
     </StackLayout>
 </ContentPage>

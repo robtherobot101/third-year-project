@@ -321,7 +321,7 @@ public class UsersM implements UsersDAO {
         if(searchMap.containsKey("password")) {
             List<User> usersWithSamePass = new ArrayList<>();
             for(User u : users) {
-                if(u.getPassword().equals(searchMap.get("password"))) {
+                if(u.getPassphrase().equals(searchMap.get("password"))) {
                     usersWithSamePass.add(u);
                 }
             }

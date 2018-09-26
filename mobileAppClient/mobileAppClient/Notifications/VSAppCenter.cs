@@ -2,52 +2,89 @@
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using Microsoft.AppCenter.Push;
+using Plugin.Toasts;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Text;
+using System.Threading.Tasks;
+using mobileAppClient.Models;
 using Xamarin.Forms;
 
 namespace mobileAppClient.Notifications
 {
-    class VSAppCenter
+    public static class VSAppCenter
     {
-        public async static void Setup()
+        static MessageThreadsListPage messageThreadsListPageController;
+        static ConversationPage conversationController;
+
+        public static async void Setup()
         {
 
             // This should come before AppCenter.Start() is called
             // Avoid duplicate event registration:
             if (!AppCenter.Configured)
             {
-                Push.PushNotificationReceived += (sender, e) =>
+                Push.PushNotificationReceived += async (sender, e) =>
                 {
-                    // Add the notification message and title to the message
-                    var summary = $"Push notification received:" +
-                                        $"\n\tNotification title: {e.Title}" +
-                                        $"\n\tMessage: {e.Message}";
-
-                    // If there is custom data associated with the notification,
-                    // print the entries
-                    if (e.CustomData != null)
+                    // If the notification contains message data, handle it as such
+                    if (e.CustomData.ContainsKey("conversationId"))
                     {
-                        summary += "\n\tCustom data:\n";
-                        foreach (var key in e.CustomData.Keys)
+                        Message notifiedMessage = new Message();
+                        notifiedMessage.id = int.Parse(e.CustomData["id"]);
+                        notifiedMessage.conversationId = int.Parse(e.CustomData["conversationId"]);
+                        notifiedMessage.text = e.CustomData["text"];
+                        notifiedMessage.timestamp = new CustomDateTime(DateTime.Parse(e.CustomData["timestamp"]));
+                        
+                        if (conversationController != null)
                         {
-                            summary += $"\t\t{key} : {e.CustomData[key]}\n";
-                        }     
-                    }
+                            if (conversationController.conversation != null && conversationController.conversation.id == notifiedMessage.conversationId) 
+                            {
+                                conversationController.conversation.messages.Insert(0, notifiedMessage);
+                            }
+                        }
+                        else
+                        {
+                            if (messageThreadsListPageController != null)
+                            {
+                                List<Conversation> localConversation = new List<Conversation>(messageThreadsListPageController.conversationList);
+                                Conversation conversationToUpdate = localConversation.Find(conversation =>
+                                    conversation.id == notifiedMessage.conversationId);
 
-                    // Send the notification summary to debug output
-                    System.Diagnostics.Debug.WriteLine(summary);
+                                if (conversationToUpdate != null)
+                                {
+                                    conversationToUpdate.messages.Insert(0, notifiedMessage);
+                                    messageThreadsListPageController.conversationList.Clear();
+                                    messageThreadsListPageController.conversationList.AddRange(localConversation);
+                                }
+                                else
+                                {
+                                    await messageThreadsListPageController.ReloadConversations();
+                                }
+                            }
+                                                        
+                        }
+                            
+                        DependencyService.Get<IToast>().ShortAlert("You have received a message");
+                    }
                 };
             }
             AppCenter.LogLevel = LogLevel.Verbose;
-
             AppCenter.Start("android=95e48718-8158-4eef-ab58-fac02629e859;" +
                             "ios=14d06e7a-6ff3-4e01-8838-59cbb905dbc2;",
                             typeof(Analytics), typeof(Crashes), typeof(Push));
             var id = await AppCenter.GetInstallIdAsync();
             System.Diagnostics.Debug.WriteLine(id.ToString());
+        }
 
+        public static void setConversationListController(MessageThreadsListPage messageThreadsListPageController)
+        {
+            VSAppCenter.messageThreadsListPageController = messageThreadsListPageController;
+        }
+
+        public static void setConversationController(ConversationPage conversationController)
+        {
+            VSAppCenter.conversationController = conversationController;
         }
     }
 }

@@ -59,7 +59,7 @@ namespace mobileAppClient.Views
             UserListView.ItemAppearing += HitBottomOfList;
         }
 
-        private void HitBottomOfList(object sender, ItemVisibilityEventArgs e)
+        private async void HitBottomOfList(object sender, ItemVisibilityEventArgs e)
         {
             if (IsLoading || UserList.Count == 0 || endOfUsers)
                 return;
@@ -67,7 +67,7 @@ namespace mobileAppClient.Views
             // Hit the bottom
             if (e.Item == UserList[UserList.Count - 1])
             {
-                LoadItems();
+                await LoadItems();
             }
         }
 
@@ -88,7 +88,7 @@ namespace mobileAppClient.Views
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void UserSearchBar_TextChanged(object sender, TextChangedEventArgs e)
+        private async void UserSearchBar_TextChanged(object sender, TextChangedEventArgs e)
         {
             // Update the current search param
             searchQuery = InputValidation.Trim(e.NewTextValue);
@@ -96,7 +96,7 @@ namespace mobileAppClient.Views
             // Has input been cleared?
             if (string.IsNullOrEmpty(e.NewTextValue))
             {
-                ResetItemsQuiet();
+                await ResetItemsQuiet();
             }
         }
 

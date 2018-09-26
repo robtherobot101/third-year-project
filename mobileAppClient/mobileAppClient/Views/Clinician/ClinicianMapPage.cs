@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SlideOverKit;
 using Xamarin.Forms;
 using Xamarin.Forms.Maps;
@@ -9,14 +8,14 @@ using System.Threading.Tasks;
 using mobileAppClient.odmsAPI;
 using System.Net;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using mobileAppClient.Maps;
 using mobileAppClient.Models;
+using Xamarin.Essentials;
 
 namespace mobileAppClient.Views.Clinician
 {
-	public class ClinicianMapPage : MenuContainerPage
+    public class ClinicianMapPage : ContentPage
 	{
 
         List<CustomMapObject> users;
@@ -28,21 +27,19 @@ namespace mobileAppClient.Views.Clinician
 
         public ClinicianMapPage()
         {
-            this.SlideMenu = new SlideUpMenuView();
 
         }
 
-        public async void displayBottomSheet(CustomPin pin, CustomMap map) {
 
-            DependencyService.Get<BottomSheetMapInterface>().addSlideUpSheet(pin, map);
-        }
 
         public async void displayUserDialog(string organString, string id)
         {
             //if Android, use the SlideOverKit stuff
             if (Device.RuntimePlatform == Device.Android)
             {
-                ShowMenu();
+
+                //ShowMenu();
+
             }
             //otherwise iPhone or something
             else
@@ -72,6 +69,8 @@ namespace mobileAppClient.Views.Clinician
                             MainPage mainPage = new MainPage(true);
                             mainPage.Title = String.Format("User Viewer: {0}", userTuple.Item2.FullName);
 
+                            DependencyService.Get<BottomSheetMapInterface>().removeBottomSheetWhenViewingAUser();
+
                             await Navigation.PushAsync(mainPage);
                             break;
                         case HttpStatusCode.ServiceUnavailable:
@@ -94,12 +93,13 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
+
+
         ///// <summary>
         ///// Activated whenever focus is on this page
         ///// </summary>
         protected override async void OnAppearing()
         {
-            this.SlideMenu = new SlideUpMenuView();
 
             customMap = new CustomMap
             {
@@ -132,6 +132,8 @@ namespace mobileAppClient.Views.Clinician
             Tuple<HttpStatusCode, List<CustomMapObject>> tuple = await userAPI.GetOrgansForMap();
 
             await InitialiseHospitals();
+
+            StartTransfers();
 
             //AddTestHelicopter();
             //AddTest2Helicopter();
@@ -183,11 +185,11 @@ namespace mobileAppClient.Views.Clinician
                                 case ("liver"):
                                     imageString = "liver_icon.png";
                                     break;
-                                case ("connective-tissue"):
-                                    imageString = "connective-tissue_icon.png";
+                                case ("tissue"):
+                                    imageString = "tissue_icon.png";
                                     break;
-                                case ("bone-marrow"):
-                                    imageString = "bone-marrow_icon.png";
+                                case ("bone"):
+                                    imageString = "bone_icon.png";
                                     break;
                                 case ("skin"):
                                     imageString = "skin_icon.png";
@@ -204,8 +206,8 @@ namespace mobileAppClient.Views.Clinician
                                 case ("intestine"):
                                     imageString = "intestine_icon.png";
                                     break;
-                                case ("middle-ear"):
-                                    imageString = "middle-ear_icon.png";
+                                case ("ear"):
+                                    imageString = "ear_icon.png";
                                     break;
                             }
                             organIcons.Add(imageString);
@@ -286,6 +288,7 @@ namespace mobileAppClient.Views.Clinician
                     }
 
                     StartTimer(200);
+                    Console.WriteLine("Reached the end of OnAppearing");
                     break;
 
                 case HttpStatusCode.ServiceUnavailable:
@@ -303,7 +306,7 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
-        private async Task InitialiseHospitals()
+        public async Task InitialiseHospitals()
         {
 
             ClinicianAPI clinicianApi = new ClinicianAPI();
@@ -316,6 +319,7 @@ namespace mobileAppClient.Views.Clinician
 
                     foreach (Hospital currentHospital in hospitals)
                     {
+                        Console.WriteLine("Tracking positions");
                         Position finalPosition = new Position(currentHospital.latitude, currentHospital.longitude);
 
                         var pin = new CustomPin
@@ -349,36 +353,27 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
-        private void AddTestHelicopter()
-        {
-            Position start = new Position(-37.9061137, 176.2050742);
-            Position end = new Position(-36.8613687, 174.7676895);
-            AddHelicopter(start, end, Organ.LIVER);
-        }
-
-	    private void AddTest2Helicopter()
-	    {
-	        Position start = new Position(-36.8613687, 174.7676895);
-            Position end = new Position(-37.9061137, 176.2050742);
-            AddHelicopter(start, end, Organ.LUNG);
-        }
-
         /// <summary>
         /// Adds a helicopter to the map!
         /// </summary>
         /// <param name="start"></param>
         /// <param name="end"></param>
         /// <param name="organToTransferType"></param>
-	    private void AddHelicopter(Position start, Position end, Organ organToTransferType)
+	    private void AddHelicopter(Position start, Position end, Organ organToTransferType, int seconds,  long receiverId, int waitingListItemId, int organId)
 	    {
             // Iterate the unique helicopter identifier (is used as a dict key in the map renderer)
 	        string heliID = (++heliCount).ToString();
 
-	        Helicopter heli = new Helicopter()
-	        {
-	            startPosition = start,
-	            destinationPosition = end,
-                isLanding = false
+            Helicopter heli = new Helicopter()
+            {
+                startPosition = start,
+                destinationPosition = end,
+                isLanding = false,
+                duration = seconds,
+                organId = organId,
+                receiverId = receiverId,
+                waitingListItemId = waitingListItemId
+
 	        };
 
             // Address is used by helicopters to hold their unique ID
@@ -389,11 +384,12 @@ namespace mobileAppClient.Views.Clinician
 	            Label = "Heli",
 	            HelicopterDetails = heli,
 	            Position = heli.startPosition,
-	            Address = heliID
+	            Address = heliID,
+                Url = "Heli" + "," + heliID
             };
 
             // Add the main helichopper pin to our list of custom heli pins we can track (heli pin contains the transported organ custom pin)
-	        customMap.HelicopterPins.Add(heliPin.Address, heliPin);
+            customMap.HelicopterPins.Add(heliPin.Address, heliPin);
 
             // Add the pin we want visible on the map (but cant track these)
 	        customMap.Pins.Add(heliPin);
@@ -406,7 +402,7 @@ namespace mobileAppClient.Views.Clinician
         public void StartTimer(int interval)
         {
             // TODO change '5000' to '0' when transferring is correctly implemented (is delay between timer started + timer actually starting to call tick method)
-            Timer t = new Timer(RefreshHelipcopterPositions, null, 5000, interval);
+            Timer t = new Timer(RefreshHelipcopterPositions, null, 0, interval);
         }
 
         /// <summary>
@@ -428,7 +424,11 @@ namespace mobileAppClient.Views.Clinician
 
                 // Add to the intermediary dictionary, and modify to include the new position
                 intermediateHeliPins.Add(singleHelicopterPin.Address, singleHelicopterPin);
-                intermediateHeliPins[singleHelicopterPin.Address].Position = newHeliPosition;
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    intermediateHeliPins[singleHelicopterPin.Address].Position = newHeliPosition;
+                });
+
             }
 
             // Copy intermediary dictionary into the Maps custom dictionary of helis
@@ -458,6 +458,9 @@ namespace mobileAppClient.Views.Clinician
                         // When the pin (in the last refresh loop had its isLanding flag raised) is refreshed again,
                         // remove the pin as it will have been tidied up on the map renderer side
                         customMap.HelicopterPins.Remove(singleHelicopterPin.Address);
+
+                        HelicopterFinished(singleHelicopterPin.HelicopterDetails.waitingListItemId, singleHelicopterPin.HelicopterDetails.organId);
+
                         return;
                     }
                 }
@@ -470,5 +473,246 @@ namespace mobileAppClient.Views.Clinician
                 
             }
         }
+
+        public async void StartTransfers()
+        {
+            TransplantListAPI transplantListAPI = new TransplantListAPI();
+            List<OrganTransfer> transfers = await transplantListAPI.GetAllTransfers();
+
+            foreach (OrganTransfer transfer in transfers)
+            {
+                int waitingListId = await transplantListAPI.GetWaitingListId((int)transfer.receiverId, transfer.organType);
+
+                if (transfer.arrivalTime.ToDateTimeWithSeconds() < DateTime.Now)
+                {
+                    HelicopterFinished(waitingListId, transfer.id);
+                }
+                else
+                {
+
+                    AddHelicopter(
+                        GetCurrentPoint(transfer),
+                        new Position(transfer.endLat, transfer.endLon),
+                        transfer.organType,
+                        (int)transfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds,
+                        transfer.receiverId,
+                        waitingListId,
+                        transfer.id);
+                }
+            }
+        }
+
+        private Position GetCurrentPoint(OrganTransfer transfer)
+        {
+            double degToRad = Math.PI / 180;
+
+            double timeToDest = transfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds;
+
+            double distToDest = timeToDest * 70 / 1852;
+
+            double distRads = (Math.PI / (180 * 60)) * distToDest;
+
+            double deltaLongitude = transfer.startLon - transfer.endLon;
+
+
+
+            double x = Math.Cos(transfer.endLat * degToRad) * Math.Sin(deltaLongitude * degToRad);
+            double y = Math.Cos(transfer.startLat * degToRad) * Math.Sin(transfer.endLat * degToRad) - Math.Sin(transfer.startLat * degToRad) * Math.Cos(transfer.endLat * degToRad) * Math.Cos(deltaLongitude * degToRad);
+
+            double bearing = Math.Atan2(x, y) / degToRad - 180;
+
+            double currentLat = Math.Asin(Math.Sin(transfer.endLat * degToRad) * Math.Cos(distRads) + Math.Cos(transfer.endLat * degToRad) * Math.Sin(distRads) * Math.Cos(bearing * degToRad));
+
+            double test = currentLat / degToRad;
+
+            double distanceLon = Math.Atan2(Math.Sin(bearing * degToRad) * Math.Sin(distRads) * Math.Cos(transfer.endLat * degToRad), Math.Cos(distRads) - Math.Sin(transfer.endLat * degToRad) * Math.Sin(currentLat));
+            double currentLon = ((transfer.endLon * degToRad - distanceLon + Math.PI) % (2 * Math.PI)) - Math.PI;
+
+            return new Position(currentLat / degToRad, currentLon / degToRad);
+        }
+
+        public async void NewTransfer(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition) {
+            OrganTransfer newOrganTransfer = new OrganTransfer();
+            newOrganTransfer.id = currentOrgan.id;
+            newOrganTransfer.receiverId = selectedRecipient.id;
+
+            //Find the position of the donor
+            newOrganTransfer.startLat = donorPosition.Latitude;
+            newOrganTransfer.startLon = donorPosition.Longitude;
+
+            Hospital receiverHospital = null;
+            await InitialiseHospitalsWithoutAddingToMap();
+            foreach (Hospital hospital in hospitals) {
+                if(hospital.region.Equals(selectedRecipient.region)) {
+                    receiverHospital = hospital;
+                }
+            }
+
+            //Find the nearest hospital
+            newOrganTransfer.endLat = receiverHospital.latitude;
+            newOrganTransfer.endLon = receiverHospital.longitude;
+
+            newOrganTransfer.organType = OrganExtensions.ToOrgan(currentOrgan.organType);
+
+            Position HospitalPosition = new Position(receiverHospital.latitude, receiverHospital.longitude);
+
+            newOrganTransfer.arrivalTime = new CustomDateTime(DateTime.Now.AddSeconds(distance(donorPosition.Latitude, HospitalPosition.Latitude,
+                                                                                               donorPosition.Longitude, HospitalPosition.Longitude, 0, 0) / 70));
+
+            TransplantListAPI transplantListAPI = new TransplantListAPI();
+            await transplantListAPI.InsertTransfer(newOrganTransfer);
+            transplantListAPI.SetInTransfer(currentOrgan.id, 1);
+
+            int TTA = (int)newOrganTransfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds;
+
+            int waitingListId = await transplantListAPI.GetWaitingListId((int)newOrganTransfer.receiverId, newOrganTransfer.organType);
+
+            AddHelicopter(donorPosition,
+                          HospitalPosition,
+                          newOrganTransfer.organType,
+                          TTA,
+                          newOrganTransfer.receiverId,
+                          waitingListId,
+                          newOrganTransfer.id
+                          );
+        }
+
+        public async void NewTransferWithoutAddingHelicpoter(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition)
+        {
+            await InitialiseHospitalsWithoutAddingToMap();
+
+            OrganTransfer newOrganTransfer = new OrganTransfer();
+            newOrganTransfer.id = currentOrgan.id;
+            newOrganTransfer.receiverId = selectedRecipient.id;
+
+            //Find the position of the donor
+            newOrganTransfer.startLat = donorPosition.Latitude;
+            newOrganTransfer.startLon = donorPosition.Longitude;
+
+            Hospital receiverHospital = null;
+            await InitialiseHospitalsWithoutAddingToMap();
+            foreach (Hospital hospital in hospitals)
+            {
+                if (hospital.region.Equals(selectedRecipient.region))
+                {
+                    receiverHospital = hospital;
+                }
+            }
+
+            //Find the nearest hospital
+            newOrganTransfer.endLat = receiverHospital.latitude;
+            newOrganTransfer.endLon = receiverHospital.longitude;
+
+            newOrganTransfer.organType = OrganExtensions.ToOrgan(currentOrgan.organType);
+
+            Position HospitalPosition = new Position(receiverHospital.latitude, receiverHospital.longitude);
+
+            newOrganTransfer.arrivalTime = new CustomDateTime(DateTime.Now.AddSeconds(distance(donorPosition.Latitude, HospitalPosition.Latitude,
+                                                                                               donorPosition.Longitude, HospitalPosition.Longitude, 0, 0) / 70));
+
+            TransplantListAPI transplantListAPI = new TransplantListAPI();
+            await transplantListAPI.InsertTransfer(newOrganTransfer);
+            transplantListAPI.SetInTransfer(currentOrgan.id, 1);
+        }
+
+        public async Task InitialiseHospitalsWithoutAddingToMap()
+        {
+
+            ClinicianAPI clinicianApi = new ClinicianAPI();
+            Tuple<HttpStatusCode, List<Hospital>> tuple = await clinicianApi.GetHospitals();
+            switch (tuple.Item1)
+            {
+                case HttpStatusCode.OK:
+                    Console.WriteLine("Organ map hospitals retrieved successfully");
+                    hospitals = tuple.Item2;
+
+                    break;
+                case HttpStatusCode.ServiceUnavailable:
+                    await DisplayAlert("",
+                    "Server unavailable, check connection",
+                    "OK");
+                    break;
+                case HttpStatusCode.InternalServerError:
+                    await DisplayAlert("",
+                    "Server error retrieving hospitals, please try again (500)",
+                    "OK");
+                    break;
+            }
+        }
+
+        public double distance(double lat1, double lat2, double lon1,
+                                  double lon2, double el1, double el2)
+        {
+
+            int R = 6371; // Radius of the earth
+
+            double latDistance = (Math.PI/180)*(lat2 - lat1);
+            double lonDistance = (Math.PI / 180) * (lon2 - lon1);
+            double a = Math.Sin(latDistance / 2) * Math.Sin(latDistance / 2)
+                           + Math.Cos((Math.PI / 180) * (lat1)) * Math.Cos((Math.PI / 180) * (lat2))
+                    * Math.Sin(lonDistance / 2) * Math.Sin(lonDistance / 2);
+            double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
+            double interDistance = R * c * 1000; // convert to meters
+
+            double height = el1 - el2;
+
+            interDistance = Math.Pow(interDistance, 2) + Math.Pow(height, 2);
+
+            return Math.Sqrt(interDistance);
+        }
+
+        private void HelicopterFinished(int waitingListItemId, int organId)
+        {
+            TransplantListAPI transplantListAPI = new TransplantListAPI();
+            transplantListAPI.DeleteTransfer(organId);
+            transplantListAPI.DeleteWaitingListItem(waitingListItemId);
+            transplantListAPI.SetInTransfer(organId, 2);
+
+        }
+
+        public async Task<bool> CheckGetToReceiverInTime(DonatableOrgan organ, User receiver) {
+
+            UserAPI userAPI = new UserAPI();
+
+            User donor = await userAPI.getUser(organ.donorId, ClinicianController.Instance.AuthToken);
+            double startLat = 0;
+            double startLon = 0;
+            try
+            {
+                var address = donor.cityOfDeath + ", " + donor.regionOfDeath + ", " + donor.countryOfDeath;
+                var locations = await Geocoding.GetLocationsAsync(address);
+
+                var location = locations?.FirstOrDefault();
+                if (location != null)
+                {
+                    startLat = location.Latitude;
+                    startLon = location.Longitude;
+                    Console.WriteLine($"Latitude: {location.Latitude}, Longitude: {location.Longitude}, Altitude: {location.Altitude}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+            }
+            Hospital receiverHospital = null;
+
+            await InitialiseHospitalsWithoutAddingToMap();
+
+            foreach (Hospital hospital in hospitals) {
+                if (hospital.region == receiver.region){
+                    receiverHospital = hospital;
+                }
+            }
+            double dist = distance(
+                    startLat,
+                    receiverHospital.latitude,
+                    startLon,
+                    receiverHospital.latitude, 0, 0);
+
+            DateTime arrivalTime = DateTime.Now.AddSeconds((long)(dist / 69.444444));
+
+            return arrivalTime < (DateTime.Now.AddSeconds(organ.getTimeRemaining().Item2));
+        }
+
     }
 }

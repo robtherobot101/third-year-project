@@ -5,6 +5,7 @@ import seng302.Model.*;
 import seng302.Model.Attribute.BloodType;
 import seng302.Model.Attribute.Gender;
 import seng302.Model.Attribute.Organ;
+import seng302.Server;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -133,7 +134,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Created", "This profile was created"), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -147,7 +148,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -158,7 +159,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -174,7 +175,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -184,7 +185,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -194,7 +195,7 @@ public class CommandLineInterface {
                         try {
                             new UserHistory().insertHistoryItem(new HistoryItem(LocalDateTime.now(), "Updated Attribute", "A user attribute was updated."), Math.toIntExact(response.getUserId()));
                         } catch (SQLException e) {
-                            e.printStackTrace();
+                            Server.getInstance().log.error(e.getMessage());
                         }
                     }
                     break;
@@ -292,7 +293,7 @@ public class CommandLineInterface {
             try {
                 return new CommandLineResponse(true, sqlSanitation.executeQuery(query).getResponse());
             } catch (SQLException e) {
-                e.printStackTrace();
+                Server.getInstance().log.error(e.getMessage());
             }
         }
         return new CommandLineResponse(false, result);
@@ -830,7 +831,7 @@ public class CommandLineInterface {
                     wasSuccessful = false;
                     break;
             }
-            new GeneralClinician().updateClinicianDetails(toSet, (int)toSet.getStaffID());
+            new GeneralClinician().updateClinicianDetails(toSet, (int)toSet.getStaffID(), toSet.getPassword());
         } catch (SQLException e) {
             return new CommandLineResponse(false, "clinician could not be updated. An error occurred on the server.");
 

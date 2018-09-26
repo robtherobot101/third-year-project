@@ -65,7 +65,7 @@ namespace mobileAppClient
                 {
                     return false;
                 }
-            } catch (Exception e)
+            } catch (Exception)
             {
                 Console.WriteLine("Error parsing string to double");
                 return false;

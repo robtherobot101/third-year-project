@@ -15,7 +15,13 @@ using Xamarin.Forms.Maps;
 using Xamarin.Forms.Maps.Android;
 
 using mobileAppClient.Views.Clinician;
+using ServiceStack;
+using ServiceStack.Text;
+using Resource = mobileAppClient.Droid.Resource;
+using Plugin.CurrentActivity;
 using CustomPin = mobileAppClient.CustomPin;
+using Android.App;
+using Android.OS;
 
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.Droid
@@ -32,10 +38,10 @@ namespace CustomRenderer.Droid
         private Tuple<CustomPin, Circle> highlightedOrganRange;
 
         CustomMap formsMap;
+        private CustomMapRenderer customMapRenderer;
 
         public CustomMapRenderer(Context context) : base(context)
         {
-
         }
 
         protected override void OnElementChanged(Xamarin.Forms.Platform.Android.ElementChangedEventArgs<Map> e)
@@ -288,22 +294,21 @@ namespace CustomRenderer.Droid
                 throw new Exception("Custom pin not found");
             }
 
+            if (customPin.CustomType == ODMSPinType.DONOR)
+            {
+                // Find MainActivity and then launch a new activity to show the user overview
+                Activity mainActivity = CrossCurrentActivity.Current.Activity;
+                String organString = customPin.donatableOrgans.ToJson();
 
-            //MapActivity mapActivity = new MapActivity();
-            //mapActivity.InitializeMap();
-
-            //Context ac = Context.ApplicationContext;
-            //@ Andy peek here. The way the Bsheet works is that it creates a fragment. 
-            // It then calls the show() method, which requires some form of fragmentmanager, which you get from a context/activity. There is an activity file which I was meddling with in here, but didn't reallly work
-            // I used the github link in discord as reference. 
-            // One of the biggest hurdles is that fragments are now deprecated and so need the Android.Support.V4.xxx to work with this library.
-            // If you're confused would recommend loading up his sample project and deploying it.
-
-            //BottomSheetFragment fragment = BottomSheetFragment.NewInstance(0, "test");
-
-            //fragment.Show(ac., "dialog");
-            ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
-            parent.displayUserDialog(customPin.Url, customPin.Url.Substring(customPin.Url.Length - 1));
+                Intent intent = new Intent(mainActivity.BaseContext, typeof(BottomSheetListActivity));
+                intent.PutExtra("name", customPin.Label);
+                intent.PutExtra("address", customPin.Address);
+                intent.PutExtra("profilePicture", customPin.userPhoto);
+                intent.PutExtra("organs", organString);
+                intent.PutExtra("donorLat", customPin.Position.Latitude.ToString());
+                intent.PutExtra("donorLong", customPin.Position.Longitude.ToString());
+                mainActivity.StartActivity(intent);
+            }
         }
 
         /// <summary>
@@ -468,20 +473,20 @@ namespace CustomRenderer.Droid
                         var organImage = new ImageView(Context.ApplicationContext);
                         switch (organ)
                         {
-                            case "bone-marrow_icon.png":
+                            case "bone_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.bone_icon);
                                 break;
-                            case "middle-ear_icon.png":
+                            case "ear_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.ear_icon);
                                 break;
                             case "cornea_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.eye_icon);
+                                organImage.SetImageResource(Resource.Drawable.cornea_icon);
                                 break;
                             case "heart_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.heart_icon);
                                 break;
                             case "intestine_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.intestines_icon);
+                                organImage.SetImageResource(Resource.Drawable.intestine_icon);
                                 break;
                             case "kidney_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.kidney_icon);
@@ -490,7 +495,7 @@ namespace CustomRenderer.Droid
                                 organImage.SetImageResource(Resource.Drawable.liver_icon);
                                 break;
                             case "lung_icon.png":
-                                organImage.SetImageResource(Resource.Drawable.lungs_icon);
+                                organImage.SetImageResource(Resource.Drawable.lung_icon);
                                 break;
                             case "pancreas_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.pancreas_icon);
@@ -498,7 +503,7 @@ namespace CustomRenderer.Droid
                             case "skin_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.skin_icon);
                                 break;
-                            case "connective-tissue_icon.png":
+                            case "tissue_icon.png":
                                 organImage.SetImageResource(Resource.Drawable.tissue_icon);
                                 break;
                         }

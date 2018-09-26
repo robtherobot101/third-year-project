@@ -135,7 +135,7 @@ public class GeneralClinicianTest extends GenericTest {
         clinician.setRegion("The Moon");
         clinician.setName("Linus Torvalds");
         clinician.setWorkAddress("140 Maidstone Rd");
-        generalClinician.updateClinicianDetails(clinician, (int) clinician.getStaffID());
+        generalClinician.updateClinicianDetails(clinician, (int) clinician.getStaffID(), clinician.getPassword());
         Clinician clinician2 = generalClinician.getClinicianFromId((int) clinician.getStaffID());
         assertEquals(clinician, clinician2);
     }

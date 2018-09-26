@@ -2,11 +2,36 @@
 using System.Collections.Generic;
 
 using Xamarin.Forms;
+using System.Globalization;
 
 namespace mobileAppClient
 {
     public partial class IncompleteFacebookDetailsPage : ContentPage
     {
+
+        private bool _IsLoading;
+        public bool IsLoading
+        {
+            get { return _IsLoading; }
+            set
+            {
+                _IsLoading = value;
+                if (_IsLoading == true)
+                {
+                    ContinueButton.IsEnabled = false;
+                    dobInput.IsEnabled = false;
+                    emailInput.IsEnabled = false;
+                    NHIInput.IsEnabled = false;
+                }
+                else
+                {
+                    ContinueButton.IsEnabled = true;
+                    dobInput.IsEnabled = true;
+                    emailInput.IsEnabled = true;
+                    NHIInput.IsEnabled = true;
+                }
+            }
+        }
         public IncompleteFacebookDetailsPage(FacebookProfile facebookProfile)
         {
             InitializeComponent();
@@ -21,7 +46,8 @@ namespace mobileAppClient
                 dobInput.IsEnabled = true;
             } else {
                 dobInput.IsEnabled = false;
-                dobInput.Date = DateTime.Parse(facebookProfile.Birthday);
+                CultureInfo MyCultureInfo = new CultureInfo("en-US");
+                dobInput.Date = DateTime.Parse(facebookProfile.Birthday, MyCultureInfo);
             }
 
 
@@ -29,7 +55,6 @@ namespace mobileAppClient
 
         async void Handle_Clicked(object sender, System.EventArgs e)
         {
-
             string email = InputValidation.Trim(emailInput.Text);
             if (!InputValidation.IsValidEmail(email))
             {

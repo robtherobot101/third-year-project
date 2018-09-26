@@ -159,7 +159,7 @@ namespace mobileAppClient
          * Handles when a single disease it tapped, sending a user to the single disease page 
          * of that given disease.
          */
-        async void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
+        async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             if (e == null)
             {
@@ -173,7 +173,7 @@ namespace mobileAppClient
          * Handles when a user selects a given attribute of the sorting dropdown 
          * to sort by, sorting the given items in the list view.
          */ 
-        void Handle_SelectedIndexChanged(object sender, System.EventArgs e)
+        void Handle_SelectedIndexChanged(object sender, EventArgs e)
         {
             switch (SortingInput.SelectedItem)
             {
@@ -275,7 +275,7 @@ namespace mobileAppClient
             }
         }
 
-        async void Handle_DeleteClicked(object sender, System.EventArgs e)
+        async void Handle_DeleteClicked(object sender, EventArgs e)
         {
             var mi = ((MenuItem)sender);
             Disease selectedDisease = mi.CommandParameter as Disease;
@@ -325,7 +325,7 @@ namespace mobileAppClient
          * Handles when a user changes the orientation of the sorting to be either ascending or 
          * descending, changing the order in which items are sorted in the list view.
          */
-        void Handle_UpDownChanged(object sender, System.EventArgs e)
+        void Handle_UpDownChanged(object sender, EventArgs e)
         {
             List<Disease> currentList = (System.Collections.Generic.List<Disease>)DiseasesList.ItemsSource;
             switch (SortingInput.SelectedItem)

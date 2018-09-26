@@ -8,6 +8,7 @@ import seng302.Logic.Database.Conversations;
 import seng302.Model.Attribute.ProfileType;
 import seng302.Model.Conversation;
 import seng302.Model.Message;
+import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -111,7 +112,7 @@ public class ConversationsController {
                 return "Missing participant information";
             }
         } catch (JsonSyntaxException jse) {
-            jse.printStackTrace();
+            Server.getInstance().log.error(jse.getMessage());
             Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
             response.status(400);
             return "Bad Request";
@@ -133,10 +134,9 @@ public class ConversationsController {
      *
      * @param request Spark HTTP request obj
      * @param response Spark HTTP response obj
-     * @param profileType The type of user accessing the conversations
      * @return Whether the operation succeeded
      */
-    public String addMessage(Request request, Response response, ProfileType profileType) {
+    public String addMessage(Request request, Response response) {
         int userId = Integer.parseInt(request.params(":id"));
         int conversationId = Integer.parseInt(request.params(":conversationId"));
 
@@ -146,8 +146,9 @@ public class ConversationsController {
             return "Missing message body";
         } else {
             try {
-                int accessLevel = profileType.getAccessLevel();
-                model.addMessage(conversationId, new Message(request.body(), userId, accessLevel));
+                Message messageToSend = new Message(request.body(), userId, conversationId);
+                model.addMessage(conversationId, messageToSend);
+                sendMessageNotification(conversationId, userId, messageToSend);
                 response.status(201);
                 return "Success";
             } catch (SQLException e) {
@@ -159,10 +160,29 @@ public class ConversationsController {
     }
 
     /**
+     * Sends message
+     */
+    private void sendMessageNotification(int conversationId, int localId, Message messageToSend) {
+        Conversation queriedConversation;
+        try {
+            queriedConversation = model.getSingleConversation(conversationId);
+        } catch (SQLException ignored) {
+            return;
+        }
+
+        List<Integer> participants = queriedConversation.getMembers();
+        participants.remove(new Integer(localId));
+        assert(participants.size() == 1);
+
+        int externalId = participants.get(0);
+        PushAPI.getInstance().sendMessage(messageToSend, externalId);
+    }
+
+    /**
      * A formatter class to streamline deserialization of conversation participant input.
      */
     private class ConversationUserListFormat {
-        List<Pair<Integer, ProfileType>> participants;
+        List<Integer> participants;
     }
 
     /**
@@ -175,7 +195,7 @@ public class ConversationsController {
      */
     public String addConversation(Request request, Response response, ProfileType profileType) {
         Gson gson = new Gson();
-        List<Pair<Integer, ProfileType>> participants;
+        List<Integer> participants;
         int userId = Integer.parseInt(request.params(":id"));
 
         // Attempt to parse received JSON
@@ -188,17 +208,17 @@ public class ConversationsController {
             }
             //Add self to conversation if not already there
             boolean present = false;
-            for (Pair<Integer, ProfileType> participant: participants) {
-                if (participant.getKey() == userId && participant.getValue().equals(profileType)) {
+            for (Integer participant: participants) {
+                if (participant == userId) {
                     present = true;
                     break;
                 }
             }
             if (!present) {
-                participants.add(new Pair<>(userId, profileType));
+                participants.add(userId);
             }
         } catch (JsonSyntaxException jse) {
-            jse.printStackTrace();
+            Server.getInstance().log.error(jse.getMessage());
             Server.getInstance().log.warn(String.format("Malformed JSON:\n%s", request.body()));
             response.status(400);
             return "Bad Request";

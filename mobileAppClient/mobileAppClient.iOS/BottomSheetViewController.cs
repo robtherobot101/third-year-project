@@ -21,6 +21,7 @@ namespace mobileAppClient.iOS
         public CustomMap map;
         public MKMapView nativeMap;
         public CustomMapRenderer customMapRenderer;
+        public Timer OrganTimeTickingTimer;
 
         public BottomSheetViewController(CustomPin pin, CustomMap map, MKMapView nativeMap, CustomMapRenderer customMapRenderer) : base("BottomSheetViewController", null)
         {
@@ -29,7 +30,7 @@ namespace mobileAppClient.iOS
             this.pin = pin;
             holdView = new UIView();
             fullView = 300;
-            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 70;
+            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 80;
             this.customMapRenderer = customMapRenderer;
         }
 
@@ -46,7 +47,7 @@ namespace mobileAppClient.iOS
         }
 
         public void StartTickingTimer(int interval) {
-            Timer timer = new Timer(RefreshCountdownsInTableView, null, 0, interval); 
+            OrganTimeTickingTimer = new Timer(RefreshCountdownsInTableView, null, 0, interval); 
         }
 
         public void RefreshCountdownsInTableView(object o) {
@@ -57,6 +58,10 @@ namespace mobileAppClient.iOS
                 {
                     string detailString = cell.DetailTextLabel.Text;
                     if(detailString.Equals("EXPIRED")) {
+                        continue;
+                    } else if(detailString.Equals("IN TRANSIT")) {
+                        continue;
+                    } else if(detailString.Equals("SUCCESSFULLY TRANSFERRED")) {
                         continue;
                     } else {
                         string timeLeftString = detailString.Substring(16);
@@ -93,6 +98,36 @@ namespace mobileAppClient.iOS
             }));
         }
 
+        public async Task slideMenuToRight() {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                var xComponent = UIScreen.MainScreen.Bounds.Width - (UIScreen.MainScreen.Bounds.Width / 5);
+                this.View.Frame = new CGRect(xComponent, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
+        public async Task slideMenuBackInFromRight()
+        {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                this.View.Frame = new CGRect(0, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
+        public async Task slideMenuToLeft() {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                var xComponent = UIScreen.MainScreen.Bounds.Width;
+                this.View.Frame = new CGRect(-xComponent, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
+        public void StopTimers()
+        {
+            OrganTimeTickingTimer.Dispose();
+            OrganTimeTickingTimer = null;
+        }
+
 
         public void prepareBackgroundView() {
             var blurEffect = UIBlurEffect.FromStyle(UIBlurEffectStyle.Dark);
@@ -116,13 +151,18 @@ namespace mobileAppClient.iOS
         public override void ViewDidAppear(bool animated)
         {
             base.ViewDidAppear(animated);
-            UIView.Animate(0.3, new Action(() => {
+            OpenMenu();
+
+          
+        }
+
+        public async Task OpenMenu() {
+            await UIView.AnimateAsync(0.3, new Action(() => {
                 var frame = this.View.Frame;
                 //var yComponent = UIScreen.MainScreen.Bounds.Height - 200;
                 var yComponent = this.partialView;
                 this.View.Frame = new CGRect(0, yComponent, frame.Width, frame.Height);
             }));
-          
         }
 
         public override void DidReceiveMemoryWarning()

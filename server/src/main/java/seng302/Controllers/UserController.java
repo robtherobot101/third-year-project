@@ -6,9 +6,11 @@ import com.google.gson.JsonSyntaxException;
 import seng302.Logic.Database.GeneralUser;
 import seng302.Logic.SaltHash;
 import seng302.Logic.Database.ProfileUtils;
+import seng302.Model.Attribute.Organ;
 import seng302.Model.PhotoStruct;
 import seng302.Model.User;
 import seng302.Model.UserCSVStorer;
+import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -56,7 +58,7 @@ public class UserController {
                 params.put(param,request.queryParams(param));
             }
         }
-        System.out.println("Params: "+params);
+        Server.getInstance().log.debug("Params: "+params);
         List<User> queriedUsers;
         try {
             queriedUsers = model.getUsers(params);
@@ -315,8 +317,9 @@ public class UserController {
             if (checkNhi(receivedUser.getNhi())) {
                 try {
                     String passwordHash = SaltHash.createHash((String) gson.fromJson(request.body(), Map.class).get("password"));
-                    model.insertUser(receivedUser, passwordHash);
+                    int id = model.insertUser(receivedUser, passwordHash);
                     response.status(201);
+                    response.header("id", String.valueOf(id));
                     return "Success";
                 } catch (SQLException e) {
                     Server.getInstance().log.error(e.getMessage());
@@ -340,7 +343,7 @@ public class UserController {
     public String importUsers(Request request, Response response) {
         Gson gson = new Gson();
         List<User> receivedUsers;
-        System.out.println("IMPORTING USERS");
+        Server.getInstance().log.debug("IMPORTING USERS");
         // Attempt to executeFile received JSON
         try {
              receivedUsers = gson.fromJson(request.body(), UserCSVStorer.class).getUsers();
@@ -349,7 +352,7 @@ public class UserController {
             response.status(400);
             return "Bad Request";
         }
-        System.out.println("Got " + receivedUsers.size() + " entries");
+        Server.getInstance().log.debug("Got " + receivedUsers.size() + " entries");
         if (receivedUsers.size() > 0) {
             for (User user: receivedUsers) {
                 if (!checkNhi(user.getNhi())) {
@@ -362,7 +365,7 @@ public class UserController {
         try {
             model.importUsers(receivedUsers);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
             Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return "Internal Server Error";
@@ -418,10 +421,11 @@ public class UserController {
                     int accessLevel = profileUtils.checkToken(token);
                     model.patchEntireUser(receivedUser, Integer.parseInt(request.params(":id")), accessLevel >= 1); //this version patches all user information
                     response.status(201);
+                    PushAPI.getInstance().sendTextNotification((int)queriedUser.getId(), "Details updated.", "Your details have been updated.");
                     return "USER SUCCESSFULLY UPDATED";
                 } catch (SQLException e) {
 
-                    e.printStackTrace();
+                    Server.getInstance().log.error(e.getMessage());
                     Server.getInstance().log.error(e.getMessage());
                     response.status(500);
                     return "Internal Server Error";
@@ -443,13 +447,20 @@ public class UserController {
     public String editAccount(Request request, Response response) {
         Map content = new Gson().fromJson(request.body(), Map.class);
         try {
-            if (!content.keySet().containsAll(Arrays.asList("username", "email", "password"))) {
+            if (!content.keySet().containsAll(Arrays.asList("username", "email"))) {
                 throw new JsonSyntaxException("Missing parameters from JSON body");
             }
-            model.updateAccount(Long.parseLong(request.params().get(":id")),
-                    (String) content.get("username"),
-                    (String) content.get("email"),
-                    (String) content.get("password"));
+            if(content.keySet().contains("password")) {
+                model.updateAccount(Long.parseLong(request.params().get(":id")),
+                        (String) content.get("username"),
+                        (String) content.get("email"),
+                        (String) content.get("password"));
+            } else {
+                model.updateAccount(Long.parseLong(request.params().get(":id")),
+                        (String) content.get("username"),
+                        (String) content.get("email"));
+            }
+
         } catch (SQLException e) {
             Server.getInstance().log.error(e.getMessage());
             response.status(500);
@@ -567,12 +578,14 @@ public class UserController {
                 File outputfile = new File(filepath);
                 ImageIO.write(img, "png", outputfile);
 
+                PushAPI.getInstance().sendTextNotification((int)queriedUser.getId(), "Profile photo changed.",
+                        "Your profile photo has been changed.");
                 return "PHOTO SUCCESSFULLY SAVED";
             }  catch (IOException e) {
-                System.out.println(e);
+                Server.getInstance().log.error(e.getMessage());
                 return "Internal Server Error";
             } catch (URISyntaxException el) {
-                el.printStackTrace();
+                Server.getInstance().log.error(el.getMessage());
                 return "URI Error";
             }
         }
@@ -599,6 +612,8 @@ public class UserController {
         //Update DB
         if (deleted){
             //update
+            PushAPI.getInstance().sendTextNotification((int)queriedUser.getId(), "Profile photo deleted.",
+                    "Your profile photo has been deleted.");
             return "Photo successfully deleted";
         } else {
             //update

@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.http.client.HttpResponseException;
+import seng302.User.DonatableOrgan;
 import seng302.generic.Country;
 import seng302.generic.Debugger;
 import seng302.generic.WindowManager;
@@ -628,7 +629,7 @@ public class UserAttributesController extends UserTabController implements Initi
             }
             countryComboBox.setItems(FXCollections.observableArrayList(validCountries));
         } catch (HttpResponseException e) {
-            e.printStackTrace();
+            Debugger.error(e.getMessage());
             Debugger.error("Could not populate combobox of countries. Failed to retrieve information from the server.");
         }
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
@@ -656,6 +657,22 @@ public class UserAttributesController extends UserTabController implements Initi
         bloodTypeComboBox.getSelectionModel().select(currentUser.getBloodType());
         smokerStatusComboBox.getSelectionModel().select(currentUser.getSmokerStatus());
         alcoholConsumptionComboBox.getSelectionModel().select(currentUser.getAlcoholConsumption());
+
+        try {
+            List<DonatableOrgan> donatableOrgans = WindowManager.getDataManager().getGeneral().getSingleUsersDonatableOrgans(userController.getToken(), currentUser.getId());
+            for (Organ key : organTickBoxes.keySet()) {
+                organTickBoxes.get(key).setSelected(currentUser.getOrgans().contains(key));
+                for (DonatableOrgan organ : donatableOrgans) {
+                    if (organ.getOrganType() == key && (organ.getInTransfer() != 0 || organ.isExpired())) {
+                        organTickBoxes.get(key).setDisable(true);
+                    }
+                }
+            }
+        } catch (HttpResponseException e) {
+            for (Organ key : organTickBoxes.keySet()) {
+                organTickBoxes.get(key).setSelected(currentUser.getOrgans().contains(key));
+            }
+        }
 
         for (Organ key : organTickBoxes.keySet()) {
             organTickBoxes.get(key).setSelected(currentUser.getOrgans().contains(key));

@@ -16,7 +16,8 @@
                     />
 
                 <Entry x:Name="passwordInput" Placeholder="Password" ReturnType="Go"
-                    IsPassword="true"                
+                    IsPassword="true"
+                    Completed="LoginButtonClicked"
                     />
                 
                 <StackLayout Orientation="Horizontal">

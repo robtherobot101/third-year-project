@@ -3,6 +3,7 @@ package seng302.Logic.Database;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Model.Attribute.Organ;
 import seng302.Model.Procedure;
+import seng302.NotificationManager.PushAPI;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -184,6 +185,8 @@ public class UserProcedures extends DatabaseMethods {
         //Upload all new procedures
         for (Procedure procedure : newProcedures) {
             insertProcedure(procedure, userId);
+            PushAPI.getInstance().sendTextNotification(userId, "New procedure added.",
+                    "A new procedure has been added to your profile: " + procedure.getSummary());
         }
     }
 }

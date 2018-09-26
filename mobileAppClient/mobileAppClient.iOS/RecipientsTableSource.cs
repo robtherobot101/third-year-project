@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
+using CustomRenderer.iOS;
 using Foundation;
 using mobileAppClient.odmsAPI;
+using mobileAppClient.Views.Clinician;
 using UIKit;
 
 namespace mobileAppClient.iOS
@@ -17,15 +19,24 @@ namespace mobileAppClient.iOS
         List<User> recipients;
         Dictionary<int, UIImage> UserPhotos;
         DonatableOrgan currentOrgan;
+        CustomMap formsMap;
+        User selectedRecipient;
+        CustomPin customPin;
+        CustomMapRenderer customMapRenderer;
 
 
         public RecipientsTableSource(PotentialMatchesBottomSheetViewController owner 
-                                     , DonatableOrgan currentOrgan)
+                                     , DonatableOrgan currentOrgan, CustomMap map, CustomPin customPin,
+                                     CustomMapRenderer customMapRenderer)
         {
             this.owner = owner;
             this.UserPhotos = new Dictionary<int, UIImage>();
             this.recipients = currentOrgan.topReceivers;
             this.currentOrgan = currentOrgan;
+            this.formsMap = map;
+            this.customPin = customPin;
+            this.customMapRenderer = customMapRenderer;
+
         }
 
         public RecipientsTableSource() {
@@ -84,36 +95,73 @@ namespace mobileAppClient.iOS
             cell.TextLabel.TextColor = UIColor.White;
             //GET USER ICON HERE
 
-            cell.ImageView.Image = UIImage.FromFile("donationIcon.png");
+            string imageString = "recipientIcon" + indexPath.Row + ".png";
+         
+
+            cell.ImageView.Image = UIImage.FromFile(imageString);
 
             cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
-            //SET THE TEXT DETAIL TO BE THE COUNTDOWN
+            //string bloodTypeString = BloodTypeExtensions.ToString(BloodTypeExtensions.ToBloodTypeJSON(item.bloodType));
+            //string genderString = char.ToUpper(item.gender[0]) + item.gender.Substring(1).ToLower();
 
-            string bloodTypeString = BloodTypeExtensions.ToString(BloodTypeExtensions.ToBloodTypeJSON(item.bloodType));
-            string genderString = char.ToUpper(item.gender[0]) + item.gender.Substring(1).ToLower();
-
-            cell.DetailTextLabel.Text = "Blood Type: " + bloodTypeString + "  Gender: " + genderString + "  Age: " + item?.Age;
+            cell.DetailTextLabel.Text = item?.currentAddress + ", " + item?.region;
             //Change colour based on severity
             cell.DetailTextLabel.TextColor = UIColor.White;
 
             return cell;
         }
 
-        public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
+        public override async void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
-            UIAlertController okAlertController = UIAlertController.Create("Begin transfer process?", 
-                                                                           "Would you like to transfer " + currentOrgan.organType + " to " + recipients[indexPath.Row].FullName + "?", 
-                                                                           UIAlertControllerStyle.Alert);
-            okAlertController.AddAction(UIAlertAction.Create("Yes", UIAlertActionStyle.Default, BeginTransferProcess));
-            okAlertController.AddAction(UIAlertAction.Create("No", UIAlertActionStyle.Cancel, null));
-            owner.PresentViewController(okAlertController, true, null);
-            tableView.DeselectRow(indexPath, true);
+            selectedRecipient = recipients[indexPath.Row];
+
+            ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
+
+            bool canArrive = await parent.CheckGetToReceiverInTime(currentOrgan, selectedRecipient);
+
+            if (!canArrive)
+            {
+                UIAlertController okAlertController = UIAlertController.Create("Begin transfer process?",
+                                                                               "Cannot transfer " + currentOrgan.organType + " to " + selectedRecipient.FullName + " as it will expire before it arrives.",
+                                                                               UIAlertControllerStyle.Alert);
+                okAlertController.AddAction(UIAlertAction.Create("confirm", UIAlertActionStyle.Cancel, null));
+            }
+            else
+            {
+
+                UIAlertController okAlertController = UIAlertController.Create("Begin transfer process?",
+                                                                               "Would you like to transfer " + currentOrgan.organType + " to " + selectedRecipient.FullName + "?",
+                                                                               UIAlertControllerStyle.Alert);
+                okAlertController.AddAction(UIAlertAction.Create("Yes", UIAlertActionStyle.Default, BeginTransferProcess));
+                okAlertController.AddAction(UIAlertAction.Create("No", UIAlertActionStyle.Cancel, null));
+                owner.PresentViewController(okAlertController, true, null);
+                tableView.DeselectRow(indexPath, true);
+            }
 
         }
 
         void BeginTransferProcess(UIAlertAction obj)
         {
             Console.WriteLine("LET US BEGIN.");
+
+            //Update bottom sheet to show In transfer - empty table and update countdown
+            
+            owner.timeRemainingLabel.Text = "IN TRANSIT";
+            owner.timeRemainingLabel.TextColor = UIColor.Orange;
+            owner.potentialRecipientsLabel.Text = "This organ is currently in transit.";
+            owner.potentialRecipientsTableView.Hidden = true;
+
+            //Update map to get rid of overlays and recipients 
+            customMapRenderer.removeOverlays();
+            customMapRenderer.ClearAllReceivers();
+            owner.StopTimers();
+
+            currentOrgan.inTransfer = 1;
+
+
+            //Insert transfer into database and add new helicopter.
+            ClinicianMapPage parent = (ClinicianMapPage)formsMap.Parent.Parent;
+            parent.NewTransfer(currentOrgan, selectedRecipient, customPin.Position);
         }
 
     }

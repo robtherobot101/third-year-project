@@ -1,5 +1,6 @@
 package seng302.Logic.Database;
 
+import org.apache.http.client.HttpResponseException;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Logic.SaltHash;
 import seng302.Model.Attribute.*;
@@ -67,7 +68,6 @@ public class GeneralUser extends DatabaseMethods {
             ArrayList<User> users = new ArrayList<>();
 
             String query = buildUserQuery(params);
-            System.out.println(query);
             System.out.println(query);
             statement = connection.prepareStatement(query);
             resultSet = statement.executeQuery();
@@ -320,7 +320,7 @@ public class GeneralUser extends DatabaseMethods {
      * @param user The given user which will be inserted.
      * @throws SQLException If there is a problem working with the database.
      */
-    public void insertUser(User user, String passwordHash) throws SQLException {
+    public int insertUser(User user, String passwordHash) throws SQLException {
         User fromDb;
         ResultSet resultSet = null;
         PreparedStatement statement = null;
@@ -350,18 +350,21 @@ public class GeneralUser extends DatabaseMethods {
             statement.close();
             statement = connection.prepareStatement(createUserStatement(user));
             System.out.println("Inserting new user -> Successful -> Rows Added: " + statement.executeUpdate());
-//            statement.close();
+            statement.close();
+            statement = connection.prepareStatement("SELECT id FROM ACCOUNT WHERE username = ?");
+            statement.setString(1,user.getUsername());
 //            statement = connection.prepareStatement("SELECT * FROM USER JOIN ACCOUNT WHERE USER.id = ACCOUNT.id AND (username = ? OR email = ? OR nhi = ?) AND password = ?");
 //            statement.setString(1, user.getUsername());
 //            statement.setString(2, user.getEmail());
 //            statement.setString(3, user.getNhi());
 //            statement.setString(4, user.getPassword());
-//            resultSet = statement.executeQuery();
+            resultSet = statement.executeQuery();
 
-//            if (!resultSet.next()) {
-//                close(resultSet, statement);
-//                throw new SQLException("Could not fetch user directly after insertion.");
-//            } else {
+            if (resultSet.next()) {
+                return resultSet.getInt("id");
+            } else {
+                throw new SQLException();
+            }
 //                GeneralUser generalUser = new GeneralUser();
 //                fromDb = generalUser.getUserFromResultSet(resultSet);
 //            }
@@ -438,7 +441,9 @@ public class GeneralUser extends DatabaseMethods {
                     preferredNameString += middleName + " ";
                 }
             }
-            preferredNameString += resultSet.getString("preferred_last_name");
+            if (resultSet.getString("preferred_last_name") != null) {
+                preferredNameString += resultSet.getString("preferred_last_name");
+            }
 
             user.setPreferredNameArray(preferredNameString.split(" "));
 
@@ -567,6 +572,28 @@ public class GeneralUser extends DatabaseMethods {
         }
     }
 
+
+    /**
+     * Update account details
+     * @param id The id of the user account
+     * @param username The new username to associate with the account
+     * @param email The new email
+     */
+    public void updateAccount(long id, String username, String email) throws SQLException {
+        PreparedStatement statement = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String update = "UPDATE USER JOIN ACCOUNT ON USER.id = ACCOUNT.id AND USER.id = ? SET username = ?, email = ?";
+            statement = connection.prepareStatement(update);
+            statement.setLong(1, id);
+            statement.setString(2, username);
+            statement.setString(3, email);
+            statement.executeUpdate();
+        } finally {
+            close(statement);
+        }
+    }
+
+
     /**
      * Update account details
      * @param id The id of the user account
@@ -635,14 +662,27 @@ public class GeneralUser extends DatabaseMethods {
      * @return returns a list of users
      * @throws SQLException If there is a problem working with the database.
      */
-    public List<User> getMatchingUsers(DonatableOrgan organ) throws SQLException {
+    public List<User> getMatchingUsers(DonatableOrgan organ, int ageMonths, BloodType bloodType) throws SQLException {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<User> possibleMatches = new ArrayList<>();
-            String query = "SELECT * FROM USER JOIN WAITING_LIST_ITEM ON WAITING_LIST_ITEM.user_id = USER.id JOIN ACCOUNT ON ACCOUNT.id = USER .id WHERE WAITING_LIST_ITEM.organ_type = ? AND USER.date_of_death is NULL AND WAITING_LIST_ITEM.deregistered_code = 0 AND USER.region is NOT NULL";
+            String under12 = "TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) <= 12*12)";
+            String over12 = "TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) > 12*12 AND " + Math.abs(ageMonths) + " - TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) < 12*15)";
+            String query = "SELECT * FROM " +
+                    "(SELECT * FROM USER WHERE " +
+                        "USER.date_of_death IS NULL AND USER.blood_type = ? AND USER.region IS NOT NULL  AND not USER.region == ''  AND ";
+            if (ageMonths <= 144) {
+                query += under12;
+            } else {
+                query += over12;
+            }
+            query += " AS U JOIN " +
+                    "(SELECT * FROM WAITING_LIST_ITEM WHERE WAITING_LIST_ITEM.organ_type = ? AND WAITING_LIST_ITEM.deregistered_code = 0) AS W ON W.user_id = U.id JOIN " +
+                    "ACCOUNT ON ACCOUNT.id = U.id;";
             statement = connection.prepareStatement(query);
-            statement.setString(1, organ.getOrganType().toString());
+            statement.setString(1, bloodType.toString());
+            statement.setString(2, organ.getOrganType().toString());
             resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 possibleMatches.add(getUserFromResultSet(resultSet));

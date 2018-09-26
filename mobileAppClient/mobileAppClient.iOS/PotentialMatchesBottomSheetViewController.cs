@@ -28,6 +28,8 @@ namespace mobileAppClient.iOS
         public double organTimeLeft;
         public CustomMapRenderer customMapRenderer;
         public DonatableOrgan currentOrgan;
+        public Timer OrganTimeTickingTimer;
+        public Timer OrganRadiusTickingTimer;
 
         public PotentialMatchesBottomSheetViewController(CustomPin pin, CustomMap map, MKMapView nativeMap, 
                                                          string organ, UITableViewCell currentOrganCell, CustomMapRenderer customMapRenderer) : base("PotentialMatchesBottomSheetViewController", null)
@@ -38,7 +40,7 @@ namespace mobileAppClient.iOS
             this.customPin = pin;
             holdView = new UIView();
             fullView = 360;
-            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 60;
+            partialView = UIScreen.MainScreen.Bounds.Height - (UIApplication.SharedApplication.StatusBarFrame.Height) - 80;
             this.currentOrganCell = currentOrganCell;
             this.customMapRenderer = customMapRenderer;
             foreach (DonatableOrgan donatableOrgan in customPin.donatableOrgans)
@@ -59,20 +61,43 @@ namespace mobileAppClient.iOS
             //Change colour based on severity
             timeRemainingLabel.TextColor = currentOrganCell.DetailTextLabel.TextColor;
             organImageView.Image = UIImage.FromFile(organName + "_icon.png");
-            potentialRecipientsTableView.Source = new RecipientsTableSource(this, currentOrgan);
-            potentialRecipientsTableView.ScrollEnabled = true;
+            if (currentOrganCell.DetailTextLabel.Text.Equals("EXPIRED"))
+            {
+                potentialRecipientsLabel.Text = "This organ has expired.";
+                potentialRecipientsTableView.Hidden = true;
+            } else if (currentOrganCell.DetailTextLabel.Text.Equals("IN TRANSIT"))
+            {
+                potentialRecipientsLabel.Text = "This organ is currently in transit.";
+                potentialRecipientsTableView.Hidden = true;
+            } else if (currentOrganCell.DetailTextLabel.Text.Equals("SUCCESSFULLY TRANSFERRED"))
+            {
+                potentialRecipientsLabel.Text = "This organ has been transferred.";
+                potentialRecipientsTableView.Hidden = true;
+            }
+            else if (currentOrgan.topReceivers.Count == 0) {
+                potentialRecipientsLabel.Text = "No matched recipients found.";
+                potentialRecipientsTableView.Hidden = true;
+       
+            } else {
+                potentialRecipientsTableView.Hidden = false;
+                potentialRecipientsLabel.Text = "Potential Recipients:";
+                potentialRecipientsTableView.Source = new RecipientsTableSource(this, currentOrgan, map, customPin, customMapRenderer);
+                potentialRecipientsTableView.ScrollEnabled = true;
+            }
+
 
         }
 
 
         public void StartOrganTimeTickingTimer(int interval)
         {
-            Timer timer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
+            OrganTimeTickingTimer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
         }
 
         public void StartOrganCircleRadiusCountdown(int interval)
         {
-            Timer timer2 = new Timer(RefreshOrganCircleOnMap, null, 0, interval);
+            OrganRadiusTickingTimer = new Timer(RefreshOrganCircleOnMap, null, 0, interval);
+
         }
 
         public void RefreshCountdownsInTableView(object o)
@@ -84,6 +109,12 @@ namespace mobileAppClient.iOS
                 if (detailString.Equals("EXPIRED"))
                 {
                     return;
+                } else if (detailString.Equals("IN TRANSIT"))
+                {
+                    return;
+                } else if (detailString.Equals("SUCCESSFULLY TRANSFERRED"))
+                {
+                    return;
                 }
                 else
                 {
@@ -93,11 +124,11 @@ namespace mobileAppClient.iOS
                     TimeSpan timeLeft = TimeSpan.Parse(timeString);
                     if (timeLeft.Equals(new TimeSpan(0, 0, 0)))
                     {
-                        detailString = "EXPIRED";
+                        timeRemainingLabel.Text = "EXPIRED";
                         timeRemainingLabel.TextColor = UIColor.Red;
-                        //Update the Organ object to be expired
-                        //TODO Clear the table and get rid of all recipients
                         currentOrgan.expired = true;
+                        potentialRecipientsLabel.Text = "This organ has expired.";
+                        potentialRecipientsTableView.Hidden = true;
                         return;
                     }
                     else
@@ -116,23 +147,17 @@ namespace mobileAppClient.iOS
 
         void BackButton_TouchUpInside(object sender, EventArgs e)
         {
+            customMapRenderer.ClearAllReceivers();
+            customMapRenderer.removeOverlays();
+            StopTimers();
+
             var window = UIApplication.SharedApplication.KeyWindow;
             var bottomSheetVC = new BottomSheetViewController(customPin, map, nativeMap, customMapRenderer);
 
-            var rootVC = window.RootViewController;
+            bottomSheetVC.AddChildViewController(window.RootViewController.ChildViewControllers[0]);
 
-            this.View.RemoveFromSuperview();
-            this.View.Dispose();
-            this.View = null;
-            this.RemoveFromParentViewController();
+            window.RootViewController = bottomSheetVC;
 
-            rootVC.AddChildViewController(bottomSheetVC);
-            rootVC.View.AddSubview(bottomSheetVC.View);
-            bottomSheetVC.DidMoveToParentViewController(rootVC);
-
-            var height = window.Frame.Height;
-            var width = window.Frame.Width;
-            bottomSheetVC.View.Frame = new CGRect(0, window.Frame.GetMaxY(), width, height);
 
         }
 
@@ -145,24 +170,59 @@ namespace mobileAppClient.iOS
             }));
         }
 
+        public async Task slideMenuToRight()
+        {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                var xComponent = UIScreen.MainScreen.Bounds.Width - (UIScreen.MainScreen.Bounds.Width / 5);
+                this.View.Frame = new CGRect(xComponent, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
+        public async Task slideMenuBackInFromRight()
+        {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                this.View.Frame = new CGRect(0, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
+        public async Task slideMenuToLeft()
+        {
+            await UIView.AnimateAsync(0.3, new Action(() => {
+                var frame = this.View.Frame;
+                var xComponent = UIScreen.MainScreen.Bounds.Width;
+                this.View.Frame = new CGRect(-xComponent, frame.Y, frame.Width, frame.Height);
+            }));
+        }
+
         public void RefreshOrganCircleOnMap(object o) {
 
             Device.BeginInvokeOnMainThread(() =>
             {
-                organTimeLeft -= 5000;
-                Console.WriteLine(organTimeLeft);
+                organTimeLeft--;
 
                 if(organTimeLeft <= 0) {
                     return;
-                } else {
+                } else
+                {
+                    double mapRadius;
+                    double distanceTime = organTimeLeft * 70;
+
+                    if (distanceTime > 500000)
+                    {
+                        mapRadius = 500000;
+                    } else {
+                        mapRadius = distanceTime;
+                    }
                     Position currentPosition = customPin.Position;
 
                     map.Circle = new CustomCircle
                     {
                         Position = currentPosition,
-                        Radius = organTimeLeft
+                        Radius = mapRadius
                     };
-                    var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(currentPosition.Latitude, currentPosition.Longitude), organTimeLeft);
+                    var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(map.Circle.Position.Latitude, map.Circle.Position.Longitude), map.Circle.Radius);
                     if(nativeMap.Overlays == null || nativeMap.Overlays.Length == 0) {
                         return;
                     } else {
@@ -180,76 +240,122 @@ namespace mobileAppClient.iOS
             });
         }
 
-        void prepareRecipientsOnMap(Position position) {
+        public void StopTimers() {
+            OrganRadiusTickingTimer.Dispose();
+            OrganRadiusTickingTimer = null;
+            OrganTimeTickingTimer.Dispose();
+            OrganTimeTickingTimer = null;
+        }
+
+        async void prepareRecipientsOnMap(Position position) {
             string detailString = timeRemainingLabel.Text;
             if (detailString.Equals("EXPIRED"))
+            {
+                return;
+            } else if (detailString.Equals("IN TRANSIT"))
+            {
+                return;
+            } else if (detailString.Equals("SUCCESSFULLY TRANSFERRED"))
             {
                 return;
             }
             else
             {
-
                 string timeLeftString = detailString.Substring(16);
                 string timeString = timeLeftString.Remove(timeLeftString.Length - 5);
                 TimeSpan timeLeft = TimeSpan.Parse(timeString);
                 organTimeLeft = timeLeft.TotalSeconds;
 
+                double distanceTime = organTimeLeft * 70;
+
+                double mapRadius;
+                if (distanceTime > 500000)
+                {
+                    mapRadius = 500000;
+                }
+                else 
+                {
+                    mapRadius = distanceTime;
+                }
+
                 map.Circle = new CustomCircle
                 {
                     Position = position,
-                    Radius = organTimeLeft
+                    Radius = mapRadius
                 };
                 var circleOverlay = MKCircle.Circle(new CoreLocation.CLLocationCoordinate2D(map.Circle.Position.Latitude, map.Circle.Position.Longitude), map.Circle.Radius);
                 nativeMap.AddOverlay(circleOverlay);
-                Position mapCenter = new Position(position.Latitude - 1, position.Longitude);
+                Position mapCenter = new Position(position.Latitude, position.Longitude);
                 map.MoveToRegion(MapSpan.FromCenterAndRadius(
-                    mapCenter, Distance.FromMiles(100.0)));
+                    mapCenter, Distance.FromMeters(map.Circle.Radius)));
 
                 //Add all other user objects around the user
-                double xpos = -41.626217;
                 Random rnd = new Random();
+                int i = 0;
                 foreach (User item in currentOrgan.topReceivers) {
-                    var bytes = File.ReadAllBytes("donationIcon.png");
-                    var profilePhoto = Convert.ToBase64String(bytes);
-                    xpos -= 0.1;
 
                     //SET GENDER ICON
                     //Randomize man or woman photo
                     //If other then set to a pin
                     //If none then also set to a pin
 
-                    string genderIcon = "";
-                    switch (item.gender)
+                    string recipientIcon = "recipientIcon" + i + ".png";
+                    i++;
+
+
+                    //Find the position of the Pin
+                    Geocoder geocoder = new Geocoder();
+                    IEnumerable<Position> usersPosition = await geocoder.GetPositionsForAddressAsync(item?.currentAddress + ", " + item?.region + ", " + item?.country);
+                    Position receiverPosition = new Position();
+                    using (var sequenceEnum = usersPosition.GetEnumerator())
                     {
-                        case ("Male"):
-                            int number = rnd.Next(1, 15);
-                            genderIcon = "man" + number + ".png";
-                            break;
-                        case ("Female"):
-                            number = rnd.Next(1, 12);
-                            genderIcon = "woman" + number + ".png";
-                            break;
-                        case ("Other"):
-                            genderIcon = "other.png";
-                            break;
-                        default:
-                            genderIcon = "other.png";
-                            break;
+                        while (sequenceEnum.MoveNext())
+                        {
+                            receiverPosition = sequenceEnum.Current;
+                        }
                     }
+
+                    //double randomNumberLongitude = rnd.NextDouble() / 50.00;
+                    //double randomNumberLatitude = rnd.NextDouble() / 50.00;
+                    //Position finalPosition = new Position(organPosition.Latitude + randomNumberLatitude, organPosition.Longitude + randomNumberLongitude);
+
+                    Position finalPosition = new Position(receiverPosition.Latitude, receiverPosition.Longitude);
+
+
+                    //SET PROFILE PHOTO
+                    //Get profile photo from users uploaded photo (if there is one)
+
+                    UserAPI userAPI = new UserAPI();
+
+                    string profilePhoto = "";
+                    Tuple<HttpStatusCode, string> photoResponse = await userAPI.GetUserPhotoForMapObjects(item.id);
+                    if (photoResponse.Item1 != HttpStatusCode.OK)
+                    {
+                        Console.WriteLine("Failed to retrieve profile photo or no profile photo found.");
+                        Byte[] bytes = File.ReadAllBytes("donationIcon.png");
+                        profilePhoto = Convert.ToBase64String(bytes);
+
+                    }
+                    else
+                    {
+                        profilePhoto = photoResponse.Item2;
+                    }
+
 
                     var pin = new CustomPin
                     {
-                        CustomType = ODMSPinType.DONOR,
-                        Position = new Position(xpos, 172.361873),
+                        CustomType = ODMSPinType.RECEIVER,
+                        Position = finalPosition,
                         Label = item.FullName,
-                        Address = item?.currentAddress + "  " + item?.region,
-                        Url = "700",
-                        genderIcon = genderIcon,
+                        Address = item?.currentAddress + ", " + item?.region,
+                        Url = "ReceiverURL," + item.id.ToString(),
+                        genderIcon = recipientIcon,
                         userPhoto = profilePhoto,
-                        userId = 700
+                        userId = item.id
                     };
                     map.CustomPins.Add(pin.Position, pin);
                     map.Pins.Add(pin);
+
                 }
 
             }
@@ -303,7 +409,7 @@ namespace mobileAppClient.iOS
 
             StartOrganTimeTickingTimer(1000);
 
-            StartOrganCircleRadiusCountdown(2000);
+            StartOrganCircleRadiusCountdown(1000);
 
         }
 

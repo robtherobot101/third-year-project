@@ -1,4 +1,5 @@
-﻿using mobileAppClient.odmsAPI;
+﻿using mobileAppClient.Maps;
+using mobileAppClient.odmsAPI;
 using mobileAppClient.Views;
 using mobileAppClient.Views.Clinician;
 using System;
@@ -18,7 +19,8 @@ namespace mobileAppClient
     public partial class MainPage : MasterDetailPage
     {
         public ObservableCollection<MasterPageItem> menuList { get; set; }
-    
+        private MasterPageItem selectedMenuItem;
+
         /*
          * Constructor which adds all of the menu items with given icons and titles.
          * Also sets the landing page to be the overview page.
@@ -37,7 +39,20 @@ namespace mobileAppClient
             {
                 UserController.Instance.mainPageController = this;
             }
+            this.IsPresentedChanged += Handle_IsPresentedChanged;
         }
+
+        /*
+         * Used to get rid of the iOS Bottom Sheet when a user goes back into the menu
+         */ 
+        void Handle_IsPresentedChanged(object sender, EventArgs e)
+        {
+            if(Device.RuntimePlatform == Device.iOS) {
+                DependencyService.Get<BottomSheetMapInterface>().removeBottomSheet(this.IsPresented, selectedMenuItem);
+            }
+
+        }
+
 
         /*
          * Method which is used when a user logs out, opening the login page again.
@@ -96,6 +111,7 @@ namespace mobileAppClient
             var medicationsPage = new MasterPageItem() { Title = "Medications", Icon = "medications_icon.png",TargetType = typeof(MedicationsPage) };
             var userSettingsPage = new MasterPageItem() { Title = "Settings", Icon = "settings_icon.png", TargetType = typeof(UserSettings) };
             var livesSavedPage = new MasterPageItem() { Title = "Lives Saved", Icon = "score_icon.png", TargetType = typeof(PointsPage) };
+            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(MessageThreadsListPage) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -105,6 +121,7 @@ namespace mobileAppClient
             menuList.Add(medicationsPage);
             menuList.Add(diseasesPage);
             menuList.Add(proceduresPage);
+            menuList.Add(messagesPage);
             menuList.Add(waitingListItemsPage);
             menuList.Add(userSettingsPage);
             menuList.Add(logoutPage);
@@ -126,7 +143,8 @@ namespace mobileAppClient
             var transplantListPage = new MasterPageItem() { Title = "Transplant List", Icon = "waitinglist_icon.png", TargetType = typeof(TransplantListPage) };
             var logoutPage = new MasterPageItem() { Title = "Logout", Icon = "logout_icon.png", TargetType = typeof(LoginPage) };
             var mapPage = new MasterPageItem() { Title = "Map", Icon = "map_icon.png", TargetType = typeof(ClinicianMapPage) };
-            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(ClinicianMessagingPage) };
+            var messagesPage = new MasterPageItem() { Title = "Messages", Icon = "messages_icon.png", TargetType = typeof(MessageThreadsListPage) };
+            var clinicianSettingsPage = new MasterPageItem() { Title = "Settings", Icon = "settings_icon.png", TargetType = typeof(ClinicianSettings) };
 
             // Adding menu items to menuList
             menuList.Add(overviewPage);
@@ -135,7 +153,9 @@ namespace mobileAppClient
             menuList.Add(transplantListPage);
             menuList.Add(mapPage);
             menuList.Add(messagesPage);
+            menuList.Add(clinicianSettingsPage);
             menuList.Add(logoutPage);
+
         }
 
         public void clinicianViewingUser()
@@ -179,8 +199,8 @@ namespace mobileAppClient
          */
         private void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            var item = (MasterPageItem)e.SelectedItem;
-            Type page = item.TargetType;
+            selectedMenuItem = (MasterPageItem)e.SelectedItem;
+            Type page = selectedMenuItem.TargetType;
 
             switch(page.Name)
             {
@@ -205,8 +225,6 @@ namespace mobileAppClient
                     catch (TargetInvocationException ie)
                     {
                         Console.WriteLine("Exception: " + ie.InnerException);
-                        Console.WriteLine("Exception: " + ie.InnerException.InnerException);
-                        Console.WriteLine("Exception: " + ie.InnerException.InnerException.InnerException);
                     }
                     break;
             }
@@ -221,9 +239,9 @@ namespace mobileAppClient
 
         private void updateUserViewerProfileBar()
         {
+            ProfilePhotoImage.Source = ImageSource.FromFile("viewing_user_photo.png");
             BindingContext = new
             {
-                ProfileImage = "viewing_user_photo.png",
                 FullName = "Viewing User: " + UserController.Instance.LoggedInUser.FullName,
                 BorderColor = "White"
             };
@@ -231,32 +249,37 @@ namespace mobileAppClient
         private void updateUserProfileBar()
         {
             // Update for a logged in user
-            string profileImagePath;
             if (UserController.Instance.ProfilePhotoSource == null)
             {
                 // No photo provided, use default
-                profileImagePath = "default_user_photo.png";
+                ProfilePhotoImage.Source = ImageSource.FromFile("default_user_photo.png");
+                BindingContext = new
+                {
+                    FullName = UserController.Instance.LoggedInUser.FullName,
+                    BorderColor = "White",
+                };
             }
             else
             {
                 // Use photo from server
                 ProfilePhotoImage.Source = UserController.Instance.ProfilePhotoSource;
+                BindingContext = new
+                {
+                    FullName = UserController.Instance.LoggedInUser.FullName,
+                    BorderColor = "White"
+                };
             }
 
-            BindingContext = new
-            {
-                FullName = UserController.Instance.LoggedInUser.FullName,
-                BorderColor = "White"
-            };
+
             
         }
 
         private void updateClinicianProfileBar()
         {
             // Update for a logged in clinician
+            ProfilePhotoImage.Source = ImageSource.FromFile("default_user_photo.png");
             BindingContext = new
             {
-                ProfileImage = "default_clinician_photo.png",
                 FullName = "Clinician: " + ClinicianController.Instance.LoggedInClinician.name,
                 BorderColor = "White"
             };
@@ -275,7 +298,7 @@ namespace mobileAppClient
                 return;
             }
 
-            await Navigation.PushModalAsync(new NavigationPage(new PhotoSettingsPage()));
+            await Navigation.PushModalAsync(new NavigationPage(new PhotoSettingsPage(true)));
         }
     }
 }

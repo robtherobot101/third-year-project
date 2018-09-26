@@ -42,15 +42,22 @@ namespace mobileAppClient.iOS
 
         public override UITableViewCell GetCell(UITableView tableView, NSIndexPath indexPath)
         {
-            UITableViewCell cell = tableView.DequeueReusableCell(CellIdentifier);
+
 
             string photoItem = organs[indexPath.Row];
             string item = organs[indexPath.Row].Replace("_icon.png", "");
             item = char.ToUpper(item[0]) + item.Substring(1);
 
+            if (Cells.ContainsKey(item.ToLower()))
+            {
+                return Cells[item.ToLower()];
+            }
+
+            UITableViewCell cell = new UITableViewCell(UITableViewCellStyle.Subtitle, CellIdentifier); ;
+
             //---- if there are no cells to reuse, create a new one
-            if (cell == null)
-            { cell = new UITableViewCell(UITableViewCellStyle.Subtitle, CellIdentifier); }
+            //if (cell == null)
+            //{ cell = new UITableViewCell(UITableViewCellStyle.Subtitle, CellIdentifier); }
 
             cell.TextLabel.Text = item;
             cell.BackgroundColor = UIColor.Clear;
@@ -58,7 +65,14 @@ namespace mobileAppClient.iOS
             cell.ImageView.Image = UIImage.FromFile(photoItem);
             cell.Accessory = UITableViewCellAccessory.DisclosureIndicator;
             //SET THE TEXT DETAIL TO BE THE COUNTDOWN
-             //Get organ object from organ list             DonatableOrgan currentOrgan = null;             foreach(DonatableOrgan donatableOrgan in pin.donatableOrgans) {                 if(donatableOrgan.organType.ToLower().Equals(item.ToLower())) {                     currentOrgan = donatableOrgan;                 }             }             string countdownDetail = "";             if (currentOrgan.expired)             {                 countdownDetail = "EXPIRED";                 cell.DetailTextLabel.TextColor = UIColor.Red;             }             else             {                 Tuple<string, long> timeRemainingTuple = currentOrgan.getTimeRemaining();                 cell.DetailTextLabel.Text = timeRemainingTuple.Item1;                 //Change colour based on severity
+             //Get organ object from organ list             DonatableOrgan currentOrgan = null;             foreach(DonatableOrgan donatableOrgan in pin.donatableOrgans) {                 if(donatableOrgan.organType.ToLower().Equals(item.ToLower())) {                     currentOrgan = donatableOrgan;                 }             }             string countdownDetail = "";             if (currentOrgan.expired)             {
+                cell.DetailTextLabel.Text = "EXPIRED";                 cell.DetailTextLabel.TextColor = UIColor.Red;             } else if(currentOrgan.inTransfer == 1) {
+                cell.DetailTextLabel.Text = "IN TRANSIT";
+                cell.DetailTextLabel.TextColor = UIColor.Orange;
+            } else if(currentOrgan.inTransfer == 2) {
+                cell.DetailTextLabel.Text = "SUCCESSFULLY TRANSFERRED";
+                cell.DetailTextLabel.TextColor = UIColor.Green;
+            }             else             {                 Tuple<string, long> timeRemainingTuple = currentOrgan.getTimeRemaining();                 cell.DetailTextLabel.Text = timeRemainingTuple.Item1;                 //Change colour based on severity
                 long timeRemaining = timeRemainingTuple.Item2;                 if(timeRemaining <= 3600) {
                     cell.DetailTextLabel.TextColor = UIColor.FromRGB(244, 65, 65);
                 } else if(timeRemaining <= 10800) {
@@ -81,7 +95,9 @@ namespace mobileAppClient.iOS
                     cell.DetailTextLabel.TextColor = UIColor.FromRGB(76, 244, 65);
                 }              }
 
-            Cells.Add(item.ToLower(),cell);
+            if(!(Cells.ContainsKey(item.ToLower()))) {
+                Cells.Add(item.ToLower(), cell);
+            }
             return cell;
         }
 
@@ -99,6 +115,7 @@ namespace mobileAppClient.iOS
         public override void RowSelected(UITableView tableView, NSIndexPath indexPath)
         {
             removeOverlays();
+            owner.StopTimers();
 
             string organ = organs[indexPath.Row].Replace("_icon.png", "");
 
@@ -108,20 +125,12 @@ namespace mobileAppClient.iOS
             
             var window = UIApplication.SharedApplication.KeyWindow;
 
-            var rootVC = window.RootViewController;
+            potentialRecipientsController.AddChildViewController(owner.ChildViewControllers[0]);
 
-            owner.View.RemoveFromSuperview();
-            owner.View.Dispose();
-            owner.View = null;
-            owner.RemoveFromParentViewController();
+            window.RootViewController = potentialRecipientsController;
 
-            rootVC.AddChildViewController(potentialRecipientsController);
-            rootVC.View.AddSubview(potentialRecipientsController.View);
-            potentialRecipientsController.DidMoveToParentViewController(rootVC);
 
-            var height = window.Frame.Height;
-            var width = window.Frame.Width;
-            potentialRecipientsController.View.Frame = new CGRect(0, window.Frame.GetMaxY(), width, height);
+
 
         }
     }

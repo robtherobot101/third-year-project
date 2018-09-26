@@ -152,13 +152,17 @@ public class ClinicianController {
         Gson gson = new Gson();
 
         Clinician receivedClinician = gson.fromJson(request.body(), Clinician.class);
+        String password = null;
+        if (gson.toJsonTree(request.body()).getAsJsonObject().has("password")) {
+            password = gson.toJsonTree(request.body()).getAsJsonObject().getAsJsonPrimitive("password").getAsString();
+            password = SaltHash.createHash(password);
+        }
         if (receivedClinician == null) {
             response.status(400);
             return "Missing clinician Body";
         } else {
             try {
-                receivedClinician.setPassword(SaltHash.createHash(receivedClinician.getPassword()));
-                model.updateClinicianDetails(receivedClinician, Integer.parseInt(request.params(":id")));
+                model.updateClinicianDetails(receivedClinician, Integer.parseInt(request.params(":id")), password);
                 response.status(201);
                 return "CLINICIAN SUCCESSFULLY UPDATED";
             } catch (SQLException e) {
@@ -178,19 +182,25 @@ public class ClinicianController {
     public String editAccount(Request request, Response response) {
         Map content = new Gson().fromJson(request.body(), Map.class);
         try {
-            if (!content.keySet().containsAll(Arrays.asList("username", "password"))) {
+            if (!content.keySet().containsAll(Arrays.asList("username"))) {
                 throw new JsonSyntaxException("Missing parameters from JSON body");
             }
-            model.updateAccount(Long.parseLong(request.params().get(":id")),
-                    (String) content.get("username"),
-                    (String) content.get("password"));
+            if(content.keySet().contains("password")){
+                model.updateAccount(Long.parseLong(request.params().get(":id")),
+                        (String) content.get("username"),
+                        (String) content.get("password"));
+
+            } else {
+                model.updateAccount(Long.parseLong(request.params().get(":id")),
+                        (String) content.get("username"));
+            }
         } catch (SQLException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
             Server.getInstance().log.error(e.getMessage());
             response.status(500);
             return "Internal Server Error";
         } catch (JsonSyntaxException e) {
-            e.printStackTrace();
+            Server.getInstance().log.error(e.getMessage());
             Server.getInstance().log.error(e.getMessage());
             response.status(400);
             return "Request body not correct";
