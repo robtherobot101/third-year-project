@@ -20,6 +20,33 @@ namespace mobileAppClient
         private bool lastNameNeeded;
         private string api_id;
 
+        private bool _IsLoading;
+
+        public bool IsLoading
+        {
+            get { return _IsLoading; }
+            set
+            {
+                _IsLoading = value;
+                if (_IsLoading == true)
+                {
+                    ContinueButton.IsEnabled = false;
+                    dobInput.IsEnabled = false;
+                    lastNameInput.IsEnabled = false;
+                    firstNameInput.IsEnabled = false;
+                    NHIEntry.IsEnabled = false;
+                }
+                else
+                {
+                    ContinueButton.IsEnabled = true;
+                    dobInput.IsEnabled = true;
+                    lastNameInput.IsEnabled = true;
+                    firstNameInput.IsEnabled = true;
+                    NHIEntry.IsEnabled = true;
+                }
+            }
+        }
+
         public GooglePage(LoginPage loginPage, User googleUser, string profileImageURL, string api_id)
         {
             InitializeComponent();
