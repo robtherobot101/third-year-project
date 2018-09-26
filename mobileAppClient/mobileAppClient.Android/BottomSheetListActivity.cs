@@ -62,18 +62,12 @@ namespace mobileAppClient.Droid
             }
         }
 
-        public void OnActivityResult(int requestCode, int resultCode, Intent data)
+        protected override void OnActivityResult(int requestCode, Result resultCode, Intent data)
         {
-
-            var name = FindViewById<TextView>(Resource.Id.User_Name);
-            name.Text = "Returned successfully";
-
-            if (resultCode == 0)
+            if (resultCode == Result.Ok)
             {
                 TextView TimerText = ((TextView)(lastClicked.GetChildAt(2)));
                 TimerText.Text = "IN TRANSIT";
-
-                
             }
         }
 

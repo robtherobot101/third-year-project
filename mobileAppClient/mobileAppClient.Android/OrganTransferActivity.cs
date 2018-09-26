@@ -104,7 +104,8 @@ namespace mobileAppClient.Droid
                     Position pos = new Position(donorLat, donorLong);
                     clinicianMapPage.NewTransferWithoutAddingHelicpoter(organ, selectedReceiver, pos);
                     Intent dummy = new Intent();
-                    SetResult(0, dummy);
+                    SetResult(Result.Ok);
+                    //SetResult(RESULT_OK, dummy);
                     Finish();
                     
                 });
@@ -219,8 +220,6 @@ namespace mobileAppClient.Droid
             //Bottom Card
             //------------------------------------------------------------------------------------
 
-            //This is used onClick as an index to insert the receiver table.
-            int i = 1;
             allRecipientRows = new List<TableRow>();
             if(organ.expired)
             {
