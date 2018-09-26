@@ -610,6 +610,8 @@ public class UserAttributesController extends UserTabController implements Initi
         }
         userController.setWelcomeText("Welcome, " + currentUser.getPreferredName());
         settingAttributesLabel.setText("Attributes for " + currentUser.getPreferredName());
+        updateAge();
+        updateBMI();
         updatingFields--;
         return true;
     }
