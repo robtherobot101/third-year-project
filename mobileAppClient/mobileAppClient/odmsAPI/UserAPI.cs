@@ -547,6 +547,10 @@ namespace mobileAppClient.odmsAPI
             {
                 return null;
             }
+            catch (JsonReaderException)
+            {
+                return null;
+            }
         }
 
         public async Task<HttpStatusCode> updateAccountSettings(User user, string token, bool setPassword)
