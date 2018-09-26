@@ -396,7 +396,7 @@ namespace mobileAppClient.odmsAPI
             HttpResponseMessage response;
             try
             {
-                response = await client.PostAsync(url + "/googleaccount" + queries, body);
+                response = await client.PostAsync(url + "/team300account" + queries, body);
             }
             catch (HttpRequestException)
             {
@@ -413,5 +413,47 @@ namespace mobileAppClient.odmsAPI
             }
             return response.StatusCode;
         }
+
+        /*
+         * Returns response status code of the attempted user registration
+         */
+        public async Task<HttpStatusCode> Team300RegisterUser(int userId, string email, string password, string username)
+        {
+            if (!ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            // Get the single userController instance
+            UserController userController = UserController.Instance;
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            HttpContent body = new StringContent("");
+            String queries = $"?username={username}&password={password}&id={userId}";
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.PostAsync(url + "/facebookaccount" + queries, body);
+            }
+            catch (HttpRequestException)
+            {
+                return HttpStatusCode.ServiceUnavailable;
+            }
+
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                Console.WriteLine("Success on editing user");
+            }
+            else
+            {
+                Console.WriteLine($"Failed register ({response.StatusCode})");
+            }
+            return response.StatusCode;
+        }
+
     }
 }
