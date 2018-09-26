@@ -345,15 +345,6 @@ namespace mobileAppClient
             }
         }
 
-        /*
-         * Function used to Stops the back button from working and 
-         * opening the main view without a logged in user
-         */
-        protected override bool OnBackButtonPressed()
-        {
-            return true;
-        }
-
         async void Handle_LoginWithFacebookClicked(object sender, System.EventArgs e)
         {
             rememberLogin = RememberMeSwitch.IsToggled;

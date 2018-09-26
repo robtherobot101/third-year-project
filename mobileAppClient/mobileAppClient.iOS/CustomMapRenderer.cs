@@ -23,7 +23,7 @@ namespace CustomRenderer.iOS
     {
         UIView customPinView;
         Dictionary<Position, CustomPin> customPins;
-        Dictionary<String, CustomPin> helicopterPins;
+        Dictionary<string, CustomPin> helicopterPins;
         CustomMap formsMap;
         CustomPin currentPin;
         public MKCircleRenderer circleRenderer;
@@ -403,6 +403,7 @@ namespace CustomRenderer.iOS
             }
             //Console.WriteLine(annotation.Subtitle);
             // Search helicopter pins
+            helicopterPins = formsMap.HelicopterPins;
             if (helicopterPins.TryGetValue(annotation.Subtitle, out foundPin))
             {
                 return foundPin;
