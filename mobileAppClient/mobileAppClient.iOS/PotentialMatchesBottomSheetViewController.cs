@@ -28,7 +28,7 @@ namespace mobileAppClient.iOS
         public double organTimeLeft;
         public CustomMapRenderer customMapRenderer;
         public DonatableOrgan currentOrgan;
-        public Timer OrganTimeTickingTimer;
+        public Timer IndividualOrganTimeTickingTimer;
         public Timer OrganRadiusTickingTimer;
 
         public PotentialMatchesBottomSheetViewController(CustomPin pin, CustomMap map, MKMapView nativeMap, 
@@ -91,7 +91,7 @@ namespace mobileAppClient.iOS
 
         public void StartOrganTimeTickingTimer(int interval)
         {
-            OrganTimeTickingTimer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
+            IndividualOrganTimeTickingTimer = new Timer(RefreshCountdownsInTableView, null, 0, interval);
         }
 
         public void StartOrganCircleRadiusCountdown(int interval)
@@ -241,10 +241,10 @@ namespace mobileAppClient.iOS
         }
 
         public void StopTimers() {
-            OrganRadiusTickingTimer.Dispose();
+            OrganRadiusTickingTimer?.Dispose();
             OrganRadiusTickingTimer = null;
-            OrganTimeTickingTimer.Dispose();
-            OrganTimeTickingTimer = null;
+            IndividualOrganTimeTickingTimer?.Dispose();
+            IndividualOrganTimeTickingTimer = null;
         }
 
         async void prepareRecipientsOnMap(Position position) {

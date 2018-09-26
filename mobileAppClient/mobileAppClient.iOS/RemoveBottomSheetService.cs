@@ -18,7 +18,8 @@ namespace mobileAppClient.iOS
         {
         }
 
-        public async void removeBottomSheetWhenViewingAUser() {
+        public async void removeBottomSheetWhenViewingAUser()
+        {
             //Get rid of bottom sheet if its there
             var window = UIApplication.SharedApplication.KeyWindow;
             var rootVC = window.RootViewController;
@@ -43,7 +44,8 @@ namespace mobileAppClient.iOS
             }
         }
 
-        public async void removeBottomSheet(bool isPresented, MasterPageItem selectedMenuItem) {
+        public async void removeBottomSheet(bool isPresented, MasterPageItem selectedMenuItem)
+        {
             UIApplication.SharedApplication.InvokeOnMainThread(async () =>
             {
                 var window = UIApplication.SharedApplication.KeyWindow;
@@ -52,7 +54,8 @@ namespace mobileAppClient.iOS
                 if (!isPresented)
                 {
 
-                    if(selectedMenuItem.TargetType != typeof(ClinicianMapPage)) {
+                    if (selectedMenuItem.TargetType != typeof(ClinicianMapPage))
+                    {
                         if (rootVC is BottomSheetViewController)
                         {
                             currentBottomSheet.StopTimers();
@@ -67,10 +70,14 @@ namespace mobileAppClient.iOS
                             currentPotentialMatchesBottomSheet.Dispose();
                             currentPotentialMatchesBottomSheet = null;
                             window.RootViewController = rootVC.ChildViewControllers[0];
-                        } else {
+                        }
+                        else
+                        {
                             return;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         if (currentBottomSheet != null)
                         {
                             window.RootViewController = currentBottomSheet;
@@ -107,7 +114,7 @@ namespace mobileAppClient.iOS
                         PotentialMatchesBottomSheetViewController matchesSheet = (PotentialMatchesBottomSheetViewController)rootVC;
                         currentPotentialMatchesBottomSheet = matchesSheet;
                         await matchesSheet.slideMenuToRight();
- 
+
                     }
                     else
                     {
@@ -128,7 +135,7 @@ namespace mobileAppClient.iOS
                         //}
                         //else
                         //{
-                            return;
+                        return;
                         //}
                     }
 

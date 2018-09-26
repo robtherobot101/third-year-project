@@ -21,7 +21,46 @@ namespace mobileAppClient
             ConfirmTeam300LoginMethodChanged.IsVisible = false;
 
 
+
             UserController.Instance.userSettingsController = this;
+        }
+
+        protected async override void OnAppearing()
+        {
+            String result = await new LoginAPI().getAccountType(UserController.Instance.LoggedInUser.id);
+            if (result.Equals("facebook"))
+            {
+                AccountSettings.IsEnabled = false;
+                AccountSettings.View.IsVisible = false;
+                FacebookAccountType.IsEnabled = false;
+                FacebookAccountType.View.IsVisible = false;
+                GoogleAccountType.IsEnabled = true;
+                GoogleAccountType.View.IsVisible = true;
+                RegularAccountType.IsEnabled = true;
+                RegularAccountType.View.IsVisible = true;
+            }
+            else if (result.Equals("google"))
+            {
+                AccountSettings.IsEnabled = false;
+                AccountSettings.View.IsVisible = false;
+                GoogleAccountType.IsEnabled = false;
+                GoogleAccountType.View.IsVisible = false;
+                FacebookAccountType.IsEnabled = true;
+                FacebookAccountType.View.IsVisible = true;
+                RegularAccountType.IsEnabled = true;
+                RegularAccountType.View.IsVisible = false;
+            }
+            else
+            {
+                RegularAccountType.IsEnabled = false;
+                RegularAccountType.View.IsVisible = false;
+                AccountSettings.IsEnabled = true;
+                AccountSettings.View.IsVisible = true;
+                GoogleAccountType.IsEnabled = true;
+                GoogleAccountType.View.IsVisible = true;
+                FacebookAccountType.IsEnabled = true;
+                FacebookAccountType.View.IsVisible = true;
+            }
         }
 
         async void Handle_PhotoSettingsTapped(object sender, System.EventArgs e)
@@ -33,7 +72,7 @@ namespace mobileAppClient
         {
             //Do a thing
             await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(UserController.Instance.LoggedInUser.id)));
-            
+            OnAppearing();
         }
 
         void Handle_GoogleAccountTypeTapped(object sender, System.EventArgs e)
@@ -112,10 +151,7 @@ namespace mobileAppClient
                     break;
             }
 
-            passwordInput.IsVisible = false;
-            confirmPasswordInput.IsVisible = false;
-            UsernameEntry.IsVisible = false;
-            ConfirmTeam300LoginMethodChanged.IsVisible = false;
+            OnAppearing();
         }
 
         public async Task Handle_RedirectUriCaught(string code)
@@ -153,6 +189,7 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
+            OnAppearing();
         }
     }
 }
