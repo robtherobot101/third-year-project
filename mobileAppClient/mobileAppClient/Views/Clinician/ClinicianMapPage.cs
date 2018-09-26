@@ -389,10 +389,11 @@ namespace mobileAppClient.Views.Clinician
             };
 
             // Add the main helichopper pin to our list of custom heli pins we can track (heli pin contains the transported organ custom pin)
+            customMap.Pins.Add(heliPin);
+
             customMap.HelicopterPins.Add(heliPin.Address, heliPin);
 
             // Add the pin we want visible on the map (but cant track these)
-	        customMap.Pins.Add(heliPin);
         }
 
         /// <summary>
@@ -541,7 +542,7 @@ namespace mobileAppClient.Views.Clinician
             newOrganTransfer.startLon = donorPosition.Longitude;
 
             Hospital receiverHospital = null;
-            await InitialiseHospitalsWithoutAddingToMap();
+            //await InitialiseHospitalsWithoutAddingToMap();
             foreach (Hospital hospital in hospitals) {
                 if(hospital.region.Equals(selectedRecipient.region)) {
                     receiverHospital = hospital;
@@ -590,7 +591,7 @@ namespace mobileAppClient.Views.Clinician
             newOrganTransfer.startLon = donorPosition.Longitude;
 
             Hospital receiverHospital = null;
-            await InitialiseHospitalsWithoutAddingToMap();
+            //await InitialiseHospitalsWithoutAddingToMap();
             foreach (Hospital hospital in hospitals)
             {
                 if (hospital.region.Equals(selectedRecipient.region))
