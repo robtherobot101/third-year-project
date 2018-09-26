@@ -4,6 +4,7 @@ namespace mobileAppClient.Maps
 {
     public interface BottomSheetMapInterface
     {
-        void addSlideUpSheet(CustomPin pin, CustomMap map);
+        void removeBottomSheet(bool isPresented, MasterPageItem selectedMenuItem);
+        void removeBottomSheetWhenViewingAUser();
     }
 }

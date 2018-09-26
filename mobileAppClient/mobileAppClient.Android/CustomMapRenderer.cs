@@ -294,22 +294,21 @@ namespace CustomRenderer.Droid
                 throw new Exception("Custom pin not found");
             }
 
-            Activity mainActivity = CrossCurrentActivity.Current.Activity;
-            var view = mainActivity.CurrentFocus;
-            Android.Views.View root = view.RootView;
-            Android.Views.View altRoot = mainActivity.Window.DecorView.FindViewById(Android.Resource.Id.Content);
-            Android.Widget.RelativeLayout parent = view.Parent as Android.Widget.RelativeLayout;
+            if (customPin.CustomType == ODMSPinType.DONOR)
+            {
+                // Find MainActivity and then launch a new activity to show the user overview
+                Activity mainActivity = CrossCurrentActivity.Current.Activity;
+                String organString = customPin.donatableOrgans.ToJson();
 
-            String organString = customPin.donatableOrgans.ToJson();
-
-            Intent intent = new Intent(mainActivity.BaseContext, typeof(BottomSheetListActivity));
-            intent.PutExtra("name", customPin.Label);
-            intent.PutExtra("address", customPin.Address);
-            intent.PutExtra("profilePicture", customPin.userPhoto);
-            intent.PutExtra("organs", organString);
-            intent.PutExtra("donorLat", customPin.Position.Latitude.ToString());
-            intent.PutExtra("donorLong", customPin.Position.Longitude.ToString());
-            mainActivity.StartActivity(intent);
+                Intent intent = new Intent(mainActivity.BaseContext, typeof(BottomSheetListActivity));
+                intent.PutExtra("name", customPin.Label);
+                intent.PutExtra("address", customPin.Address);
+                intent.PutExtra("profilePicture", customPin.userPhoto);
+                intent.PutExtra("organs", organString);
+                intent.PutExtra("donorLat", customPin.Position.Latitude.ToString());
+                intent.PutExtra("donorLong", customPin.Position.Longitude.ToString());
+                mainActivity.StartActivity(intent);
+            }
         }
 
         /// <summary>
