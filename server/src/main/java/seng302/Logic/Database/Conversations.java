@@ -12,7 +12,7 @@ import seng302.Server;
 import java.sql.*;
 import java.util.*;
 
-public class Conversations {
+public class Conversations extends DatabaseMethods {
     /**
      * Gets all of the conversations for a specific user.
      *
@@ -188,13 +188,14 @@ public class Conversations {
      * @param message The message to add
      * @throws SQLException If database interaction fails
      */
-    public void addMessage(int conversationId, Message message) throws SQLException {
+    public int addMessage(int conversationId, Message message) throws SQLException {
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             PreparedStatement statement = null;
+            ResultSet resultSet = null;
 
             try {
                 statement = connection.prepareStatement("SET NAMES utf8mb4");
-                statement.executeUpdate();
+                statement.executeQuery();
                 statement.close();
                 statement = connection.prepareStatement("INSERT INTO MESSAGE(conversation_id, text, date_time, user_id) VALUES(?, ?, ?, ?);");
                 statement.setInt(1, conversationId);
@@ -202,11 +203,14 @@ public class Conversations {
                 statement.setTimestamp(3, Timestamp.valueOf(message.getTimestamp()));
                 statement.setInt(4, message.getUserId());
                 statement.execute();
+                resultSet = connection.prepareStatement("SELECT LAST_INSERT_ID();").executeQuery();
+                if(resultSet.next()) return resultSet.getInt(1);
             } catch (SQLException ignored) {
             } finally {
-                DbUtils.closeQuietly(statement);
+                close(statement, resultSet);
             }
         }
+        return -1;
     }
 
     /**

@@ -23,7 +23,24 @@ namespace mobileAppClient.Models
 
         public string lastMessage
         {
-            get { return messages.Count > 0 ? messages.Last().text : ""; }
+            get
+            {
+                if (messages.Count > 0)
+                {
+                    if (messages.Last().text.Length > 20)
+                    {
+                        return messages.Last().text.Substring(0, 20) + "...";
+                    }
+                    else
+                    {
+                        return messages.Last().text;
+                    }
+                }
+                else
+                {
+                    return "";
+                }
+            }
         }
 
         public string lastMessageReceiveTime

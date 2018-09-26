@@ -29,7 +29,7 @@ namespace mobileAppClient
         public bool Equals(Message other)
         {
             return other != null &&
-                   id == other.id;
+                id == other.id;
         }
 
         public override int GetHashCode()
