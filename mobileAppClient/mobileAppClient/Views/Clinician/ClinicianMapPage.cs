@@ -21,9 +21,9 @@ namespace mobileAppClient.Views.Clinician
         List<CustomMapObject> users;
         List<Hospital> hospitals;
 
-	    private int heliCount = 0;
+	    public int heliCount = 0;
 
-        CustomMap customMap;
+        public CustomMap customMap;
 
         public ClinicianMapPage()
         {
@@ -110,7 +110,7 @@ namespace mobileAppClient.Views.Clinician
 
 
             customMap.CustomPins = new Dictionary<Position, CustomPin> { };
-            customMap.HelicopterPins = new Dictionary<String, CustomPin> { };
+            customMap.HelicopterPins = new Dictionary<string, CustomPin> { };
 
             //Center on New Zealand
 
@@ -133,7 +133,7 @@ namespace mobileAppClient.Views.Clinician
 
             await InitialiseHospitals();
 
-            StartTransfers();
+            //StartTransfers();
 
             //AddTestHelicopter();
             //AddTest2Helicopter();
@@ -304,6 +304,8 @@ namespace mobileAppClient.Views.Clinician
                     StartTimer(200);
                     break;
             }
+
+            await Task.Delay(3000);
         }
 
         public async Task InitialiseHospitals()
@@ -387,12 +389,20 @@ namespace mobileAppClient.Views.Clinician
 	            Address = heliID,
                 Url = "Heli" + "," + heliID
             };
-
-            // Add the main helichopper pin to our list of custom heli pins we can track (heli pin contains the transported organ custom pin)
             customMap.HelicopterPins.Add(heliPin.Address, heliPin);
 
+            // Add the main helichopper pin to our list of custom heli pins we can track (heli pin contains the transported organ custom pin)
+
+            Dictionary<string, CustomPin> testDictionary = new Dictionary<string, CustomPin>(customMap.HelicopterPins);
+            testDictionary.Add(heliID, heliPin);
+
+            customMap.HelicopterPins = testDictionary;
+
+            customMap.Pins.Add(heliPin);
+
+
+
             // Add the pin we want visible on the map (but cant track these)
-	        customMap.Pins.Add(heliPin);
         }
 
         /// <summary>
@@ -541,7 +551,7 @@ namespace mobileAppClient.Views.Clinician
             newOrganTransfer.startLon = donorPosition.Longitude;
 
             Hospital receiverHospital = null;
-            await InitialiseHospitalsWithoutAddingToMap();
+            //await InitialiseHospitalsWithoutAddingToMap();
             foreach (Hospital hospital in hospitals) {
                 if(hospital.region.Equals(selectedRecipient.region)) {
                     receiverHospital = hospital;
@@ -560,12 +570,30 @@ namespace mobileAppClient.Views.Clinician
                                                                                                donorPosition.Longitude, HospitalPosition.Longitude, 0, 0) / 70));
 
             TransplantListAPI transplantListAPI = new TransplantListAPI();
-            await transplantListAPI.InsertTransfer(newOrganTransfer);
-            transplantListAPI.SetInTransfer(currentOrgan.id, 1);
+            if (await transplantListAPI.InsertTransfer(newOrganTransfer) != HttpStatusCode.OK) {
+                await DisplayAlert("", "Failed to start transfer (failed to insert transfer)", "OK");
+                return;
+            }
+
+            if (await transplantListAPI.SetInTransfer(currentOrgan.id, 1) != true) {
+                await DisplayAlert("", "Failed to start transfer (failed to set in transfer)", "OK");
+                return;
+            }
 
             int TTA = (int)newOrganTransfer.arrivalTime.ToDateTimeWithSeconds().Subtract(DateTime.Now).TotalSeconds;
 
-            int waitingListId = await transplantListAPI.GetWaitingListId((int)newOrganTransfer.receiverId, newOrganTransfer.organType);
+            //int waitingListId = await transplantListAPI.GetWaitingListId((int)newOrganTransfer.receiverId, newOrganTransfer.organType);
+            //if (waitingListId == 0) {
+            //    await DisplayAlert("", "Failed to start transfer (failed to get waiting list id)", "OK");
+            //    return;
+            //}
+
+            int waitingListId = 0;
+            foreach(WaitingListItem item in selectedRecipient.waitingListItems) {
+                if(item.organType == OrganExtensions.ToOrgan(currentOrgan.organType)) {
+                    waitingListId = item.id;
+                }
+            }
 
             AddHelicopter(donorPosition,
                           HospitalPosition,
@@ -590,7 +618,7 @@ namespace mobileAppClient.Views.Clinician
             newOrganTransfer.startLon = donorPosition.Longitude;
 
             Hospital receiverHospital = null;
-            await InitialiseHospitalsWithoutAddingToMap();
+            //await InitialiseHospitalsWithoutAddingToMap();
             foreach (Hospital hospital in hospitals)
             {
                 if (hospital.region.Equals(selectedRecipient.region))
@@ -707,7 +735,7 @@ namespace mobileAppClient.Views.Clinician
                     startLat,
                     receiverHospital.latitude,
                     startLon,
-                    receiverHospital.latitude, 0, 0);
+                    receiverHospital.longitude, 0, 0);
 
             DateTime arrivalTime = DateTime.Now.AddSeconds((long)(dist / 69.444444));
 

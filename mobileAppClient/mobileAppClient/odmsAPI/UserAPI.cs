@@ -444,6 +444,54 @@ namespace mobileAppClient.odmsAPI
         }
 
         /// <summary>
+        /// Check if the username OR email already exists in the DB
+        /// </summary>
+        /// <param name="usernameEmail"></param>
+        /// <returns>
+        /// Tuple containing the HTTP status code and if the username/email is unique
+        /// </returns>
+        public async Task<Tuple<HttpStatusCode, bool>> isUniqueApiId(string api_id)
+        {
+            bool isUnique = false;
+            // Check internet connection
+            List<User> resultUsers = new List<User>();
+            if (!ServerConfig.Instance.IsConnectedToInternet())
+            {
+                return new Tuple<HttpStatusCode, bool>(HttpStatusCode.ServiceUnavailable, isUnique);
+            }
+
+            // Fetch the url and client from the server config class
+            String url = ServerConfig.Instance.serverAddress;
+            HttpClient client = ServerConfig.Instance.client;
+
+            string queries = String.Format("?api_id={0}", api_id);
+
+            HttpResponseMessage response;
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/unique" + queries);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException)
+            {
+                return new Tuple<HttpStatusCode, bool>(HttpStatusCode.ServiceUnavailable, isUnique);
+            }
+
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                return new Tuple<HttpStatusCode, bool>(response.StatusCode, isUnique);
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+            if (responseContent.Equals("true"))
+            {
+                isUnique = true;
+            }
+            return new Tuple<HttpStatusCode, bool>(HttpStatusCode.OK, isUnique);
+        }
+
+        /// <summary>
         /// Fetches a list of custom organ objects used for the map view
         /// </summary>
         /// <returns>
@@ -544,6 +592,10 @@ namespace mobileAppClient.odmsAPI
                 return JsonConvert.DeserializeObject<User>(body);
             }
             catch (JsonSerializationException)
+            {
+                return null;
+            }
+            catch (JsonReaderException)
             {
                 return null;
             }

@@ -1,6 +1,7 @@
 package seng302.Model;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 /**
@@ -69,9 +70,9 @@ public class HistoryItem {
      * @return Whether the information is equal
      */
     public boolean informationEqual(HistoryItem other) {
-        return (Objects.equals(this.action,other.action)
-                && Objects.equals(this.description,other.description)
-                && Objects.equals(this.dateTime,other.description));
+        return (this.action.equals(other.action))
+                && this.description.equals(other.description)
+                && ChronoUnit.MINUTES.between(this.dateTime, other.dateTime) < 2;
     }
 
     /**

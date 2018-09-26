@@ -47,6 +47,10 @@ namespace mobileAppClient
          */ 
         void Handle_IsPresentedChanged(object sender, EventArgs e)
         {
+            if(selectedMenuItem == null) {
+                return;
+            }
+
             if(Device.RuntimePlatform == Device.iOS) {
                 DependencyService.Get<BottomSheetMapInterface>().removeBottomSheet(this.IsPresented, selectedMenuItem);
             }

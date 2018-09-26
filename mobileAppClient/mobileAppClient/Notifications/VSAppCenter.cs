@@ -64,8 +64,11 @@ namespace mobileAppClient.Notifications
                             }
                                                         
                         }
-                            
-                        DependencyService.Get<IToast>().ShortAlert("You have received a message");
+
+                        if(Xamarin.Forms.Device.RuntimePlatform == Xamarin.Forms.Device.Android) {
+                            DependencyService.Get<IToast>().ShortAlert("You have received a message");
+                        }
+
                     }
                 };
             }

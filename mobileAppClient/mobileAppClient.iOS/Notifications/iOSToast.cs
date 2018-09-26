@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 
 using Foundation;
+using mobileAppClient.iOS.Notifications;
 using mobileAppClient.Notifications;
 using UIKit;
 
+[assembly: Xamarin.Forms.Dependency(typeof(iOSToast))]
 namespace mobileAppClient.iOS.Notifications
 {
     public class iOSToast : IToast
