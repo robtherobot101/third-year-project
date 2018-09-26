@@ -53,7 +53,6 @@
                         <ViewCell x:Name="Team300AccountChangeViewCell">
                             <StackLayout Orientation="Vertical" Padding="15,15,10,15">
                                 <Entry Placeholder="Username" x:Name="UsernameEntry"/>
-                                <Entry Placeholder="Email" x:Name="EmailEntry"/>
 
                                 <Entry x:Name="passwordInput" Placeholder="Password" IsPassword="true"/>
                                 <Entry x:Name="confirmPasswordInput" Placeholder="Confirm Password" IsPassword="true"/>
