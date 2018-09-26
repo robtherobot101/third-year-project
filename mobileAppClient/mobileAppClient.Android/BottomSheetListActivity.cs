@@ -25,7 +25,7 @@ namespace mobileAppClient.Droid
         private TableLayout organTable;
         private List<TableRow> allRows;
         private Timer timer;
-        private DonatableOrgan lastClicked;
+        private Android.Views.ViewGroup lastClicked;
 
         List<DonatableOrgan> organs;
         protected override void OnCreate(Bundle bundle)
@@ -35,16 +35,13 @@ namespace mobileAppClient.Droid
             PrepareSheet();
         }
 
-        protected override void OnResume()
-        {
-            organTable = FindViewById<TableLayout>(Resource.Id.organTableLayout);
-            
-        }
+
 
         public void OnClick(Android.Views.View view)
         {
             Android.Views.View nextChild = ((ViewGroup)view).GetChildAt(1);
-            String organName = ((TextView)nextChild).Text;
+            string organName = ((TextView)nextChild).Text;
+            lastClicked = (ViewGroup)view;
 
             string donorLat = Intent.GetStringExtra("donorLat");
             string donorLong = Intent.GetStringExtra("donorLong");
@@ -53,21 +50,35 @@ namespace mobileAppClient.Droid
             {
                 if (organName.ToLower().Equals(organ.organType.ToLower()))
                 {
-                    String OrganString = organ.ToJson();
+                    string OrganString = organ.ToJson();
 
                     Intent intent = new Intent(this, typeof(OrganTransferActivity));
                     intent.PutExtra("organ", OrganString);
                     intent.PutExtra("donorLat", donorLat);
                     intent.PutExtra("donorLong", donorLong);
-                    StartActivity(intent);
+                    StartActivityForResult(intent, 1);
                     break;
                 }
             }
-
-
         }
-  
-        
+
+        public void OnActivityResult(int requestCode, int resultCode, Intent data)
+        {
+
+            var name = FindViewById<TextView>(Resource.Id.User_Name);
+            name.Text = "Returned successfully";
+
+            if (resultCode == 0)
+            {
+                TextView TimerText = ((TextView)(lastClicked.GetChildAt(2)));
+                TimerText.Text = "IN TRANSIT";
+
+                
+            }
+        }
+
+
+
 
         public void PrepareSheet()
         {
@@ -103,8 +114,6 @@ namespace mobileAppClient.Droid
             var organString = Intent.GetStringExtra("organs");
             organs = organString.FromJson<List<DonatableOrgan>>();
 
-            //This is used onClick as an index to insert the receiver table.
-            int i = 1;
             allRows = new List<TableRow>();
             foreach (DonatableOrgan organ in organs)
             {
@@ -112,8 +121,7 @@ namespace mobileAppClient.Droid
                 TextView organText = new TextView(this);
                 TextView organTimer = new TextView(this);
                 ImageView organImage = new ImageView(this);
-                String organName = organ.organType;
-                //ViewGroup.LayoutParams textParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.WrapContent);
+                string organName = organ.organType;
 
                 organText.Text = char.ToUpper(organ.organType[0]) + organ.organType.Substring(1).ToLower();
                 switch (organ.organType.ToLower())
@@ -206,28 +214,27 @@ namespace mobileAppClient.Droid
 
                 //---Text Formatting
                 organText.SetTextAppearance(this, Android.Resource.Style.TextAppearanceMedium);
-                organText.SetPadding(0, 0, 2, 0);
-                //organText.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 0.4f);
+                organText.SetPadding(0, 0, 40, 15);
+                //organText.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 2f);
 
                 //---Image Formatting
                 organImage.SetAdjustViewBounds(true);
                 organImage.SetMaxHeight(80);
-                organImage.SetMaxWidth(10);
-                organImage.SetPadding(0, 0, 0, 0);
-                //organImage.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 0.2f);
+                organImage.SetMaxWidth(80);
+                organImage.SetPadding(0, 0, 15, 15);
+                //organImage.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 1f);
 
                 //---Table Formatting
                 //organTable.ShrinkAllColumns = true;
-                organTable.SetColumnShrinkable(0, true);
+                //organTable.SetColumnShrinkable(0, true);
 
                 
-                //organTimer.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 0.4f);
+                //organTimer.LayoutParameters = new TableLayout.LayoutParams(ViewGroup.LayoutParams.WrapContent, ViewGroup.LayoutParams.MatchParent, 2f);
 
                 //---Add Views together then to main table
                 organRow.AddView(organImage);
                 organRow.AddView(organText);
                 organRow.AddView(organTimer);
-                organRow.Id = i;
                 organRow.SetOnClickListener(this);
                 organTable.AddView(organRow);
                 allRows.Add(organRow);
