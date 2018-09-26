@@ -29,12 +29,14 @@ namespace mobileAppClient
         public bool Equals(Message other)
         {
             return other != null &&
-                   id == other.id;
+                text == other.text &&
+                timestamp == other.timestamp;
         }
 
         public override int GetHashCode()
         {
-            return 1877310944 + id.GetHashCode();
+            return 1877310944 + id.GetHashCode() +
+                                  1877310944 + timestamp.GetHashCode();
         }
 
         public void SetType(int readersAccountID)
