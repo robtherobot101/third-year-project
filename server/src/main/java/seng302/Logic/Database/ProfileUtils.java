@@ -74,6 +74,50 @@ public class ProfileUtils extends DatabaseMethods {
     /**
      * change requested account to a team 300 account type
      * @param userId the user id of the user to change
+     * @throws SQLException catch sql errors
+     */
+    public String getAccountType(int userId) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT acc_type FROM USER WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getString("acc_type");
+        } finally {
+            close(statement);
+        }
+    }
+
+
+
+    /**
+     * change a account to a team300 account
+     * @param request the request received
+     * @param response the response to send
+     * @return String output for success
+     */
+    public String getAccountTypeReq(Request request, Response response) {
+        int userId = Integer.parseInt(request.queryParams("id"));
+
+        try {
+            String accType = getAccountType(userId);
+
+            response.status(200);
+            response.body(accType);
+            return accType;
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
+    }
+
+
+    /**
+     * change requested account to a team 300 account type
+     * @param userId the user id of the user to change
      * @param username the new username of the user
      * @param password the new password of the user
      * @throws SQLException catch sql errors
