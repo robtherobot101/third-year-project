@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 
 using Foundation;
+using mobileAppClient.iOS.Notifications;
 using mobileAppClient.Notifications;
 using UIKit;
 
+[assembly: Xamarin.Forms.Dependency(typeof(iOSToast))]
 namespace mobileAppClient.iOS.Notifications
 {
     public class iOSToast : IToast
@@ -15,7 +17,7 @@ namespace mobileAppClient.iOS.Notifications
         const double SHORT_DELAY = 2.0;
 
         NSTimer alertDelay;
-        UIAlertController alert;
+        public UIAlertController alert;
 
         public void LongAlert(string message)
         {
@@ -33,19 +35,45 @@ namespace mobileAppClient.iOS.Notifications
                 dismissMessage();
             });
             alert = UIAlertController.Create(null, message, UIAlertControllerStyle.Alert);
-            UIApplication.SharedApplication.KeyWindow.RootViewController.PresentViewController(alert, true, null);
+            //alert.AddAction(UIAlertAction.Create("Confirm", UIAlertActionStyle.Cancel, null));
+            UIViewController uIViewController = GetVisibleViewController();
+            uIViewController.PresentViewController(alert, true, null);
+            //UIApplication.SharedApplication.KeyWindow.RootViewController.PresentViewController(alert, true, null);
+
         }
 
         void dismissMessage()
         {
             if (alert != null)
             {
-                alert.DismissViewController(true, null);
+                UIViewController uIViewController = GetVisibleViewController();
+                uIViewController.DismissViewController(true, null);
+                //alert.DismissViewController(true, null);
             }
             if (alertDelay != null)
             {
                 alertDelay.Dispose();
             }
+        }
+
+        UIViewController GetVisibleViewController()
+        {
+            var rootController = UIApplication.SharedApplication.KeyWindow.RootViewController;
+
+            if (rootController.PresentedViewController == null)
+                return rootController;
+
+            if (rootController.PresentedViewController is UINavigationController)
+            {
+                return ((UINavigationController)rootController.PresentedViewController).VisibleViewController;
+            }
+
+            if (rootController.PresentedViewController is UITabBarController)
+            {
+                return ((UITabBarController)rootController.PresentedViewController).SelectedViewController;
+            }
+
+            return rootController.PresentedViewController;
         }
     }
 }

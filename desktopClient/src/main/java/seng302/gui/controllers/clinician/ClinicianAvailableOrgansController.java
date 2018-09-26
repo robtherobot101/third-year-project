@@ -631,7 +631,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
         organsTreeTable.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             if (event.getButton().equals(MouseButton.SECONDARY)) {
+                if(organsTreeTable.getSelectionModel().getSelectedItem().getParent() == null) return;
                 DonatableOrgan organ = (DonatableOrgan) organsTreeTable.getSelectionModel().getSelectedItem().getParent().getValue();
+                if(organsTreeTable.getSelectionModel().getSelectedItem().getValue() instanceof DonatableOrgan) return;
                 User user = (User) organsTreeTable.getSelectionModel().getSelectedItem().getValue();
                 // No need to check for default user
                 if (organ != null) {

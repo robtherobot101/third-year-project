@@ -56,15 +56,19 @@ namespace CustomRenderer.Droid
             if (e.NewElement != null)
             {
                 formsMap = (CustomMap)e.NewElement;
-                customPins = formsMap.CustomPins;
-                helicopterPins = formsMap.HelicopterPins;
                 intialiseHelicopterIcons();
-
+                updatePins();
                 highlightedFlightPath = new Tuple<CustomPin, Polyline>(null, null);
                 highlightedOrganRange = new Tuple<CustomPin, Circle>(null, null);
 
                 Control.GetMapAsync(this);
             }
+        }
+
+        public void updatePins()
+        {
+            customPins = formsMap.CustomPins;
+            helicopterPins = formsMap.HelicopterPins;
         }
 
         /// <summary>
@@ -285,7 +289,6 @@ namespace CustomRenderer.Droid
             return markerToAddOptions;
         }
 
-
         void OnInfoWindowClick(object sender, GoogleMap.InfoWindowClickEventArgs e)
         {
             var customPin = GetCustomPin(e.Marker);
@@ -294,22 +297,21 @@ namespace CustomRenderer.Droid
                 throw new Exception("Custom pin not found");
             }
 
-            Activity mainActivity = CrossCurrentActivity.Current.Activity;
-            var view = mainActivity.CurrentFocus;
-            Android.Views.View root = view.RootView;
-            Android.Views.View altRoot = mainActivity.Window.DecorView.FindViewById(Android.Resource.Id.Content);
-            Android.Widget.RelativeLayout parent = view.Parent as Android.Widget.RelativeLayout;
+            if (customPin.CustomType == ODMSPinType.DONOR)
+            {
+                // Find MainActivity and then launch a new activity to show the user overview
+                Activity mainActivity = CrossCurrentActivity.Current.Activity;
+                String organString = customPin.donatableOrgans.ToJson();
 
-            String organString = customPin.donatableOrgans.ToJson();
-
-            Intent intent = new Intent(mainActivity.BaseContext, typeof(BottomSheetListActivity));
-            intent.PutExtra("name", customPin.Label);
-            intent.PutExtra("address", customPin.Address);
-            intent.PutExtra("profilePicture", customPin.userPhoto);
-            intent.PutExtra("organs", organString);
-            intent.PutExtra("donorLat", customPin.Position.Latitude.ToString());
-            intent.PutExtra("donorLong", customPin.Position.Longitude.ToString());
-            mainActivity.StartActivity(intent);
+                Intent intent = new Intent(mainActivity.BaseContext, typeof(BottomSheetListActivity));
+                intent.PutExtra("name", customPin.Label);
+                intent.PutExtra("address", customPin.Address);
+                intent.PutExtra("profilePicture", customPin.userPhoto);
+                intent.PutExtra("organs", organString);
+                intent.PutExtra("donorLat", customPin.Position.Latitude.ToString());
+                intent.PutExtra("donorLong", customPin.Position.Longitude.ToString());
+                mainActivity.StartActivity(intent);
+            }
         }
 
         /// <summary>
@@ -557,17 +559,23 @@ namespace CustomRenderer.Droid
         /// <returns></returns>
         CustomPin GetCustomPin(Pin pin)
         {
-            // Search custom pins
-            if (customPins.TryGetValue(pin.Position, out CustomPin foundPin))
+            for (int i = 0; i < 2; i++)
             {
-                return foundPin;
+                // Search custom pins
+                if (customPins.TryGetValue(pin.Position, out CustomPin foundPin))
+                {
+                    return foundPin;
+                }
+
+                // Search helicopter pins
+                if (helicopterPins.TryGetValue(pin.Address, out foundPin))
+                {
+                    return foundPin;
+                }
+
+                updatePins();
             }
 
-            // Search helicopter pins
-            if (helicopterPins.TryGetValue(pin.Address, out foundPin))
-            {
-                return foundPin;
-            }
             return null;
         }
     }

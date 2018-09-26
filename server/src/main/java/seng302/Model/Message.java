@@ -52,9 +52,7 @@ public class Message {
         return timestamp;
     }
 
-    public int getConversationId() {
-        return conversationId;
-    }
+    public void setId(int id) { this.id = id ; }
 
     public Map<String, String> messageMap() {
         Map<String, String> m = new HashMap<>();

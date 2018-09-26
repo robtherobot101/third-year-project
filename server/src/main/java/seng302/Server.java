@@ -273,6 +273,8 @@ public class Server {
             path("/facebookaccount", () -> post("",      profileUtils::changeToFacebook));
             path("/googleaccount", () -> post("", profileUtils::changeToGoogle));
 
+            path("/accounttype", () -> get("", profileUtils::getAccountTypeReq));
+
             path("/countries", () -> {
                 get("", countriesController::getCountries);
                 patch("", countriesController::patchCountries);

@@ -144,32 +144,17 @@ public class UserDonations extends DatabaseMethods {
      * @throws SQLException If there is errors communicating with the database
      */
     public void updateAllDonations(Set<Organ> newOrgans, int userId, LocalDateTime dateOfDeath) throws SQLException {
-        List<Organ> oldDonationItems = new ArrayList<Organ>(getAllUserDonations(userId));
-        List<Organ> newDonationItems = new ArrayList<Organ>(newOrgans);
+        List<Organ> oldDonationItems = new ArrayList<>(getAllUserDonations(userId));
+        List<Organ> newDonationItems = new ArrayList<>(newOrgans);
 
         //Ignore all waiting list items that are already on the database and up to date
         for (int i = oldDonationItems.size() - 1; i >= 0; i--) {
-            Organ found = null;
-            for (Organ newOrgan : newDonationItems) {
-                if (newOrgan == oldDonationItems.get(i)) {
-                    updateDonationListItem(userId, found.toString(), dateOfDeath);
-                    found = newOrgan;
+            for (int j = newDonationItems.size() - 1; j >= 0; j--) {
+                if (newDonationItems.get(j) == oldDonationItems.get(i)) {
+                    newDonationItems.remove(j);
+                    oldDonationItems.remove(i);
                     break;
                 }
-            }
-            if (found == null) {
-                //Patch edited donations
-                for (Organ newOrgan : newDonationItems) {
-                    if (newOrgan == oldDonationItems.get(i)) {
-                        updateDonationListItem(userId, found.toString(), dateOfDeath);
-                        found = newOrgan;
-                        break;
-                    }
-                }
-            }
-            if (found != null) {
-                newDonationItems.remove(found);
-                oldDonationItems.remove(i);
             }
         }
 

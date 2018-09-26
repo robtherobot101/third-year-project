@@ -36,8 +36,10 @@ namespace mobileAppClient
 	                LoginButton.IsEnabled = false;
 	                SignUpButton.IsEnabled = false;
 	                RememberMeSwitch.IsEnabled = false;
+                    FacebookButton.IsEnabled = false;
+                    GoogleButton.IsEnabled = false;
 
-	                LoadingIndicator.IsVisible = true;
+                    LoadingIndicator.IsVisible = true;
 	                LoadingIndicator.IsRunning = true;
 	            }
 	            else
@@ -47,6 +49,8 @@ namespace mobileAppClient
 	                LoginButton.IsEnabled = true;
 	                SignUpButton.IsEnabled = true;
 	                RememberMeSwitch.IsEnabled = true;
+                    FacebookButton.IsEnabled = true;
+                    GoogleButton.IsEnabled = true;
 
                     LoadingIndicator.IsVisible = false;
 	                LoadingIndicator.IsRunning = false;
@@ -341,15 +345,6 @@ namespace mobileAppClient
             }
         }
 
-        /*
-         * Function used to Stops the back button from working and 
-         * opening the main view without a logged in user
-         */
-        protected override bool OnBackButtonPressed()
-        {
-            return true;
-        }
-
         async void Handle_LoginWithFacebookClicked(object sender, System.EventArgs e)
         {
             rememberLogin = RememberMeSwitch.IsToggled;
@@ -400,7 +395,7 @@ namespace mobileAppClient
             LoginAPI loginAPI = new LoginAPI();
 
             //Do a check to see if user is already in the database - if they are then skip the register and go to login if not just login
-            Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueUsernameEmail(googleUser.email);
+            Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueApiId(id);
             if (isUniqueEmailResult.Item1 != HttpStatusCode.OK)
             {
                 Console.WriteLine("Failed to connect to server for checking of unique email");

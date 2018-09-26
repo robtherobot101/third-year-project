@@ -26,7 +26,7 @@ namespace mobileAppClient
 
 	    public Conversation conversation;
 
-        private CustomObservableCollection<Message> conversationMessages;
+        public CustomObservableCollection<Message> conversationMessages;
 
 
 		public ConversationPage(Conversation conversationToDisplay, int localId)
@@ -38,7 +38,7 @@ namespace mobileAppClient
 		    this.localId = localId;
 
 		    Title = conversation.externalName;
-            conversationMessages = conversation.messages;
+            conversationMessages = new CustomObservableCollection<Message>(conversationToDisplay.messages.Reverse());
             conversationMessages.CollectionChanged += ConversationMessages_CollectionChanged;
 
             MessagesListView.ItemsSource = conversationMessages;
@@ -47,9 +47,9 @@ namespace mobileAppClient
             VSAppCenter.setConversationController(this);
         }
 
-        private void ConversationMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void ConversationMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            //MessagesListView.ScrollToLast();
+            //await ScrollViewContainer.ScrollToAsync(0, 100, true);
         }
 
         protected async override void OnAppearing()
@@ -78,7 +78,9 @@ namespace mobileAppClient
 
         void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
-            DependencyService.Get<IForceKeyboardDismissalService>().DismissKeyboard();
+            if(Device.RuntimePlatform == Device.iOS) {
+                DependencyService.Get<IForceKeyboardDismissalService>().DismissKeyboard();
+            }
 
         }
 

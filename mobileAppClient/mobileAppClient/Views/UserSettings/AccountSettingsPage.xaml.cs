@@ -17,20 +17,19 @@ namespace mobileAppClient.Views.UserSettings
         private bool changingPassword = false;
 		public AccountSettingsPage()
 		{
-			InitializeComponent ();
-            passwordInput.IsVisible = false;
-            confirmPasswordInput.IsVisible = false;
+			InitializeComponent();
+            passwordInput.IsEnabled = false;
+            confirmPasswordInput.IsEnabled = false;
 
-            ChangePasswordMenuItemViewCell.Height = dummyCell.Height;
+            //ChangePasswordMenuItemViewCell.Height = dummyCell.Height;
             UsernameEntry.Text = UserController.Instance.LoggedInUser.username;
             EmailEntry.Text = UserController.Instance.LoggedInUser.email;
-            
         }
 
-        async void Handle_ChangePasswordTapped(object sender, System.EventArgs e)
+        void Handle_ChangePasswordTapped(object sender, System.EventArgs e)
         {
-            passwordInput.IsVisible = !passwordInput.IsVisible;
-            confirmPasswordInput.IsVisible = !confirmPasswordInput.IsVisible;
+            passwordInput.IsEnabled = !passwordInput.IsEnabled;
+            confirmPasswordInput.IsEnabled = !confirmPasswordInput.IsEnabled;
             changingPassword = !changingPassword;
         }
 

@@ -1,4 +1,5 @@
-﻿using mobileAppClient.odmsAPI;
+﻿using mobileAppClient.Maps;
+using mobileAppClient.odmsAPI;
 using mobileAppClient.Views;
 using mobileAppClient.Views.Clinician;
 using System;
@@ -18,7 +19,8 @@ namespace mobileAppClient
     public partial class MainPage : MasterDetailPage
     {
         public ObservableCollection<MasterPageItem> menuList { get; set; }
-    
+        private MasterPageItem selectedMenuItem;
+
         /*
          * Constructor which adds all of the menu items with given icons and titles.
          * Also sets the landing page to be the overview page.
@@ -37,7 +39,24 @@ namespace mobileAppClient
             {
                 UserController.Instance.mainPageController = this;
             }
+            this.IsPresentedChanged += Handle_IsPresentedChanged;
         }
+
+        /*
+         * Used to get rid of the iOS Bottom Sheet when a user goes back into the menu
+         */ 
+        void Handle_IsPresentedChanged(object sender, EventArgs e)
+        {
+            if(selectedMenuItem == null) {
+                return;
+            }
+
+            if(Device.RuntimePlatform == Device.iOS) {
+                DependencyService.Get<BottomSheetMapInterface>().removeBottomSheet(this.IsPresented, selectedMenuItem);
+            }
+
+        }
+
 
         /*
          * Method which is used when a user logs out, opening the login page again.
@@ -184,8 +203,8 @@ namespace mobileAppClient
          */
         private void OnMenuItemSelected(object sender, SelectedItemChangedEventArgs e)
         {
-            var item = (MasterPageItem)e.SelectedItem;
-            Type page = item.TargetType;
+            selectedMenuItem = (MasterPageItem)e.SelectedItem;
+            Type page = selectedMenuItem.TargetType;
 
             switch(page.Name)
             {

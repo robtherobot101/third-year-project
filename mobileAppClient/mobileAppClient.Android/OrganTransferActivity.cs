@@ -103,6 +103,11 @@ namespace mobileAppClient.Droid
                     double donorLong = Convert.ToDouble(Intent.GetStringExtra("donorLong"));
                     Position pos = new Position(donorLat, donorLong);
                     clinicianMapPage.NewTransferWithoutAddingHelicpoter(organ, selectedReceiver, pos);
+                    Intent dummy = new Intent();
+                    SetResult(Result.Ok);
+                    //SetResult(RESULT_OK, dummy);
+                    Finish();
+                    
                 });
 
                 alert.SetNegativeButton("No", (senderAlert, args) =>
@@ -117,7 +122,8 @@ namespace mobileAppClient.Droid
         }
 
         private async void prepareList()
-        { 
+        {
+            //getSupportActionBar.Show();
             receiverTable = FindViewById<TableLayout>(Resource.Id.ReceiverTableLayout);
             var organText = FindViewById<TextView>(Resource.Id.Organ_Name);
             organTimerText = FindViewById<TextView>(Resource.Id.Time_Left);
@@ -181,31 +187,31 @@ namespace mobileAppClient.Droid
             long timeRemaining = timeRemainingTuple.Item2;
             if (timeRemaining <= 3600)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 65, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(191, 14, 0));
             }
             else if (timeRemaining <= 10800)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 130, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(186, 68, 1));
             }
             else if (timeRemaining <= 21600)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 190, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(181, 119, 2));
             }
             else if (timeRemaining <= 43200)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(244, 241, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(176, 167, 3));
             }
             else if (timeRemaining <= 86400)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(208, 244, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(131, 171, 4));
             }
             else if (timeRemaining <= 172800)
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(160, 244, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(81, 166, 5));
             }
             else
             {
-                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(76, 244, 65));
+                organTimerText.SetTextColor(Android.Graphics.Color.Rgb(34, 161, 6));
             }
 
 
@@ -214,8 +220,6 @@ namespace mobileAppClient.Droid
             //Bottom Card
             //------------------------------------------------------------------------------------
 
-            //This is used onClick as an index to insert the receiver table.
-            int i = 1;
             allRecipientRows = new List<TableRow>();
             if(organ.expired)
             {
@@ -238,6 +242,8 @@ namespace mobileAppClient.Droid
                
             } else
             {
+                transferText.Text = "Loading Valid Receivers...";
+
                 foreach (User recipient in organ.topReceivers)
                 {
                     TableRow recipientRow = new TableRow(this);
@@ -269,29 +275,32 @@ namespace mobileAppClient.Droid
                     }
 
                     recipientName.Text = recipient.FullName;
-
                     recipientName.SetTextAppearance(this, Android.Resource.Style.TextAppearanceMedium);
+                    recipientName.SetPadding(0, 0, 40, 15);
 
                     recipientImage.SetAdjustViewBounds(true);
                     recipientImage.SetMaxHeight(80);
-                    recipientImage.SetMaxWidth(10);
-                    //receiverTable.SetColumnShrinkable(0, true);
+                    recipientImage.SetMaxWidth(80);
+                    recipientImage.SetPadding(0, 0, 15, 15);
 
                     recipientAddress.Text = recipient?.currentAddress + ", " + recipient?.region;
 
                     recipientRow.AddView(recipientImage);
                     recipientRow.AddView(recipientName);
                     recipientRow.AddView(recipientAddress);
-                    recipientRow.Id = i;
                     recipientRow.SetOnClickListener(this);
                     receiverTable.AddView(recipientRow);
                     allRecipientRows.Add(recipientRow);
-                    i++;
+                    
 
 
                 }
+
+                transferText.Text = "Tap on a receiver to begin transfer.";
+                StartTickingTimer(1000);
             }
-            StartTickingTimer(1000);
+          
+            
 
         }
 

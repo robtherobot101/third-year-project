@@ -60,18 +60,24 @@ public class OrganMatching {
      * @return the list of users ids
      */
     public List<User> getTop5Matches(DonatableOrgan organ, String receiverNameQuery){
+        if (receiverNameQuery == null) {
+            receiverNameQuery = "";
+        }
         try {
             User donor = model.getUserFromId((int) organ.getDonorId());
             List<User> matches = model.getMatchingUsers(organ, (int)ChronoUnit.MONTHS.between(donor.getDateOfBirth(), LocalDate.now()), donor.getBloodType());
-            matches = getBestMatches(donor.getRegionOfDeath(), matches, organ);
             List<User> topMatches = new ArrayList<>();
-            for (User user : matches){
-                if (user.getName() != null && user.getName().toLowerCase().contains(receiverNameQuery.toLowerCase())){
-                    topMatches.add(user);
+            if (matches.size() != 0) {
+                matches = getBestMatches(donor.getRegionOfDeath(), matches, organ);
+                for (User user : matches) {
+                    if (user.getName() != null && user.getName().toLowerCase().contains(receiverNameQuery.toLowerCase())) {
+                        topMatches.add(user);
+                    }
                 }
             }
             return topMatches;
         } catch (SQLException e){
+            e.printStackTrace();
             Server.getInstance().log.debug("Error communicating with the database");
             return new ArrayList<>();
         }
