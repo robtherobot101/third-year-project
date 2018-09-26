@@ -1,6 +1,5 @@
 package seng302.Logic.Database;
 
-import org.apache.http.client.HttpResponseException;
 import seng302.Config.DatabaseConfiguration;
 import seng302.Logic.SaltHash;
 import seng302.Model.Attribute.*;
@@ -26,9 +25,19 @@ public class GeneralUser extends DatabaseMethods {
     public void patchEntireUser(User user, int userId, boolean canEditClinicianAttributes) throws SQLException {
         updateUserAttributes(user, userId);
 
-        new UserDonations().updateAllDonations(new HashSet<Organ>(user.getOrgans()), userId, user.getDateOfDeath());
+        new UserDonations().updateAllDonations(new HashSet<>(user.getOrgans()), userId, user.getDateOfDeath());
 
         new UserHistory().updateHistory(user.getUserHistory(), userId);
+
+        if (user.getDateOfDeath() != null) {
+            for (Organ organ: user.getOrgans()) {
+                new UserDonations().updateDonationListItem(userId, organ.toString(), user.getDateOfDeath());
+            }
+        } else {
+            for (Organ organ: user.getOrgans()) {
+                new UserDonations().updateDonationListItem(userId, organ.toString(), null);
+            }
+        }
 
         if (!canEditClinicianAttributes) {
             return;
@@ -671,7 +680,7 @@ public class GeneralUser extends DatabaseMethods {
             String over12 = "TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) > 12*12 AND " + Math.abs(ageMonths) + " - TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) < 12*15)";
             String query = "SELECT * FROM " +
                     "(SELECT * FROM USER WHERE " +
-                        "USER.date_of_death IS NULL AND USER.blood_type = ? AND USER.region IS NOT NULL  AND not USER.region == ''  AND ";
+                        "USER.date_of_death IS NULL AND USER.blood_type = ? AND USER.region IS NOT NULL AND USER.region != '' AND ";
             if (ageMonths <= 144) {
                 query += under12;
             } else {

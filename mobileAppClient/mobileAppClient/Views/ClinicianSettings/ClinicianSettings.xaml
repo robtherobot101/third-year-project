@@ -13,17 +13,13 @@
                     <TableSection Title="Account Settings">
                         <EntryCell Label="Username" x:Name="UsernameEntry"/>
 
-                        <ViewCell Tapped="Handle_ChangePasswordTapped" x:Name="ChangePasswordMenuItemViewCell">
-                            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="15,15,10,15">
-                                <Label Text="Change Password" TextColor="Black" HorizontalOptions="Start" VerticalOptions="Center"/>
-                                <controls:TintedImage Source="arrow_icon.png" HorizontalOptions="EndAndExpand" HeightRequest="25" WidthRequest="25"/>
-                            </StackLayout>
-                        </ViewCell>
+                        <SwitchCell x:Name="ChangePasswordSwitch"  Text="Change password?" OnChanged="PasswordSwitchChanged" On="True" />
+                       
 
                         <ViewCell x:Name="PasswordChangeViewCell">
                             <StackLayout Orientation="Vertical">
-                                <Entry x:Name="passwordInput" Placeholder="Password" IsPassword="true"/>
-                                <Entry x:Name="confirmPasswordInput" Placeholder="Confirm Password" IsPassword="true"/>
+                                <Entry x:Name="passwordInput" Placeholder="Password" IsPassword="true" IsVisible="True"/>
+                                <Entry x:Name="confirmPasswordInput" Placeholder="Confirm Password" IsPassword="true" IsVisible="True"/>
                             </StackLayout>
                         </ViewCell>
 

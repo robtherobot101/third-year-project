@@ -455,5 +455,33 @@ namespace mobileAppClient.odmsAPI
             return response.StatusCode;
         }
 
+        public async Task<String> getAccountType(int userId)
+        {
+
+            // Fetch the url and client from the server config class
+            HttpClient client = ServerConfig.Instance.client;
+            String url = ServerConfig.Instance.serverAddress;
+
+            HttpResponseMessage response = null;
+
+
+            string queries = $"?id={userId}";
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/accounttype" + queries);
+
+            try
+            {
+                response = await client.SendAsync(request);
+            }
+            catch (HttpRequestException e)
+            {
+                Console.WriteLine(e.StackTrace);
+            }
+
+            string responseContent = await response.Content.ReadAsStringAsync();
+
+            return responseContent;
+
+        }
+
     }
 }

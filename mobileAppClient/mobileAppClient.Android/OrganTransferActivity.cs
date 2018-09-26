@@ -103,6 +103,10 @@ namespace mobileAppClient.Droid
                     double donorLong = Convert.ToDouble(Intent.GetStringExtra("donorLong"));
                     Position pos = new Position(donorLat, donorLong);
                     clinicianMapPage.NewTransferWithoutAddingHelicpoter(organ, selectedReceiver, pos);
+                    Intent dummy = new Intent();
+                    SetResult(Result.Ok);
+                    //SetResult(RESULT_OK, dummy);
+                    Finish();
                     
                 });
 
@@ -216,8 +220,6 @@ namespace mobileAppClient.Droid
             //Bottom Card
             //------------------------------------------------------------------------------------
 
-            //This is used onClick as an index to insert the receiver table.
-            int i = 1;
             allRecipientRows = new List<TableRow>();
             if(organ.expired)
             {
@@ -240,6 +242,8 @@ namespace mobileAppClient.Droid
                
             } else
             {
+                transferText.Text = "Loading Valid Receivers...";
+
                 foreach (User recipient in organ.topReceivers)
                 {
                     TableRow recipientRow = new TableRow(this);
@@ -271,29 +275,32 @@ namespace mobileAppClient.Droid
                     }
 
                     recipientName.Text = recipient.FullName;
-
                     recipientName.SetTextAppearance(this, Android.Resource.Style.TextAppearanceMedium);
+                    recipientName.SetPadding(0, 0, 40, 15);
 
                     recipientImage.SetAdjustViewBounds(true);
                     recipientImage.SetMaxHeight(80);
-                    recipientImage.SetMaxWidth(10);
-                    //receiverTable.SetColumnShrinkable(0, true);
+                    recipientImage.SetMaxWidth(80);
+                    recipientImage.SetPadding(0, 0, 15, 15);
 
                     recipientAddress.Text = recipient?.currentAddress + ", " + recipient?.region;
 
                     recipientRow.AddView(recipientImage);
                     recipientRow.AddView(recipientName);
                     recipientRow.AddView(recipientAddress);
-                    recipientRow.Id = i;
                     recipientRow.SetOnClickListener(this);
                     receiverTable.AddView(recipientRow);
                     allRecipientRows.Add(recipientRow);
-                    i++;
+                    
 
 
                 }
+
+                transferText.Text = "Tap on a receiver to begin transfer.";
+                StartTickingTimer(1000);
             }
-            StartTickingTimer(1000);
+          
+            
 
         }
 

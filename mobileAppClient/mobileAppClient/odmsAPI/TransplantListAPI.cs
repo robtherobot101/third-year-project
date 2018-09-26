@@ -225,7 +225,7 @@ namespace mobileAppClient.odmsAPI
             }
         }
 
-        public async void DeleteTransfer(int id)
+        public async Task DeleteTransfer(int id)
         {
             if (!ServerConfig.Instance.IsConnectedToInternet())
             {
@@ -250,7 +250,7 @@ namespace mobileAppClient.odmsAPI
             }
         }
 
-        public async void DeleteWaitingListItem(int organId)
+        public async Task DeleteWaitingListItem(int organId)
         {
             if (!ServerConfig.Instance.IsConnectedToInternet())
             {
@@ -276,12 +276,12 @@ namespace mobileAppClient.odmsAPI
             }
         }
 
-        public async void SetInTransfer(int organId, int transferNum)
+        public async Task<bool> SetInTransfer(int organId, int transferNum)
         {
             if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 Console.WriteLine("ERROR: Failed to set in transfer: no internet");
-                return;
+                return false;
             }
 
             String url = ServerConfig.Instance.serverAddress;
@@ -298,8 +298,10 @@ namespace mobileAppClient.odmsAPI
             }
             catch (HttpRequestException)
             {
-                return;
+                return false;
             }
+
+            return response.StatusCode == HttpStatusCode.Created;
         }
 
         public async Task<HttpStatusCode> InsertTransfer(OrganTransfer transfer)
@@ -326,7 +328,7 @@ namespace mobileAppClient.odmsAPI
             {
                 var response = await client.SendAsync(request);
 
-                if (response.StatusCode == HttpStatusCode.OK)
+                if (response.StatusCode == HttpStatusCode.Created)
                 {
                     Console.WriteLine("Success on uploading transfer");
                     return HttpStatusCode.OK;
@@ -355,10 +357,17 @@ namespace mobileAppClient.odmsAPI
             HttpClient client = ServerConfig.Instance.client;
 
 
-            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/" + userId + "/waitingListOrgan/" + organ);
+            var request = new HttpRequestMessage(new HttpMethod("GET"), url + "/users/" + userId + "/waitingListOrgan/" + organ);
             request.Headers.Add("token", ClinicianController.Instance.AuthToken);
 
-            var response = await client.SendAsync(request);
+            HttpResponseMessage response;
+            try {
+                response = await client.SendAsync(request);
+            } catch (HttpRequestException) {
+                Console.WriteLine("TransplantAPI: FAILED TO GET WAITING LIST ID !!!");
+                return 0;
+            }
+
             string body = await response.Content.ReadAsStringAsync();
 
             try

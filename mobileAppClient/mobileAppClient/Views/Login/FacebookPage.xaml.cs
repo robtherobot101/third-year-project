@@ -108,7 +108,7 @@ namespace mobileAppClient
                 LoginAPI loginAPI = new LoginAPI();
 
                 //Do a check to see if user is already in the database - if they are then skip the register and go to login if not just login
-                Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueUsernameEmail(facebookProfile.Email);
+                Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueApiId(facebookProfile.Id);
                 if (isUniqueEmailResult.Item1 != HttpStatusCode.OK)
                 {
                     Console.WriteLine("Failed to connect to server for checking of unique email");
@@ -130,7 +130,7 @@ namespace mobileAppClient
                         case HttpStatusCode.Unauthorized:
                             await DisplayAlert(
                                 "Failed to Login",
-                                "Incorrect username/password :P",
+                                "Incorrect username/password",
                                 "OK");
                             break;
                         case HttpStatusCode.ServiceUnavailable:
@@ -251,7 +251,6 @@ namespace mobileAppClient
                             break;
                     }
                 }
-
             }
         }
     }
