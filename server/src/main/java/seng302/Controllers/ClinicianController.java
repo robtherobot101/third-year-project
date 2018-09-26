@@ -152,13 +152,17 @@ public class ClinicianController {
         Gson gson = new Gson();
 
         Clinician receivedClinician = gson.fromJson(request.body(), Clinician.class);
+        String password = null;
+        if (gson.toJsonTree(request.body()).getAsJsonObject().has("password")) {
+            password = gson.toJsonTree(request.body()).getAsJsonObject().getAsJsonPrimitive("password").getAsString();
+            password = SaltHash.createHash(password);
+        }
         if (receivedClinician == null) {
             response.status(400);
             return "Missing clinician Body";
         } else {
             try {
-                receivedClinician.setPassword(SaltHash.createHash(receivedClinician.getPassword()));
-                model.updateClinicianDetails(receivedClinician, Integer.parseInt(request.params(":id")));
+                model.updateClinicianDetails(receivedClinician, Integer.parseInt(request.params(":id")), password);
                 response.status(201);
                 return "CLINICIAN SUCCESSFULLY UPDATED";
             } catch (SQLException e) {

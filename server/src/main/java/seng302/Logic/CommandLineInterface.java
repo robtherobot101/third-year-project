@@ -831,7 +831,7 @@ public class CommandLineInterface {
                     wasSuccessful = false;
                     break;
             }
-            new GeneralClinician().updateClinicianDetails(toSet, (int)toSet.getStaffID());
+            new GeneralClinician().updateClinicianDetails(toSet, (int)toSet.getStaffID(), toSet.getPassword());
         } catch (SQLException e) {
             return new CommandLineResponse(false, "clinician could not be updated. An error occurred on the server.");
 
