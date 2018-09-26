@@ -417,7 +417,7 @@ namespace mobileAppClient.odmsAPI
         /*
          * Returns response status code of the attempted user registration
          */
-        public async Task<HttpStatusCode> Team300RegisterUser(int userId, string email, string password, string username)
+        public async Task<HttpStatusCode> Team300RegisterUser(int userId, string password, string username)
         {
             if (!ServerConfig.Instance.IsConnectedToInternet())
             {
@@ -437,7 +437,7 @@ namespace mobileAppClient.odmsAPI
             HttpResponseMessage response;
             try
             {
-                response = await client.PostAsync(url + "/facebookaccount" + queries, body);
+                response = await client.PostAsync(url + "/300Account" + queries, body);
             }
             catch (HttpRequestException)
             {

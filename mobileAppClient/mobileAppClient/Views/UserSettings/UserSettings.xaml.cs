@@ -17,7 +17,6 @@ namespace mobileAppClient
             InitializeComponent();
             passwordInput.IsVisible = false;
             confirmPasswordInput.IsVisible = false;
-            EmailEntry.IsVisible = false;
             UsernameEntry.IsVisible = false;
             ConfirmTeam300LoginMethodChanged.IsVisible = false;
 
@@ -53,7 +52,6 @@ namespace mobileAppClient
         {
             passwordInput.IsVisible = true;
             confirmPasswordInput.IsVisible = true;
-            EmailEntry.IsVisible = true;
             UsernameEntry.IsVisible = true;
             ConfirmTeam300LoginMethodChanged.IsVisible = true;
             
@@ -82,16 +80,8 @@ namespace mobileAppClient
                                     "OK");
                 return;
             }
-            else if (EmailEntry.Text == "")
-            {
-                await DisplayAlert("",
-                                    "Email must not be empty",
-                                    "OK");
-                return;
-            }
 
-            HttpStatusCode result = await new LoginAPI().Team300RegisterUser(UserController.Instance.LoggedInUser.id,
-                                                EmailEntry.Text, passwordInput.Text, UsernameEntry.Text);
+            HttpStatusCode result = await new LoginAPI().Team300RegisterUser(UserController.Instance.LoggedInUser.id, passwordInput.Text, UsernameEntry.Text);
 
             switch (result)
             {
@@ -124,7 +114,6 @@ namespace mobileAppClient
 
             passwordInput.IsVisible = false;
             confirmPasswordInput.IsVisible = false;
-            EmailEntry.IsVisible = false;
             UsernameEntry.IsVisible = false;
             ConfirmTeam300LoginMethodChanged.IsVisible = false;
         }

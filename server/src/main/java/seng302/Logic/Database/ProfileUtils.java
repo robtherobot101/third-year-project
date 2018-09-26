@@ -57,6 +57,7 @@ public class ProfileUtils extends DatabaseMethods {
         int userId = Integer.parseInt(request.queryParams("id"));
         String username = request.queryParams("username");
         String password = request.queryParams("password");
+        System.out.println(userId + username + password);
 
         try {
             changeToTeam300Account(userId, username, SaltHash.createHash(password));
@@ -84,6 +85,7 @@ public class ProfileUtils extends DatabaseMethods {
                     "SET acc_type = \"team300\" WHERE id = ?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, userId);
+            statement.execute();
             statement.close();
             query = "UPDATE ACCOUNT " +
                     "SET username = ?, password = ? WHERE id = ?";
@@ -91,6 +93,7 @@ public class ProfileUtils extends DatabaseMethods {
             statement.setString(1, username);
             statement.setString(2,password);
             statement.setInt(3, userId);
+            statement.execute();
 
         } finally {
             close(statement);
