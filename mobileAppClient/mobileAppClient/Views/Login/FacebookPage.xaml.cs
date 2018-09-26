@@ -130,7 +130,7 @@ namespace mobileAppClient
                         case HttpStatusCode.Unauthorized:
                             await DisplayAlert(
                                 "Failed to Login",
-                                "Incorrect username/password :P",
+                                "Incorrect username/password",
                                 "OK");
                             break;
                         case HttpStatusCode.ServiceUnavailable:
@@ -251,7 +251,6 @@ namespace mobileAppClient
                             break;
                     }
                 }
-
             }
         }
     }
