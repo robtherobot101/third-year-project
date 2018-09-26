@@ -15,7 +15,7 @@
             </StackLayout>
 
             <StackLayout x:Name="affectedOrganStack" Orientation="Horizontal">
-                <Picker x:Name="NewAffectedOrganPicker" HorizontalOptions="Fill"/>
+                <Picker x:Name="NewAffectedOrganPicker" HorizontalOptions="FillAndExpand"/>
                 <Button Text="Add Organ" Clicked="AddAffectedOrganClicked" HorizontalOptions="End"/>
             </StackLayout>
 

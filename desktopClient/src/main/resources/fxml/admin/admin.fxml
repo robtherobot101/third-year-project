@@ -234,17 +234,18 @@
                                  <Font size="13.0" />
                              </font>
                          </Button>
-                        <Button fx:id="cliTabButton" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#viewCli" stylesheets="@../../css/menubutton.css" text="Command Line" textAlignment="CENTER" GridPane.rowIndex="3">
+                         <Button fx:id="transferOrgansButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#organTransfers" stylesheets="@../../css/menubutton.css" text="Transfer Organs" textAlignment="CENTER" GridPane.rowIndex="3">
+                             <font>
+                                 <Font size="13.0" />
+                             </font>
+                         </Button>
+                        <Button fx:id="cliTabButton" alignment="BASELINE_LEFT" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#viewCli" stylesheets="@../../css/menubutton.css" text="Command Line" textAlignment="CENTER" GridPane.rowIndex="4">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
 
-                         <Button fx:id="transferOrgansButton" alignment="BASELINE_LEFT" blendMode="SRC_ATOP" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#organTransfers" stylesheets="@../../css/menubutton.css" text="Transfer Organs" textAlignment="CENTER" GridPane.rowIndex="4">
-                             <font>
-                                 <Font size="13.0" />
-                             </font>
-                         </Button>
+
 
                          <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="▤" GridPane.rowIndex="1">
                            <font>
