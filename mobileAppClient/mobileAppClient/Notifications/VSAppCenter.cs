@@ -40,7 +40,9 @@ namespace mobileAppClient.Notifications
                         {
                             if (conversationController.conversation != null && conversationController.conversation.id == notifiedMessage.conversationId) 
                             {
-                                conversationController.conversation.messages.Insert(0, notifiedMessage);
+                                if(!conversationController.conversationMessages.Contains(notifiedMessage)) {
+                                    conversationController.conversationMessages.Insert(0, notifiedMessage);
+                                }
                             }
                         }
                         else
@@ -65,9 +67,8 @@ namespace mobileAppClient.Notifications
                                                         
                         }
 
-                        if(Xamarin.Forms.Device.RuntimePlatform == Xamarin.Forms.Device.Android) {
-                            DependencyService.Get<IToast>().ShortAlert("You have received a message");
-                        }
+                        DependencyService.Get<IToast>().ShortAlert("You have received a message");
+                        
 
                     }
                 };
