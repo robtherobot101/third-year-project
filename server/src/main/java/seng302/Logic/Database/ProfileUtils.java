@@ -529,36 +529,56 @@ public class ProfileUtils extends DatabaseMethods {
      */
     public boolean isUniqueIdentifier(Request request, Response response) throws SQLException {
         String usernameEmail = request.queryParams("usernameEmail");
-        if (usernameEmail == null || usernameEmail.isEmpty()) {
+        String api_id = request.queryParams("api_id");
+        if ((usernameEmail == null || usernameEmail.isEmpty()) && (api_id == null || api_id.isEmpty())) {
             Server.getInstance().log.warn("Received unique identifier request that did not contain an identifier to check.");
             halt(400, "Bad Request");
             return false;
         }
 
-        ResultSet resultSet = null;
-        PreparedStatement statement = null;
-        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            statement = connection.prepareStatement("SELECT * FROM ACCOUNT WHERE username = ?");
-            statement.setString(1, usernameEmail);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
+        if (api_id == null || api_id.isEmpty()) {
+            ResultSet resultSet = null;
+            PreparedStatement statement = null;
+            try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+                statement = connection.prepareStatement("SELECT * FROM ACCOUNT WHERE username = ?");
+                statement.setString(1, usernameEmail);
+                resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    response.status(200);
+                    return false;
+                }
+                resultSet.close();
+                statement.close();
+                statement = connection.prepareStatement("SELECT * FROM USER WHERE email = ? OR nhi = ?");
+                statement.setString(1, usernameEmail);
+                statement.setString(2, usernameEmail);
+                resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    response.status(200);
+                    return false;
+                }
                 response.status(200);
-                return false;
+                return true;
+            } finally {
+                close(resultSet, statement);
             }
-            resultSet.close();
-            statement.close();
-            statement = connection.prepareStatement("SELECT * FROM USER WHERE email = ? OR nhi = ?");
-            statement.setString(1, usernameEmail);
-            statement.setString(2, usernameEmail);
-            resultSet = statement.executeQuery();
-            if (resultSet.next()) {
+        } else if (usernameEmail == null || usernameEmail.isEmpty()) {
+            ResultSet resultSet = null;
+            PreparedStatement statement = null;
+            try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+                statement = connection.prepareStatement("SELECT * FROM USER WHERE api_id = ?");
+                statement.setString(1, api_id);
+                resultSet = statement.executeQuery();
+                if (resultSet.next()) {
+                    response.status(200);
+                    return false;
+                }
                 response.status(200);
-                return false;
+                return true;
+            } finally {
+                close(resultSet, statement);
             }
-            response.status(200);
-            return true;
-        } finally {
-            close(resultSet, statement);
         }
+        return false;
     }
 }
