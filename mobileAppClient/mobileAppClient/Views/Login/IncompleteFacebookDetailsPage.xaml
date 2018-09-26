@@ -27,7 +27,7 @@
                     </TableRoot>
                 </TableView>
 
-                <Button Text="Save" Clicked="Handle_Clicked"/>
+                <Button Text="Save" Clicked="Handle_Clicked" x:Name="ContinueButton"/>
 
             </StackLayout>
     </ContentPage.Content>

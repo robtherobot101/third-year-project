@@ -24,30 +24,6 @@ import static spark.Spark.halt;
 public class ProfileUtils extends DatabaseMethods {
 
     /**
-     * Gets required information to log in with just an app_id
-     * @param api_id The user's app_id
-     * @return A Pair containing the
-     * @throws SQLException When something goes wrong
-     */
-    public Pair<String, String> loginFromId(String api_id) throws SQLException {
-        PreparedStatement statement = null;
-        ResultSet resultSet = null;
-        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "SELECT username, password FROM ACCOUNT JOIN USER ON USER.id = ACCOUNT.id WHERE api_id = ? AND acc_type IN ('facebook', 'google') ";
-            statement = connection.prepareStatement(query);
-            statement.setString(1, api_id);
-            resultSet = statement.executeQuery();
-            resultSet.next();
-            Pair<String, String> pair = new Pair<>(resultSet.getString(1), resultSet.getString(2));
-            return pair;
-        }
-        finally {
-            close(statement, resultSet);
-        }
-    }
-
-
-    /**
      * change a account to a team300 account
      * @param request the request received
      * @param response the response to send
@@ -57,6 +33,7 @@ public class ProfileUtils extends DatabaseMethods {
         int userId = Integer.parseInt(request.queryParams("id"));
         String username = request.queryParams("username");
         String password = request.queryParams("password");
+        System.out.println(userId + username + password);
 
         try {
             changeToTeam300Account(userId, username, SaltHash.createHash(password));
@@ -67,6 +44,50 @@ public class ProfileUtils extends DatabaseMethods {
 
         response.status(200);
         return "USER WITH ID: " + userId +" CHANGED TO FACEBOOK LOGIN SUCCESSFULLY";
+    }
+
+
+    /**
+     * change requested account to a team 300 account type
+     * @param userId the user id of the user to change
+     * @throws SQLException catch sql errors
+     */
+    public String getAccountType(int userId) throws SQLException {
+        PreparedStatement statement = null;
+        ResultSet resultSet = null;
+        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
+            String query = "SELECT acc_type FROM USER WHERE id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, userId);
+            resultSet = statement.executeQuery();
+            resultSet.next();
+            return resultSet.getString("acc_type");
+        } finally {
+            close(statement);
+        }
+    }
+
+
+
+    /**
+     * change a account to a team300 account
+     * @param request the request received
+     * @param response the response to send
+     * @return String output for success
+     */
+    public String getAccountTypeReq(Request request, Response response) {
+        int userId = Integer.parseInt(request.queryParams("id"));
+
+        try {
+            String accType = getAccountType(userId);
+
+            response.status(200);
+            response.body(accType);
+            return accType;
+        } catch (SQLException e) {
+            response.status(500);
+            return "Internal Server Error";
+        }
     }
 
 
@@ -84,6 +105,7 @@ public class ProfileUtils extends DatabaseMethods {
                     "SET acc_type = \"team300\" WHERE id = ?";
             statement = connection.prepareStatement(query);
             statement.setInt(1, userId);
+            statement.execute();
             statement.close();
             query = "UPDATE ACCOUNT " +
                     "SET username = ?, password = ? WHERE id = ?";
@@ -91,6 +113,7 @@ public class ProfileUtils extends DatabaseMethods {
             statement.setString(1, username);
             statement.setString(2,password);
             statement.setInt(3, userId);
+            statement.execute();
 
         } finally {
             close(statement);

@@ -8,6 +8,30 @@ namespace mobileAppClient
 {
     public partial class IncompleteFacebookDetailsPage : ContentPage
     {
+
+        private bool _IsLoading;
+        public bool IsLoading
+        {
+            get { return _IsLoading; }
+            set
+            {
+                _IsLoading = value;
+                if (_IsLoading == true)
+                {
+                    ContinueButton.IsEnabled = false;
+                    dobInput.IsEnabled = false;
+                    emailInput.IsEnabled = false;
+                    NHIInput.IsEnabled = false;
+                }
+                else
+                {
+                    ContinueButton.IsEnabled = true;
+                    dobInput.IsEnabled = true;
+                    emailInput.IsEnabled = true;
+                    NHIInput.IsEnabled = true;
+                }
+            }
+        }
         public IncompleteFacebookDetailsPage(FacebookProfile facebookProfile)
         {
             InitializeComponent();
