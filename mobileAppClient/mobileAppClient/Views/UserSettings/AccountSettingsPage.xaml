@@ -1,9 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:mobileAppClient"
              x:Class="mobileAppClient.Views.UserSettings.AccountSettingsPage"
-             Title="Photo"
+             Title="Account Settings"
              xmlns:controls="clr-namespace:Plugin.CrossPlatformTintedImage.Abstractions;assembly=Plugin.CrossPlatformTintedImage.Abstractions">
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
@@ -22,8 +22,8 @@
                         
                         <ViewCell x:Name="PasswordChangeViewCell">
                             <StackLayout Orientation="Vertical">
-                                <Entry x:Name="passwordInput" Placeholder="Password" IsPassword="true"/>
-                                <Entry x:Name="confirmPasswordInput" Placeholder="Confirm Password" IsPassword="true"/>
+                                <Entry x:Name="passwordInput" Placeholder="Password" IsPassword="true" IsVisible="true"/>
+                                <Entry x:Name="confirmPasswordInput" Placeholder="Confirm Password" IsPassword="true" IsVisible="true"/>
                             </StackLayout>
                         </ViewCell>
 
@@ -35,13 +35,6 @@
                 </TableRoot>
             </TableView>
 
-            <TableView Intent="Menu" HasUnevenRows="false" IsVisible="False">
-                <TableRoot>
-                    <TableSection>
-                        <TextCell x:Name="dummyCell"/>
-                    </TableSection>
-                </TableRoot>
-            </TableView>
 
         </StackLayout>
     </ContentPage.Content>

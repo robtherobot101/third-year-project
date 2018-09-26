@@ -15,13 +15,18 @@ namespace mobileAppClient
         public UserSettings()
         {
             InitializeComponent();
-            passwordInput.IsVisible = false;
-            confirmPasswordInput.IsVisible = false;
-            UsernameEntry.IsVisible = false;
-            ConfirmTeam300LoginMethodChanged.IsVisible = false;
+            passwordInput.IsEnabled = false;
+            
+            confirmPasswordInput.IsEnabled = false;
+            UsernameEntry.IsEnabled = false;
+            ConfirmTeam300LoginMethodChanged.IsEnabled = false;
+
+            if(Device.RuntimePlatform == Device.iOS) {
+                GoogleAccountType.IsEnabled = false;
+            }
 
 
-            updateButtons();
+            //updateButtons();
             UserController.Instance.userSettingsController = this;
         }
 
@@ -35,11 +40,14 @@ namespace mobileAppClient
             String result = await new LoginAPI().getAccountType(UserController.Instance.LoggedInUser.id);
             if (result.Equals("facebook"))
             {
-                AccountSettingsStackLayout.IsVisible = false;
-                AccountSettings.Tapped -= Handle_AccountSettingsTapped;
+                //AccountSettingsStackLayout.IsVisible = false;
+                AccountSettings.IsEnabled = false;
+                AccountSettingsLabel.TextColor = Color.Gray;
+                //AccountSettings.Tapped -= Handle_AccountSettingsTapped;
 
-                FacebookAccountTypeLabel.TextColor = Color.LightGray;
-                FacebookAccountType.Tapped -= Handle_FacebookAccountTypeTapped;
+                FacebookAccountTypeLabel.TextColor = Color.Gray;
+                FacebookAccountType.IsEnabled = false;
+                //FacebookAccountType.Tapped -= Handle_FacebookAccountTypeTapped;
 
 
                 GoogleAccountTypeLabel.TextColor = Color.Black;
@@ -50,31 +58,40 @@ namespace mobileAppClient
             }
             else if (result.Equals("google"))
             {
-                AccountSettingsStackLayout.IsVisible = false;
-                AccountSettings.Tapped -= Handle_AccountSettingsTapped;
+                //AccountSettingsStackLayout.IsVisible = false;
+                AccountSettings.IsEnabled = false;
+                AccountSettingsLabel.TextColor = Color.Gray;
+                //AccountSettings.Tapped -= Handle_AccountSettingsTapped;
 
                 FacebookAccountTypeLabel.TextColor = Color.Black;
-                FacebookAccountType.Tapped += Handle_FacebookAccountTypeTapped;
+                //FacebookAccountType.Tapped += Handle_FacebookAccountTypeTapped;
 
-                GoogleAccountTypeLabel.TextColor = Color.LightGray;
-                GoogleAccountType.Tapped -= Handle_GoogleAccountTypeTapped;
+                GoogleAccountTypeLabel.TextColor = Color.Gray;
+                //GoogleAccountType.Tapped -= Handle_GoogleAccountTypeTapped;
 
                 RegularAccountTypeLabel.TextColor = Color.Black;
                 RegularAccountType.Tapped += Handle_RegularAccountType;
             }
             else
             {
-                AccountSettingsStackLayout.IsVisible = false;
-                AccountSettings.Tapped += Handle_AccountSettingsTapped;
+                //AccountSettingsStackLayout.IsVisible = true;
+                AccountSettings.IsEnabled = true;
+                AccountSettingsLabel.TextColor = Color.Black;
+
 
                 FacebookAccountTypeLabel.TextColor = Color.Black;
-                FacebookAccountType.Tapped += Handle_FacebookAccountTypeTapped;
+                //FacebookAccountType.Tapped += Handle_FacebookAccountTypeTapped;
 
                 GoogleAccountTypeLabel.TextColor = Color.Black;
                 GoogleAccountType.Tapped += Handle_GoogleAccountTypeTapped;
 
-                RegularAccountTypeLabel.TextColor = Color.LightGray;
-                RegularAccountType.Tapped -= Handle_RegularAccountType;
+                RegularAccountTypeLabel.TextColor = Color.Gray;
+                //RegularAccountType.Tapped -= Handle_RegularAccountType;
+            }
+            if (Device.RuntimePlatform == Device.iOS)
+            {
+                GoogleAccountType.IsEnabled = false;
+                GoogleAccountTypeLabel.TextColor = Color.Gray;
             }
         }
 
@@ -87,7 +104,7 @@ namespace mobileAppClient
         async void Handle_FacebookAccountTypeTapped(object sender, System.EventArgs e)
         {
             await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(UserController.Instance.LoggedInUser.id)));
-            updateButtons();
+            //updateButtons();
         }
 
         void Handle_GoogleAccountTypeTapped(object sender, System.EventArgs e)
@@ -105,10 +122,10 @@ namespace mobileAppClient
 
         void Handle_RegularAccountType(object sender, System.EventArgs e)
         {
-            passwordInput.IsVisible = true;
-            confirmPasswordInput.IsVisible = true;
-            UsernameEntry.IsVisible = true;
-            ConfirmTeam300LoginMethodChanged.IsVisible = true;
+            passwordInput.IsEnabled = true;
+            confirmPasswordInput.IsEnabled = true;
+            UsernameEntry.IsEnabled = true;
+            ConfirmTeam300LoginMethodChanged.IsEnabled = true;
             
         }
 
