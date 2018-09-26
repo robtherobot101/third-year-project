@@ -79,7 +79,8 @@ namespace mobileAppClient
          */
         private async void fillFeed(params string[] feeds)
         {
-            if (!await ServerConfig.Instance.IsConnectedToInternet())
+            
+            if (!ServerConfig.Instance.IsConnectedToInternet())
             {
                 return;
             }
