@@ -19,11 +19,16 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JSONParser {
+public class JSONParser<T> {
 
     public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private Type type;
 
-    public static Path checkPath(String rawPath) {
+    public JSONParser(Type importType) {
+        type = importType;
+    }
+
+    public Path checkPath(String rawPath) {
         File inputFile = new File(rawPath);
 
         Path filePath;
@@ -44,11 +49,8 @@ public class JSONParser {
         return filePath;
     }
 
-    public static <T> List<T> readJson(Path filePath) {
+    public List<T> readJson(Path filePath) {
         try (InputStream in = Files.newInputStream(filePath); BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
-            Type type = new TypeToken<ArrayList<T>>() {
-            }.getType();
-
             List<T> importedProfiles = JSONParser.gson.fromJson(reader, type);
             Debugger.log(String.format("Imported list successfully. (%d profiles)", importedProfiles.size()));
             return importedProfiles;
