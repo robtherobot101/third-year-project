@@ -93,7 +93,7 @@ namespace mobileAppClient.odmsAPI
                 else
                 {
                     // Must've attempted login as admin -> deny
-                    return HttpStatusCode.BadRequest;
+                    return HttpStatusCode.Unauthorized;
                 }
             }
             else

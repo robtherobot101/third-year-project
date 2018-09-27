@@ -51,7 +51,7 @@
     <DefineConstants>
     </DefineConstants>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
-    <AndroidSupportedAbis />
+    <AndroidSupportedAbis>armeabi-v7a;x86</AndroidSupportedAbis>
     <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
   </PropertyGroup>
