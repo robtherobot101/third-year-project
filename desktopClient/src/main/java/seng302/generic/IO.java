@@ -169,6 +169,12 @@ public class  IO {
         new Thread(taskToRun).start();
     }
 
+    /**
+     * Runs a threaded CSV import.
+     *
+     * @param path The path of the CSV
+     * @return The task to run
+     */
     private static Task runTestThread(String path) {
         Task task = new Task<Void>() {
             @Override
@@ -236,6 +242,11 @@ public class  IO {
         return task;
     }
 
+    /**
+     * Runs a threaded CSV import.
+     *
+     * @param path The csv to import
+     */
     public static void runImportCSVThread(String path) {
         Thread t = new Thread(() -> {
             // Start the timer

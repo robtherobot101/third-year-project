@@ -50,6 +50,12 @@ public class CreateUserController implements Initializable {
     private User user;
     private Stage stage;
 
+    /**
+     * Gets a user from input.
+     *
+     * @param stage The stage to take over
+     * @return The received user
+     */
     public User showAndWait(Stage stage) {
         this.stage = stage;
         stage.showAndWait();

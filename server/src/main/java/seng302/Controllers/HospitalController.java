@@ -14,6 +14,9 @@ public class HospitalController {
 
     private GeneralHospital model;
 
+    /**
+     * Creates a new hospital view controller.
+     */
     public HospitalController() {model = new GeneralHospital();}
 
 
