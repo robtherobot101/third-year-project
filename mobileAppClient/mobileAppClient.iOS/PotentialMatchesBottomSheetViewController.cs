@@ -452,6 +452,9 @@ namespace mobileAppClient.iOS
 
         }
 
+        /*
+         * Rounds all of the views of the bottom sheet
+         */
         public void roundViews()
         {
             View.Layer.CornerRadius = 5;

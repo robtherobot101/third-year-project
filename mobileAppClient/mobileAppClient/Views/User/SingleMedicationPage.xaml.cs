@@ -106,7 +106,9 @@ namespace mobileAppClient
             }
         }
 
-
+        /*
+         * Performs the medication search
+         */
         async void Handle_SearchButtonPressed(object sender, EventArgs e)
         {
             // Update the current search param
@@ -119,10 +121,8 @@ namespace mobileAppClient
             IsLoading = false;
             DateTime dateTime = DateTime.Now;
 
-
-
         }
-
+           
         async void Handle_MedicationTapped(object sender, ItemTappedEventArgs e) {
             if (e == null)
             {

@@ -231,6 +231,10 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * When the delete button is clicked,
+         * the organ is deleted from the user and the user is re-posted to the server
+         */
         async void Handle_DeleteClicked(object sender, EventArgs e)
         {
             var mi = ((MenuItem)sender);

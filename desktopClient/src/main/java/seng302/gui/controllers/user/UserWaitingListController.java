@@ -48,6 +48,10 @@ public class UserWaitingListController extends UserTabController implements Init
         transplantWaitingListLabel.setText("Transplant waiting list for: " + user.getName());
     }
 
+    /**
+     * Sorts the displayed waiting list items based on how long they have been waiting for and whether they are
+     * completed or not.
+     */
     public void sortWaitingListItems(){
         System.out.println(Arrays.toString(waitingListItems.toArray()));
 

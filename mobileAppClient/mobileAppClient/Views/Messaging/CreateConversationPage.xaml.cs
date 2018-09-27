@@ -206,6 +206,10 @@ namespace mobileAppClient
             await CreateConversation(tappedUser.id);
         }
 
+        /*
+         * Creates a new conversation between the logged in user and the 
+         * tapped user, then navigates to the page to show the new conversation
+         */
         async Task CreateConversation(int TappedUserId)
         {
             MessagingAPI messagingApi = new MessagingAPI();
@@ -237,6 +241,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Retrieves a conversation
+         */
         async Task<Conversation> GetNewlyCreatedConversation(int conversationId)
         {
             MessagingAPI messagingApi = new MessagingAPI();

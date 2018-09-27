@@ -47,6 +47,7 @@ namespace mobileAppClient.Views
         }
 
         /*
+         * Opens a newsfeed item
          */
         void OpenItem(string url)
         {
