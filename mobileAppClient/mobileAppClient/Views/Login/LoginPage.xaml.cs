@@ -240,6 +240,13 @@ namespace mobileAppClient
                         "Incorrect username/password",
                         "OK");
                     break;
+                case HttpStatusCode.BadRequest:
+                    IsLoading = false;
+                    await DisplayAlert(
+                        "Failed to Login",
+                        "Incorrect username/password",
+                        "OK");
+                    break;
                 case HttpStatusCode.ServiceUnavailable:
                     IsLoading = false;
                     await DisplayAlert(
@@ -261,7 +268,7 @@ namespace mobileAppClient
                         "User is deceased. Please consult a Registered Clinician",
                         "OK");
                     break;
-            }            
+            }
         }
 
         /// <summary>
