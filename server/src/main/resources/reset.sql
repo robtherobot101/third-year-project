@@ -287,7 +287,7 @@ CREATE TABLE IF NOT EXISTS `USER` (
   `gender_identity` text,
   `height` double DEFAULT NULL,
   `weight` double DEFAULT NULL,
-  `blood_type` text,
+  `blood_type` varchar(3) DEFAULT 'O+',
   `id` bigint(11) NOT NULL,
   `current_address` text,
   `region` text,
