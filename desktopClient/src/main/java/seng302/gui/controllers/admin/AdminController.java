@@ -958,7 +958,7 @@ public class AdminController implements Initializable {
                 Clinician selectedClinician = clinicianTableView.getSelectionModel().getSelectedItem();
                 if (selectedClinician != null) {
                     // Check if this is the default clinician
-                    if (selectedClinician.getStaffID() == 0) {
+                    if (selectedClinician.getStaffID() == 2) {
                         deleteProfile.setDisable(true);
                         deleteProfile.setText("Cannot delete default clinician");
                         editClinician.setVisible(true);
@@ -979,7 +979,7 @@ public class AdminController implements Initializable {
                 Admin selectedAdmin = adminTableView.getSelectionModel().getSelectedItem();
                 if (selectedAdmin != null) {
                     // Check if this is the default clinician
-                    if (selectedAdmin.getStaffID() == 0) {
+                    if (selectedAdmin.getStaffID() == 1) {
                         deleteProfile.setDisable(true);
                         deleteProfile.setText("Cannot delete default admin");
                     } else {
