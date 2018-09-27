@@ -197,8 +197,17 @@ public class  IO {
 
                 for (User readUser : readUsers) {
                     if (!User.checkNhi(readUser.getNhi())) {
-                        readUser.setNhi((char)((int)'C' + 3*ThreadLocalRandom.current().nextInt(0, 8)) + readUser.getNhi().substring(1));
+                        readUser.setNhi((char)((int)'c' + 3*ThreadLocalRandom.current().nextInt(0, 8)) + readUser.getNhi().substring(1));
                     }
+                }
+                try {
+                    for (int i = readUsers.size() - 1; i >= 0; i--) {
+                        if (!User.checkNhi(readUsers.get(i).getNhi())) {
+                            readUsers.remove(i);
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
                 // Send POST request

@@ -381,7 +381,6 @@ public class GeneralUser extends DatabaseMethods {
             close(resultSet, statement);
         }
         //patchEntireUser(user, (int) fromDb.getId(), false);
-
     }
 
 
@@ -702,15 +701,12 @@ public class GeneralUser extends DatabaseMethods {
     }
 
     public void importUsers(List<User> users) throws SQLException {
-        Statement statement = null;
-        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            for (User user : users) {
-                statement.addBatch(createUserStatement(user));
+        for (User user: users) {
+            try {
+                insertUser(user, SaltHash.createHash("drowssap"));
+            } catch (Exception e) {
+                System.out.println("Failed to add " + user.getName());
             }
-            statement.executeBatch();
-        } finally {
-            close(statement);
         }
     }
 }
