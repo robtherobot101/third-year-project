@@ -676,19 +676,20 @@ public class GeneralUser extends DatabaseMethods {
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
             ArrayList<User> possibleMatches = new ArrayList<>();
-            String under12 = "TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) <= 12*12)";
-            String over12 = "TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) > 12*12 AND " + Math.abs(ageMonths) + " - TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) < 12*15)";
-            String query = "SELECT * FROM " +
-                    "(SELECT * FROM USER WHERE " +
-                        "USER.date_of_death IS NULL AND USER.blood_type = ? AND USER.region IS NOT NULL AND USER.region != '' AND ";
+            String query;
             if (ageMonths <= 144) {
-                query += under12;
+                query = "SELECT * FROM " +
+                        "(SELECT * FROM USER WHERE " +
+                        "USER.date_of_death IS NULL AND USER.blood_type = ? AND USER.region IS NOT NULL AND USER.region != '' AND  TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) <= 12*12) AS U JOIN \" +\n" +
+                        "                    \"(SELECT * FROM WAITING_LIST_ITEM WHERE WAITING_LIST_ITEM.organ_type = ? AND WAITING_LIST_ITEM.deregistered_code = 0) AS W ON W.user_id = U.id JOIN \" +\n" +
+                        "                    \"ACCOUNT ON ACCOUNT.id = U.id";
             } else {
-                query += over12;
+                query = "SELECT * FROM " +
+                        "(SELECT * FROM USER WHERE " +
+                        "USER.date_of_death IS NULL AND USER.blood_type = ? AND USER.region IS NOT NULL AND USER.region != '' AND  TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) > 12*12 AND \" + Math.abs(ageMonths) + \" - TIMESTAMPDIFF(MONTH, USER.date_of_birth, NOW()) < 12*15) AS U JOIN \" +\n" +
+                        "                    \"(SELECT * FROM WAITING_LIST_ITEM WHERE WAITING_LIST_ITEM.organ_type = ? AND WAITING_LIST_ITEM.deregistered_code = 0) AS W ON W.user_id = U.id JOIN \" +\n" +
+                        "                    \"ACCOUNT ON ACCOUNT.id = U.id";
             }
-            query += " AS U JOIN " +
-                    "(SELECT * FROM WAITING_LIST_ITEM WHERE WAITING_LIST_ITEM.organ_type = ? AND WAITING_LIST_ITEM.deregistered_code = 0) AS W ON W.user_id = U.id JOIN " +
-                    "ACCOUNT ON ACCOUNT.id = U.id;";
             statement = connection.prepareStatement(query);
             statement.setString(1, bloodType.toString());
             statement.setString(2, organ.getOrganType().toString());
