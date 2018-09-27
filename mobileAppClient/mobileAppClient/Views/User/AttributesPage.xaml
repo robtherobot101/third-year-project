@@ -29,7 +29,7 @@
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>Male</x:String>
                                         <x:String>Female</x:String>
-                                        <x:String>Other</x:String>
+                                        <x:String>Nonbinary</x:String>
                                     </x:Array>
                                 </Picker.ItemsSource>
                             </Picker>
@@ -43,7 +43,7 @@
                                     <x:Array Type="{x:Type x:String}">
                                         <x:String>Male</x:String>
                                         <x:String>Female</x:String>
-                                        <x:String>Other</x:String>
+                                        <x:String>Nonbinary</x:String>
                                     </x:Array>
                                 </Picker.ItemsSource>
                             </Picker>

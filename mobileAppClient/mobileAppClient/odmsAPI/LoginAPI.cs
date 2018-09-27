@@ -93,7 +93,7 @@ namespace mobileAppClient.odmsAPI
                 else
                 {
                     // Must've attempted login as admin -> deny
-                    return HttpStatusCode.BadRequest;
+                    return HttpStatusCode.Unauthorized;
                 }
             }
             else
@@ -455,6 +455,9 @@ namespace mobileAppClient.odmsAPI
             return response.StatusCode;
         }
 
+        /*
+         * Returns the account type of the user with the given id
+         */
         public async Task<String> getAccountType(int userId)
         {
 

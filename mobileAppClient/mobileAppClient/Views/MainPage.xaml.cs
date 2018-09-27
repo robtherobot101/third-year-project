@@ -1,4 +1,4 @@
-﻿using mobileAppClient.Maps;
+using mobileAppClient.Maps;
 using mobileAppClient.odmsAPI;
 using mobileAppClient.Views;
 using mobileAppClient.Views.Clinician;
@@ -244,11 +244,23 @@ namespace mobileAppClient
         private void updateUserViewerProfileBar()
         {
             ProfilePhotoImage.Source = ImageSource.FromFile("viewing_user_photo.png");
-            BindingContext = new
+            if (UserController.Instance.LoggedInUser.preferredName.Count == 0)
             {
-                FullName = "Viewing User: " + UserController.Instance.LoggedInUser.preferredName,
-                BorderColor = "White"
-            };
+                BindingContext = new
+                {
+                    FullName = "Viewing User: " + UserController.Instance.LoggedInUser.FullName,
+                    BorderColor = "White"
+                };
+            }
+            else
+            {
+                BindingContext = new
+                {
+                    FullName = "Viewing User: " + UserController.Instance.LoggedInUser.FullPreferedName,
+                    BorderColor = "White"
+                };
+            }
+            
         }
         private void updateUserProfileBar()
         {
@@ -257,25 +269,48 @@ namespace mobileAppClient
             {
                 // No photo provided, use default
                 ProfilePhotoImage.Source = ImageSource.FromFile("default_user_photo.png");
-                BindingContext = new
+                if (UserController.Instance.LoggedInUser.preferredName.Count == 0)
                 {
-                    FullName = UserController.Instance.LoggedInUser.preferredName,
-                    BorderColor = "White",
-                };
+                    BindingContext = new
+                    {
+                        FullName = UserController.Instance.LoggedInUser.FullName,
+                        BorderColor = "White"
+                    };
+                }
+                else
+                {
+                    BindingContext = new
+                    {
+                        FullName = UserController.Instance.LoggedInUser.FullPreferedName,
+                        BorderColor = "White"
+                    };
+                }
             }
             else
             {
                 // Use photo from server
                 ProfilePhotoImage.Source = UserController.Instance.ProfilePhotoSource;
-                BindingContext = new
+                if (UserController.Instance.LoggedInUser.preferredName.Count == 0)
                 {
-                    FullName = UserController.Instance.LoggedInUser.preferredName,
-                    BorderColor = "White"
-                };
+                    BindingContext = new
+                    {
+                        FullName = UserController.Instance.LoggedInUser.FullName,
+                        BorderColor = "White"
+                    };
+                }
+                else
+                {
+                    BindingContext = new
+                    {
+                        FullName = UserController.Instance.LoggedInUser.FullPreferedName,
+                        BorderColor = "White"
+                    };
+                }
             }
 
 
-            
+
+
         }
 
         private void updateClinicianProfileBar()
