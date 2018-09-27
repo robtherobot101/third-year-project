@@ -271,7 +271,6 @@ namespace mobileAppClient
                 ProfilePhotoImage.Source = ImageSource.FromFile("default_user_photo.png");
                 if (UserController.Instance.LoggedInUser.preferredName.Count == 0)
                 {
-<<<<<<< HEAD
                     BindingContext = new
                     {
                         FullName = UserController.Instance.LoggedInUser.FullName,
@@ -286,11 +285,6 @@ namespace mobileAppClient
                         BorderColor = "White"
                     };
                 }
-=======
-                    FullName = String.Join(" ", UserController.Instance.LoggedInUser.preferredName),
-                    BorderColor = "White",
-                };
->>>>>>> b5191c1... Fixed bugs with the attributes page #fix
             }
             else
             {
@@ -298,7 +292,6 @@ namespace mobileAppClient
                 ProfilePhotoImage.Source = UserController.Instance.ProfilePhotoSource;
                 if (UserController.Instance.LoggedInUser.preferredName.Count == 0)
                 {
-<<<<<<< HEAD
                     BindingContext = new
                     {
                         FullName = UserController.Instance.LoggedInUser.FullName,
@@ -313,15 +306,11 @@ namespace mobileAppClient
                         BorderColor = "White"
                     };
                 }
-=======
-                    FullName = String.Join(" ", UserController.Instance.LoggedInUser.preferredName),
-                    BorderColor = "White"
-                };
->>>>>>> b5191c1... Fixed bugs with the attributes page #fix
             }
 
 
-            
+
+
         }
 
         private void updateClinicianProfileBar()
