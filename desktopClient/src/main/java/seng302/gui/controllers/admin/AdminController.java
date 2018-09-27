@@ -319,6 +319,8 @@ public class AdminController implements Initializable {
         countryComboBox.setValue("All Countries");
         setRegionControls("", "All Countries", regionComboBox, adminRegionField);
 
+        waitingListController.setup();
+
         updateDisplay();
         refreshLatestProfiles();
         WindowManager.updateTransplantWaitingList();

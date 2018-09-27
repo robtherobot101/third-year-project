@@ -3,6 +3,9 @@ using Newtonsoft.Json;
 
 namespace mobileAppClient
 {
+    /*
+     * Class which holds informatition about a specific message
+     */
     public class Message : IEquatable<Message>
     {
         // Unique message ID
@@ -21,22 +24,32 @@ namespace mobileAppClient
             get { return timestamp.ToDateTimeWithSeconds(); }
         }
 
+        /*
+         * Compares two Messages
+         */
         public override bool Equals(object obj)
         {
             return Equals(obj as Message);
         }
 
+        /*
+         * Compares two Messages
+         */
         public bool Equals(Message other)
         {
             return other != null &&
                 id == other.id;
         }
 
+
         public override int GetHashCode()
         {
             return 1877310944 + id.GetHashCode();
         }
 
+        /*
+         * Defines the type of message
+         */
         public void SetType(int readersAccountID)
         {
             if (readersAccountID == this.userId)

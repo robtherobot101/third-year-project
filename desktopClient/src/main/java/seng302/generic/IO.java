@@ -117,7 +117,9 @@ public class  IO {
                     List<User> readUsers = userReader.getProfiles(path);
                     if (readUsers != null) {
                         for(User u : readUsers) {
+                            System.out.println(u.getPassphrase());
                             WindowManager.getDataManager().getUsers().insertUser(u);
+                            System.out.println("inserted ");
                         }
                     }
                     return true;

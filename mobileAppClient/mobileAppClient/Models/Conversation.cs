@@ -9,6 +9,9 @@ using mobileAppClient.odmsAPI;
 
 namespace mobileAppClient.Models
 {
+    /*
+     * Class to handle conversation information
+     */
     public class Conversation
     {
         // Unique conversation ID
@@ -43,11 +46,17 @@ namespace mobileAppClient.Models
             }
         }
 
+        /*
+         * Returns the time of the last received message as a string
+         */
         public string lastMessageReceiveTime
         {
             get { return messages.Count > 0 ? messages.Last().timestampDateTime.ToString() : ""; }
         }
 
+        /*
+         * Sets the name of the conversation participants
+         */
         public void getParticipantNames(int localId)
         {
             // Gets the complement of the members list in respect to the local id -> the external participants id

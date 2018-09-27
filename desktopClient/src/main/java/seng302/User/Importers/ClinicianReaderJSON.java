@@ -1,8 +1,11 @@
 package seng302.User.Importers;
 
+import com.google.gson.reflect.TypeToken;
 import seng302.User.Clinician;
+import seng302.User.User;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClinicianReaderJSON implements ProfileReader<Clinician> {
@@ -13,10 +16,11 @@ public class ClinicianReaderJSON implements ProfileReader<Clinician> {
      * @return returns the imported profiles
      */
     public List<Clinician> getProfiles(String path) {
-        Path filePath = JSONParser.checkPath(path);
+        JSONParser<Clinician> parser = new JSONParser<>(new TypeToken<ArrayList<Clinician>>() {}.getType());
+        Path filePath = parser.checkPath(path);
         if (filePath == null) {
             return null;
         }
-        return JSONParser.readJson(filePath);
+        return parser.readJson(filePath);
     }
 }

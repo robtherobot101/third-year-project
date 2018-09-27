@@ -55,6 +55,10 @@ namespace mobileAppClient
             }
         } 
 
+        /*
+         * Constructs a Disease objects and sets its name, date, 
+         * and whether it is chronic or cured
+         */
         public Disease(string name, CustomDate date, bool Chronic, bool Cured)
         {
             this.name = name;

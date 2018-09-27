@@ -194,17 +194,20 @@ public class UserWaitingList extends DatabaseMethods {
         }
     }
 
-    public void removeWaitingListItem(int userId, Organ organ) throws SQLException {
+    public int removeWaitingListItem(int userId, Organ organ) throws SQLException {
         PreparedStatement statement = null;
+        int changed = 0;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            String query = "UPDATE WAITING_LIST_ITEM SET organ_deregistered_date = ?, deregistered_code = ? WHERE user_id = ? AND organ_type = ? AND organ_deregistered_date = ?";
-            statement = connection.prepareStatement(query);
-            statement.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
-            statement.setInt(2, 5);
-            System.out.println("Deletion of Waiting List Item - Organ: " + organ.toString() + " USERID: " + userId + " -> Successful -> Rows Removed: " + statement.executeUpdate());
+            String update = "DELETE FROM WAITING_LIST_ITEM WHERE organ_type = ? AND user_id = ?";
+            statement = connection.prepareStatement(update);
+            statement.setString(1, organ.toString());
+            statement.setInt(2, userId);
+            changed = statement.executeUpdate();
+            System.out.println("Deletion of Waiting List Item: " + organ + " USERID: " + userId + " -> Successful -> Rows Removed: " + changed);
         } finally {
             close(statement);
         }
+        return changed;
     }
 
     public void transplantWaitingListItem(int waitingListItemId) throws SQLException {
