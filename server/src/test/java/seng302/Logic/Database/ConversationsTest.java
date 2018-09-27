@@ -117,7 +117,7 @@ public class ConversationsTest extends GenericTest {
         assertTrue(!nextConversation && !nextMember);
     }
 
-    @Ignore
+
     @Test
     public void addMessage() throws SQLException {
         GeneralClinician generalClinician = new GeneralClinician();

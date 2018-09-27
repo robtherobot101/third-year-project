@@ -12,7 +12,5 @@ namespace mobileAppClient
         public List<String> history { get; set; }
         public string DetailString { get; set; }
         public int Id { get; set; }
-
-
     }
 }

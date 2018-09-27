@@ -28,6 +28,9 @@ namespace mobileAppClient.Models.CustomObjects
         {
         }
 
+        /*
+         * Adds an IEnumerable of data to the collection
+         */
         public void AddRange(IEnumerable<T> range)
         {
             foreach (var item in range)
@@ -40,6 +43,9 @@ namespace mobileAppClient.Models.CustomObjects
             this.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
+        /*
+         * Replaces the data with the given IEnumerable
+         */
         public void Reset(IEnumerable<T> range)
         {
             this.Items.Clear();

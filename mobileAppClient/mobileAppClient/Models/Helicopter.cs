@@ -5,6 +5,9 @@ using Xamarin.Forms.Maps;
 
 namespace mobileAppClient.Models
 {
+    /*
+     * Class which holds information about a Helicopter on the map
+     */
     public class Helicopter
     {
         // Current location is not stored here as it is already within the Pin

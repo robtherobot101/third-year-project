@@ -10,6 +10,9 @@ using System.Text;
 
 namespace mobileAppClient
 {
+    /*
+     * Class which gets and stores news feeds
+     */
     class NewsFeed
     {
         public ObservableCollection<RssSchema> rss { get; } = new ObservableCollection<RssSchema>();
@@ -29,6 +32,9 @@ namespace mobileAppClient
             );
         }
 
+        /*
+         * 
+         */
         public NewsFeed(string region)
         {
             switch (region)
@@ -45,6 +51,10 @@ namespace mobileAppClient
             }
         }
 
+
+        /*
+         * Gets a single feed from the given url
+         */
         private async void getFeed(String feedUrl)
         {
             string rssString = null;
@@ -74,7 +84,7 @@ namespace mobileAppClient
             rss.OrderByDescending(r => r.PublishDate);
         }
 
-        /**
+        /*
          * Fill the image carousel with images and captions
          */
         private void FillFeed(params string[] feeds)
@@ -94,7 +104,6 @@ namespace mobileAppClient
                     getFeed(feed);
                 }
             }
-
         }
     }
 }

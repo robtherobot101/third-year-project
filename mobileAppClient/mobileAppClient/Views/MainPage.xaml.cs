@@ -246,7 +246,7 @@ namespace mobileAppClient
             ProfilePhotoImage.Source = ImageSource.FromFile("viewing_user_photo.png");
             BindingContext = new
             {
-                FullName = "Viewing User: " + UserController.Instance.LoggedInUser.FullName,
+                FullName = "Viewing User: " + UserController.Instance.LoggedInUser.preferredName,
                 BorderColor = "White"
             };
         }
@@ -259,7 +259,7 @@ namespace mobileAppClient
                 ProfilePhotoImage.Source = ImageSource.FromFile("default_user_photo.png");
                 BindingContext = new
                 {
-                    FullName = UserController.Instance.LoggedInUser.FullName,
+                    FullName = UserController.Instance.LoggedInUser.preferredName,
                     BorderColor = "White",
                 };
             }
@@ -269,7 +269,7 @@ namespace mobileAppClient
                 ProfilePhotoImage.Source = UserController.Instance.ProfilePhotoSource;
                 BindingContext = new
                 {
-                    FullName = UserController.Instance.LoggedInUser.FullName,
+                    FullName = UserController.Instance.LoggedInUser.preferredName,
                     BorderColor = "White"
                 };
             }

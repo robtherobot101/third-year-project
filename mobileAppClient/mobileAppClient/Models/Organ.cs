@@ -6,14 +6,23 @@ using Newtonsoft.Json.Converters;
 
 namespace mobileAppClient.Models
 {
+    /// <summary>
+    /// Enum for the different organ types
+    /// </summary>
     [JsonConverter(typeof(StringEnumConverter))]
     public enum Organ
     {
         LIVER, KIDNEY, PANCREAS, HEART, LUNG, INTESTINE, CORNEA, EAR, SKIN, BONE, TISSUE
     }
 
+    /// <summary>
+    /// Support methods for converting between organ representations
+    /// </summary>
     public static class OrganExtensions
     {
+        /// <summary>
+        /// Takes a string and returns the corresponding organ
+        /// </summary>
         public static Organ ToOrgan(string organString)
         {
             switch (organString.ToLower())
@@ -39,6 +48,9 @@ namespace mobileAppClient.Models
             }
         }
 
+        /// <summary>
+        /// Takes an organ and returns the string representation
+        /// </summary>
         public static string ToString(Organ organ)
         {
             switch (organ)
