@@ -524,6 +524,7 @@ public class WindowManager extends Application {
     private DataManager createDatabaseDataManager() {
         String serverAddress = (String) config.get("server");
         if (testing) serverAddress = "http://csse-s302g3.canterbury.ac.nz/testing/api/v1";
+        serverAddress = "http://localhost:7015/api/v1";
 
         APIServer server = new APIServer(serverAddress);
         UsersDAO users = new UsersDB(server);
