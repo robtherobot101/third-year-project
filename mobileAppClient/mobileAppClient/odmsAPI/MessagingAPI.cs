@@ -9,8 +9,16 @@ using Newtonsoft.Json;
 
 namespace mobileAppClient.odmsAPI
 {
+
+    /*
+     * Class which handles messaging related api calls
+     */
     class MessagingAPI
     {
+        /*
+         * Gets all conversations which have a user with the given localUserId as on of the participants.
+         * If isClinicianFetching is true, the conversations are retrieved from a different endpoint
+         */
         public async Task<Tuple<HttpStatusCode, List<Conversation>>> GetConversations(int localUserId, bool isClinicianFetching)
         {
             // Check connection

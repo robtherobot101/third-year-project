@@ -16,7 +16,9 @@ namespace mobileAppClient
      */
     public partial class AttributesPageClinician : ContentPage
     {
-
+        /*
+         * Constructs the page and fills the field values
+         */
         public AttributesPageClinician()
         {
             InitializeComponent();
