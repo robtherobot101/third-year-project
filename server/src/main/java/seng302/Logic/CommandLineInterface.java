@@ -459,7 +459,7 @@ public class CommandLineInterface {
         if (nextCommand.length == 2) {
             try {
                 int id = Integer.parseInt(nextCommand[1]);
-                if (id != 0) {
+                if (id != 2) {
                     Clinician clinician = new GeneralClinician().getClinicianFromId(id);
                     if (clinician == null) {
                         return new CommandLineResponse(false, String.format("clinician with staff ID %d not found.", id));
@@ -953,7 +953,6 @@ public class CommandLineInterface {
         if (nextCommand.length == 1) {
             try {
                 if (new GeneralClinician().getAllClinicians().size() > 0) {
-                    outputString = (Clinician.tableHeader);
                     for (Clinician clinician : new GeneralClinician().getAllClinicians()) {
                         outputString = outputString + (clinician.getString(false)) + "\n";
                     }

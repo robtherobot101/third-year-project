@@ -29,6 +29,8 @@ namespace CustomRenderer.Droid
 
     public class CustomMapRenderer : MapRenderer, GoogleMap.IInfoWindowAdapter
     {
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+
         private Dictionary<Position, CustomPin> customPins;
         private Dictionary<string, CustomPin> helicopterPins;
         private Dictionary<Organ, Bitmap> helicopterIcons;
@@ -42,6 +44,7 @@ namespace CustomRenderer.Droid
 
         public CustomMapRenderer(Context context) : base(context)
         {
+            bitmapOptions.InSampleSize = 10;
         }
 
         protected override void OnElementChanged(Xamarin.Forms.Platform.Android.ElementChangedEventArgs<Map> e)
@@ -127,85 +130,85 @@ namespace CustomRenderer.Droid
             switch (pin.genderIcon)
             {
                 case "man1.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man1);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man1, bitmapOptions);
                     break;
                 case "man2.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man2);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man2, bitmapOptions);
                     break;
                 case "man3.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man3);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man3, bitmapOptions);
                     break;
                 case "man4.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man4);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man4, bitmapOptions);
                     break;
                 case "man5.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man5);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man5, bitmapOptions);
                     break;
                 case "man6.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man6);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man6, bitmapOptions);
                     break;
                 case "man7.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man7);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man7, bitmapOptions);
                     break;
                 case "man8.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man8);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man8, bitmapOptions);
                     break;
                 case "man9.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man9);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man9, bitmapOptions);
                     break;
                 case "man10.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man10);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man10, bitmapOptions);
                     break;
                 case "man11.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man11);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man11, bitmapOptions);
                     break;
                 case "man12.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man12);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man12, bitmapOptions);
                     break;
                 case "man13.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man13);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man13, bitmapOptions);
                     break;
                 case "man14.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man14);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man14, bitmapOptions);
                     break;
                 case "woman1.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman1);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman1, bitmapOptions);
                     break;
                 case "woman2.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman2);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman2, bitmapOptions);
                     break;
                 case "woman3.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman3);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman3, bitmapOptions);
                     break;
                 case "woman4.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman4);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman4, bitmapOptions);
                     break;
                 case "woman5.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman5);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman5, bitmapOptions);
                     break;
                 case "woman6.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman6);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman6, bitmapOptions);
                     break;
                 case "woman7.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman7);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman7, bitmapOptions);
                     break;
                 case "woman8.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman8);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman8, bitmapOptions);
                     break;
                 case "woman9.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman9);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman9, bitmapOptions);
                     break;
                 case "woman10.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman10);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman10, bitmapOptions);
                     break;
                 case "woman11.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman11);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman11, bitmapOptions);
                     break;
                 case "other.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.other);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.other, bitmapOptions);
                     break;
                 default:
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.other);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.other, bitmapOptions);
                     break;
 
             }
@@ -237,7 +240,7 @@ namespace CustomRenderer.Droid
             marker.SetSnippet(pin.Address);
 
             // Create the image
-            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.hospital_icon);
+            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.hospital_icon, bitmapOptions);
 
             // Scale the image
             imageBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 110, 110, false);
@@ -471,7 +474,7 @@ namespace CustomRenderer.Droid
                     else
                     {
                         var imageBytes = Convert.FromBase64String(customPin.userPhoto);
-                        var imageData = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
+                        var imageData = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length, bitmapOptions);
                         imageFrame.SetImageBitmap(imageData);
                     }
                 }
