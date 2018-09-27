@@ -29,6 +29,13 @@ public class AuthorizationController {
     Authorization model = new Authorization();
     Notifications notifications = new Notifications();
 
+    /**
+     * method to handle a request to /password/ endpoint.
+     * checks if a password matches a users salthash
+     * @param request the http request block
+     * @param response the http response block
+     * @return String boolean if the password matched the user password
+     */
     public String checkPassword(Request request, Response response) {
         String password = request.queryParams("password");
         System.out.println(password);

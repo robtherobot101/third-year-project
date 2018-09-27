@@ -27,6 +27,10 @@ public class UsersDB implements UsersDAO {
     private String unableTo = "Could not access server";
     private String photo = "photo";
 
+    /**
+     * class constructor to initilize a user db connection
+     * @param server APIServer the connection to use
+     */
     public UsersDB(APIServer server) {
         this.server = server;
     }
