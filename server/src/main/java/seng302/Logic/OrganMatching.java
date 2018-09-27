@@ -66,6 +66,7 @@ public class OrganMatching {
         try {
             User donor = model.getUserFromId((int) organ.getDonorId());
             List<User> matches = model.getMatchingUsers(organ, (int)ChronoUnit.MONTHS.between(donor.getDateOfBirth(), LocalDate.now()), donor.getBloodType());
+
             List<User> topMatches = new ArrayList<>();
             if (matches.size() != 0) {
                 matches = getBestMatches(donor.getRegionOfDeath(), matches, organ);
