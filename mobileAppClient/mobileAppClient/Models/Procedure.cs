@@ -37,6 +37,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Constructs the procedure and defines the summary, description, and date
+         */
         public Procedure(string summary, string description, CustomDate date,
             List<Organ> organsAffected)
         {
