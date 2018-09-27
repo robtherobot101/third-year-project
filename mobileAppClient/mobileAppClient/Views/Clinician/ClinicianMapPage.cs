@@ -730,7 +730,8 @@ namespace mobileAppClient.Views.Clinician
         }
 
         /*
-         * 
+         * Called when a transfer is complete.
+         * The transfer and waiting list item are removed from the database.
          */
         private async Task HelicopterFinished(int waitingListItemId, int organId)
         {
@@ -740,6 +741,10 @@ namespace mobileAppClient.Views.Clinician
             await transplantListAPI.SetInTransfer(organId, 2);
         }
 
+        /*
+         * Returns true if the organ can reach the user in time,
+         * otherwise returns false
+         */
         public async Task<bool> CheckGetToReceiverInTime(DonatableOrgan organ, User receiver) {
 
             UserAPI userAPI = new UserAPI();
