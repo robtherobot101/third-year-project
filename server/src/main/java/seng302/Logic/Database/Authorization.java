@@ -128,6 +128,7 @@ public class Authorization extends DatabaseMethods {
      * Returns the clinician with a matching username and password if such a clinician exists, otherwise returns null
      *
      * @param username A username
+     * @param password a password
      * @return The matched clinician if it was found, otherwise null
      * @throws SQLException If there is an error working with the database
      */
@@ -159,6 +160,7 @@ public class Authorization extends DatabaseMethods {
      * Returns the admin with a matching username and password if such a admin exists, otherwise returns null
      *
      * @param username A username
+     * @param password a password
      * @return The matched admin if it was found, otherwise null
      * @throws SQLException If there is an error working with the database
      */

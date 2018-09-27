@@ -6,6 +6,12 @@ import java.time.LocalDateTime;
 public class CachedItem {
     private String value;
     private LocalDateTime createdAt;
+
+    /**
+     * class constructor for a new cache item
+     * @param value String the value of the cache to store
+     * @param createdAt LocalDateTime the time of creation
+     */
     CachedItem(String value, LocalDateTime createdAt){
         this.value = value;
         this.createdAt = createdAt;

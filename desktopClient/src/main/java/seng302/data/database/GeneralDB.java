@@ -23,6 +23,10 @@ import java.util.Map;
 public class GeneralDB implements GeneralDAO {
     private final APIServer server;
 
+    /**
+     * initilizes the generaldb database accessor
+     * @param server APIServer the server object to use
+     */
     public GeneralDB(APIServer server) {
         this.server = server;
     }

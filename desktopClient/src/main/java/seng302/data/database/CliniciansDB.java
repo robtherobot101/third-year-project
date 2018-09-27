@@ -19,6 +19,10 @@ public class CliniciansDB implements CliniciansDAO {
     private final APIServer server;
     private String clinicians = "clinicians";
 
+    /**
+     * initilizes a new clinician database accessor
+     * @param server APIServer the api server to use
+     */
     public CliniciansDB(APIServer server) {
         this.server = server;
     }
