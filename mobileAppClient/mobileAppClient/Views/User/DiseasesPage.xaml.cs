@@ -275,6 +275,10 @@ namespace mobileAppClient
             }
         }
 
+
+        /*
+         * Removes the disease from the user and saves the changes
+         */
         async void Handle_DeleteClicked(object sender, EventArgs e)
         {
             var mi = ((MenuItem)sender);

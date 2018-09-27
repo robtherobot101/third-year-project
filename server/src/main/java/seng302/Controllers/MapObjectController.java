@@ -8,6 +8,7 @@ import seng302.Model.MapObject;
 import seng302.Model.OrganTransfer;
 import seng302.Model.User;
 import seng302.Model.WaitingListItem;
+import seng302.NotificationManager.PushAPI;
 import seng302.Server;
 import spark.Request;
 import spark.Response;
@@ -91,6 +92,13 @@ public class MapObjectController {
             try {
                 model.insertTransfer(transfer);
                 response.status(201);
+                try {
+                    PushAPI.getInstance().sendTextNotification((int)transfer.getReceiverId(), "Transfer started.",
+                            "A new transfer has begun to transfer a " + transfer.getOrganType().toString() + "to you.");
+                } catch (Exception e) {
+                    Server.getInstance().log.error(e.getMessage());
+                    Server.getInstance().log.error("Failed to insert notification for the start of the transfer process");
+                }
                 return "TRANSFER INSERTED FOR ORGAN ID: " + transfer.getId();
             } catch (SQLException e) {
                 response.status(500);

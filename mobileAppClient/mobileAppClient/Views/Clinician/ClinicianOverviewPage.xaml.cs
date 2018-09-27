@@ -7,6 +7,9 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient.Views
 {
+    /*
+     * The main clinician page. Shows the newsfeed and some details
+     */
     [XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ClinicianOverviewPage : ContentPage
 	{
@@ -23,6 +26,9 @@ namespace mobileAppClient.Views
             };
         }
 
+        /*
+         * Populates the details fields
+         */
         private async void fillFields()
         {
             Models.Clinician currentClinician = ClinicianController.Instance.LoggedInClinician;
@@ -40,6 +46,8 @@ namespace mobileAppClient.Views
             }
         }
 
+        /*
+         */
         void OpenItem(string url)
         {
             Console.WriteLine("Opening url");

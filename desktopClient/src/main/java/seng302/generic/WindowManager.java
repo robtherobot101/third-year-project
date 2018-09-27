@@ -85,10 +85,20 @@ public class WindowManager extends Application {
 
     private static DataManager dataManager;
 
+    /**
+     * Gets the program's data manager which links to a storage source (eg. database).
+     *
+     * @return The data manager
+     */
     public static DataManager getDataManager() {
         return dataManager;
     }
 
+    /**
+     * Sets the program's data manager which links to a storage source (eg. database).
+     *
+     * @param dataManager The data manager
+     */
     public static void setDataManager(DataManager dataManager) {
         WindowManager.dataManager = dataManager;
     }
@@ -211,6 +221,11 @@ public class WindowManager extends Application {
         clinicianController.updateFoundUsers();
     }
 
+    /**
+     * Returns the currently logged in clinician.
+     *
+     * @return The currently logged in clinician
+     */
     public static Clinician getCurrentClinician() {
         return clinicianController.getClinician();
     }
@@ -241,6 +256,11 @@ public class WindowManager extends Application {
         adminController.setAdmin(admin, token);
     }
 
+    /**
+     * Returns the currently logged on admin.
+     *
+     * @return The currently logged on admin
+     */
     public static Admin getCurrentAdmin() {
         return adminController.getAdmin();
     }
@@ -256,6 +276,11 @@ public class WindowManager extends Application {
         userController.setControlsShown(false);
     }
 
+    /**
+     * Returns the currently logged on user.
+     *
+     * @return The currently logged on user.
+     */
     public static User getCurrentUser() {
         return userController.getCurrentUser();
     }
@@ -371,6 +396,11 @@ public class WindowManager extends Application {
         }
     }
 
+    /**
+     * Sets the controller for the available organs table on the admin and clinician views.
+     *
+     * @param clinicianAvailableOrgansController The controller
+     */
     public static void setClinicianAvailableOrgansController(ClinicianAvailableOrgansController clinicianAvailableOrgansController) {
         if (scenes.get(TFScene.clinician) == null) {
             WindowManager.clinicianClinicianAvailableOrgansController = clinicianAvailableOrgansController;
@@ -379,6 +409,11 @@ public class WindowManager extends Application {
         }
     }
 
+    /**
+     * Sets the controller for the transfer organs table on the admin and clinician views.
+     *
+     * @param clinicianTransferOrgansController The controller
+     */
     public static void setClinicianTransferOrgansController(ClinicianTransferOrgansController clinicianTransferOrgansController) {
         if (scenes.get(TFScene.clinician) == null) {
             WindowManager.clinicianClinicianTransferOrgansController = clinicianTransferOrgansController;
@@ -406,6 +441,11 @@ public class WindowManager extends Application {
         WindowManager.adminController = adminController;
     }
 
+    /**
+     * Returns the controller for the clinician view.
+     *
+     * @return The controller for the clinician view
+     */
     public static ClinicianController getClinicianController() {
         return clinicianController;
     }
@@ -432,10 +472,18 @@ public class WindowManager extends Application {
         clinicianClinicianWaitingListController.showDeregisterDialog(waitingListItem, user);
     }
 
+    /**
+     * Returns all of the active user windows.
+     *
+     * @return A map containing all stages and user controllers for active user sessions
+     */
     public static Map<Stage, UserController> getCliniciansUserWindows() {
         return cliniciansUserWindows;
     }
 
+    /**
+     * Close all child windows that have been opened.
+     */
     public static void closeAllChildren() {
         for (Stage stage : cliniciansUserWindows.keySet()) {
             stage.close();
@@ -443,10 +491,18 @@ public class WindowManager extends Application {
         cliniciansUserWindows.clear();
     }
 
+    /**
+     * Sets the controller for the main user view.
+     *
+     * @param userController The controller
+     */
     public static void setUserController(UserController userController) {
         WindowManager.userController = userController;
     }
 
+    /**
+     * Sets the on enter proceed event for the clinician settings window.
+     */
     public static void setClinicianAccountSettingsEnterEvent() {
         clinicianSettingsController.setEnterEvent();
     }
@@ -493,15 +549,6 @@ public class WindowManager extends Application {
         } catch (Exception ignored) {
         }
     }
-
-    public static boolean isTesting() {
-        return testing;
-    }
-
-    public static Map<Object, Object> getConfig() {
-        return config;
-    }
-
 
     /**
      * Creates an internal, non-persistant DataManager (For testing and debugging)
@@ -669,6 +716,12 @@ public class WindowManager extends Application {
         }
     }
 
+    /**
+     * Returns the desired scene.
+     *
+     * @param scene The scene to get
+     * @return The scene
+     */
     public static Scene getScene(TFScene scene) {
         return scenes.get(scene);
     }

@@ -11,6 +11,10 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient
 {
+    /*
+     * Page which shows information about how many lives the user could
+     * save based on what they are donating. Reccomends other actions they could take.
+     */
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class PointsPage : ContentPage
 	{
@@ -36,12 +40,18 @@ namespace mobileAppClient
             savedLivesText.Text = String.Format("You could save {0} lives", calculateSavedLives());
             helpedLivesText.Text = String.Format("and you could also help {0} lives", calculateHelpedLives());
         }
-
+        
+        /*
+         * Details are refreshed everytime the page appears
+         */
         protected override void OnAppearing()
         {
             refreshDetails();
         }
 
+        /*
+         * Refreshes the page information
+         */
         private void refreshDetails()
         {
             bool allOrgansDonated = false;
@@ -158,6 +168,10 @@ namespace mobileAppClient
             return helpedLives;
         }
 
+
+        /*
+         * When a reccomendation is tapped a new page to the tapped lick is pushed
+         */
         async private void RecommendationsList_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             if (e.Item == null)
