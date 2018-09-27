@@ -31,7 +31,7 @@ namespace CustomRenderer.Droid
     {
         private Dictionary<Position, CustomPin> customPins;
         private Dictionary<string, CustomPin> helicopterPins;
-        private Dictionary<Organ, int> helicopterIcons;
+        private Dictionary<Organ, Bitmap> helicopterIcons;
 
         private String selectedHeli;
         private Tuple<CustomPin, Polyline> highlightedFlightPath;
@@ -76,18 +76,31 @@ namespace CustomRenderer.Droid
         /// </summary>
         private void intialiseHelicopterIcons()
         {
-            helicopterIcons = new Dictionary<Organ, int>();
-            helicopterIcons.Add(Organ.LIVER, Resource.Drawable.helicopter_liver_icon);
-            helicopterIcons.Add(Organ.KIDNEY, Resource.Drawable.helicopter_kidney_icon);
-            helicopterIcons.Add(Organ.PANCREAS, Resource.Drawable.helicopter_pancreas_icon);
-            helicopterIcons.Add(Organ.HEART, Resource.Drawable.helicopter_heart_icon);
-            helicopterIcons.Add(Organ.LUNG, Resource.Drawable.helicopter_lung_icon);
-            helicopterIcons.Add(Organ.INTESTINE, Resource.Drawable.helicopter_intestine_icon);
-            helicopterIcons.Add(Organ.CORNEA, Resource.Drawable.helicopter_cornea_icon);
-            helicopterIcons.Add(Organ.EAR, Resource.Drawable.helicopter_ear_icon);
-            helicopterIcons.Add(Organ.SKIN, Resource.Drawable.helicopter_skin_icon);
-            helicopterIcons.Add(Organ.BONE, Resource.Drawable.helicopter_bone_icon);
-            helicopterIcons.Add(Organ.TISSUE, Resource.Drawable.helicopter_tissue_icon);
+            helicopterIcons = new Dictionary<Organ, Bitmap>();
+            // Create the image
+            Bitmap liverBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_liver_icon), 170, 170, false);
+            Bitmap kidneyBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_kidney_icon), 170, 170, false);
+            Bitmap pancreasBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_pancreas_icon), 170, 170, false);
+            Bitmap heartBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_heart_icon), 170, 170, false);
+            Bitmap lungBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_lung_icon), 170, 170, false);
+            Bitmap intestineBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_intestine_icon), 170, 170, false);
+            Bitmap earBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_ear_icon), 170, 170, false);
+            Bitmap skinBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_skin_icon), 170, 170, false);
+            Bitmap boneBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_bone_icon), 170, 170, false);
+            Bitmap tissueBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_tissue_icon), 170, 170, false);
+            Bitmap corneaBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_cornea_icon), 170, 170, false);
+
+            helicopterIcons.Add(Organ.LIVER, liverBitmap);
+            helicopterIcons.Add(Organ.KIDNEY, kidneyBitmap);
+            helicopterIcons.Add(Organ.PANCREAS, pancreasBitmap);
+            helicopterIcons.Add(Organ.HEART, heartBitmap);
+            helicopterIcons.Add(Organ.LUNG, lungBitmap);
+            helicopterIcons.Add(Organ.INTESTINE, intestineBitmap);
+            helicopterIcons.Add(Organ.CORNEA, corneaBitmap);
+            helicopterIcons.Add(Organ.EAR, earBitmap);
+            helicopterIcons.Add(Organ.SKIN, skinBitmap);
+            helicopterIcons.Add(Organ.BONE, boneBitmap);
+            helicopterIcons.Add(Organ.TISSUE, tissueBitmap);
         }
 
         protected override void OnMapReady(GoogleMap map)
@@ -251,13 +264,7 @@ namespace CustomRenderer.Droid
             // Snippet is set to store the unique heli identifier (dictionary key) so it can be recalled when searching for a customPin based on Marker
             marker.SetSnippet(pin.Address);
 
-            // Create the image
-            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, helicopterIcons[pin.OrganToTransport]);
-
-            // Scale the image
-            imageBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 170, 170, false);
-
-            marker.SetIcon(BitmapDescriptorFactory.FromBitmap(imageBitmap));
+            marker.SetIcon(BitmapDescriptorFactory.FromBitmap(helicopterIcons[pin.OrganToTransport]));
 
             return marker;
         }
