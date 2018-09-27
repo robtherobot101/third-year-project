@@ -54,7 +54,7 @@ namespace mobileAppClient
 
             defaultCellBackgroundColor = StreetAutoCompeleteTableCell.View.BackgroundColor;
 
-            StreetAutoCompeleteTableCell.IsEnabled = false;
+            StreetAutoCompeleteTableCell.IsEnabled = true;
 
             DODCityAutoCompleteTableCell.IsEnabled = false;
 
@@ -441,7 +441,7 @@ namespace mobileAppClient
                     StreetAutoCompleteStAddr.Text = data[0].Item1;
                     StreetAutoCompleteLocation.Text = data[0].Item2;
                     StreetAutoCompeleteTableCell.IsEnabled = true;
-                    StreetAutoCompeleteTableCell.View.BackgroundColor = Color.LightBlue;
+                    StreetAutoCompeleteTableCell.View.BackgroundColor = defaultCellBackgroundColor;
                 }
                 updatingAutoComplete = false;
             }
@@ -474,11 +474,14 @@ namespace mobileAppClient
          */
         public void DisplayAddress(String address)
         {
-            List<String> tokens = address.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            String line1 = tokens.Count > 0 ? tokens[0] : "";
-            String line2 = tokens.Count > 0 ? String.Join(", ", tokens.GetRange(1, tokens.Count - 1)) : "";
-            AddressInput.Text = line1;
-            AddressLine2Input.Text = line2;
+            if (address != null)
+            {
+                List<String> tokens = address.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                String line1 = tokens.Count > 0 ? tokens[0] : "";
+                String line2 = tokens.Count > 0 ? String.Join(", ", tokens.GetRange(1, tokens.Count - 1)) : "";
+                AddressInput.Text = line1;
+                AddressLine2Input.Text = line2;
+            }
         }
 
         /*
@@ -520,7 +523,7 @@ namespace mobileAppClient
                     DODCityAutoCompleteLabel.Text = data[0].Item1;
 
                     DODCityAutoCompleteTableCell.IsEnabled = true;
-                    DODCityAutoCompleteTableCell.View.BackgroundColor = Color.LightBlue;
+                    DODCityAutoCompleteTableCell.View.BackgroundColor = defaultCellBackgroundColor;
                 }
                 updatingAutoComplete = false;
             }
