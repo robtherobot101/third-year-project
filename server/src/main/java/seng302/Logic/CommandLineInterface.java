@@ -953,7 +953,6 @@ public class CommandLineInterface {
         if (nextCommand.length == 1) {
             try {
                 if (new GeneralClinician().getAllClinicians().size() > 0) {
-                    outputString = (Clinician.tableHeader);
                     for (Clinician clinician : new GeneralClinician().getAllClinicians()) {
                         outputString = outputString + (clinician.getString(false)) + "\n";
                     }
