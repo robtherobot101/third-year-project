@@ -14,6 +14,9 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient
 {
+    /*
+     * Page which shows the main transplant waiting list for clinicians
+     */
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 
 	public partial class TransplantListPage : ContentPage
@@ -31,6 +34,9 @@ namespace mobileAppClient
             });
         }
 
+        /*
+         * When the page appears the table is populated
+         */
         protected async override void OnAppearing()
         {
             base.OnAppearing();

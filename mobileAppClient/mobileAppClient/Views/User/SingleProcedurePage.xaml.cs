@@ -144,6 +144,9 @@ namespace mobileAppClient
             await uploadUser();
         }
 
+        /*
+         * Notify the user if their input is invalid
+         */
         private async Task<bool> CheckInputs(string summary, string description)
         {
             string summaryInput = InputValidation.Trim(SummaryEntry.Text);

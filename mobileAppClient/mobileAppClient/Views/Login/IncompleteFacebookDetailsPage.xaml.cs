@@ -6,6 +6,10 @@ using System.Globalization;
 
 namespace mobileAppClient
 {
+    /*
+     * Provides a page where a new user can enter additional details
+     * which were not provided by Facebook
+     */
     public partial class IncompleteFacebookDetailsPage : ContentPage
     {
 

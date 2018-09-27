@@ -11,6 +11,9 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient
 {
+    /*
+     * Page which shows user conversations
+     */
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MessageThreadsListPage : ContentPage
     {
@@ -132,6 +135,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Navigates to the the conversation if one is tapped
+         */
         async void Handle_Conversation_Tapped(object sender, ItemTappedEventArgs e)
         {
             Conversation tappedConversation = (Conversation)e.Item;
@@ -144,6 +150,9 @@ namespace mobileAppClient
             await Navigation.PushAsync(new ConversationPage(tappedConversation, localId));
         }
 
+        /*
+         * Retrieves all conversations for a clinicians
+         */
         private async Task LoadClinicianConversations()
         {
             
@@ -170,6 +179,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Retrieves all conversations for a user
+         */
         private async Task LoadUserConversations()
         {
             
@@ -196,6 +208,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Creates a new conversation when the button is tapped
+         */
         private async void NewConversationTapped(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new CreateConversationPage(activeConversations));

@@ -13,6 +13,9 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient.Views
 {
+    /*
+     * Page which allows a waiting list item to be de-registered and cure a disease at the same time
+     */
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class DiseaseCuredDeregisterPage : ContentPage
 	{

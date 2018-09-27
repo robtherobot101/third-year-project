@@ -64,6 +64,9 @@ namespace mobileAppClient
 
 	    private MainPage baseMainPage;
 
+        /*
+         * Constructs the page
+         */
         public LoginPage()
 		{
 			InitializeComponent ();
@@ -352,6 +355,10 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Opens the Facebook login page
+         *
+         */
         async void Handle_LoginWithFacebookClicked(object sender, System.EventArgs e)
         {
             rememberLogin = RememberMeSwitch.IsToggled;
@@ -368,6 +375,9 @@ namespace mobileAppClient
 
         }
 
+        /*
+         * Opens the Google login page
+         */
         async void Handle_LoginWithGoogleClicked(object sender, System.EventArgs e)
         {
             rememberLogin = RememberMeSwitch.IsToggled;
@@ -384,6 +394,9 @@ namespace mobileAppClient
             Device.OpenUri(new Uri(GoogleServices.GetLoginAddr()));
         }
 
+        /*
+         * Handles the Google login re-direct
+         */
 	    public async Task Handle_RedirectUriCaught(string code)
 	    {
 	        Tuple<User, string, string> parsedUser = await GoogleServices.GetUserProfile(code);
@@ -391,6 +404,10 @@ namespace mobileAppClient
 	        await LoginAsGoogleUser(parsedUser);
 	    }
 
+        /*
+         * Attempts to login via Google
+         * If the Google account is not recognised, a new accout is created
+         */
 	    private async Task LoginAsGoogleUser(Tuple<User, string, string> parsedUser)
 	    {
 	        User googleUser = parsedUser.Item1;

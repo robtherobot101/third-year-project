@@ -6,6 +6,9 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient
 {
+    /*
+     * Page which allows a clinician to change their username and password
+     */
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ClinicianSettings : ContentPage
     {

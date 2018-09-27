@@ -10,6 +10,9 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
+    /*
+     * Page which handles Google login and authentication
+     */
     public partial class GooglePage : ContentPage
     {
         private LoginPage parentLoginPage;
@@ -47,6 +50,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Constructs the page and sets up the form
+         */
         public GooglePage(LoginPage loginPage, User googleUser, string profileImageURL, string api_id)
         {
             InitializeComponent();
@@ -68,12 +74,18 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Navigates to the previous modal
+         */
 
         async void Handle_CancelClicked(object sender, System.EventArgs e)
         {
             await Navigation.PopModalAsync();
         }
 
+        /*
+         * Creates a new user with a Google login
+         */
         public async Task RegisterNewUser()
         {
             UserAPI userAPI = new UserAPI();
@@ -148,6 +160,10 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * When the confirm button is pressed, input validation is done and the 
+         * given user settings are posted to the server
+         */
         private async void Button_OnClicked(object sender, EventArgs e)
         {
             if (!InputValidation.IsValidNhiInput(NHIEntry.Text))

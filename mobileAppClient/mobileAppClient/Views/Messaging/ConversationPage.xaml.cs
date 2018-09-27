@@ -16,6 +16,9 @@ using mobileAppClient.Views.Messaging;
 
 namespace mobileAppClient
 {
+    /*
+     * Page which handles a single conversation
+     */
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ConversationPage : ContentPage
 	{
@@ -47,11 +50,15 @@ namespace mobileAppClient
             VSAppCenter.setConversationController(this);
         }
 
+
         private async void ConversationMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             //await ScrollViewContainer.ScrollToAsync(0, 100, true);
         }
 
+        /*
+         * Whenever the page appears, the page is scrolled to the bottom
+         */
         protected async override void OnAppearing()
         {
             base.OnAppearing();
@@ -59,6 +66,10 @@ namespace mobileAppClient
 
         }
 
+        /*
+         * When the page dissapears, the push notification conversation controller
+         * is disabled
+         */
         protected override void OnDisappearing()
         {  
             VSAppCenter.setConversationController(null);
@@ -76,6 +87,9 @@ namespace mobileAppClient
 	        }
 	    }
 
+        /*
+         * If a message is tapped, the keyboard is closed
+         */
         void Handle_ItemTapped(object sender, Xamarin.Forms.ItemTappedEventArgs e)
         {
             if(Device.RuntimePlatform == Device.iOS) {

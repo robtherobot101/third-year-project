@@ -12,6 +12,10 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient.Views
 {
+    /*
+     * Page which allows a waiting list item to be de-registered 
+     * after the receiver is deceased
+     */
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class DeceasedDeregisterPage : ContentPage
     {
@@ -29,6 +33,9 @@ namespace mobileAppClient.Views
             this.parentWaitingListItemPage = parentWaitingListItemPage;
         }
 
+        /*
+         * The fields are populated everytime the page appears
+         */
         protected override async void OnAppearing()
         {
             await setupPage();
@@ -44,7 +51,7 @@ namespace mobileAppClient.Views
         }
 
         /*
-         * 
+         * Populates the fields
          */
         public async Task setupPage()
         {
