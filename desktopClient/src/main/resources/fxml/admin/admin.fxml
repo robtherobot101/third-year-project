@@ -271,7 +271,7 @@
                                  <Insets bottom="6.0" left="18.0" />
                              </GridPane.margin>
                          </Label>
-                        <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="⌨" GridPane.rowIndex="3">
+                        <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="✈" GridPane.rowIndex="3">
                            <GridPane.margin>
                               <Insets bottom="6.0" left="15.0" />
                            </GridPane.margin>
@@ -280,7 +280,7 @@
                            </font>
                         </Label>
 
-                         <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="✈" GridPane.rowIndex="4">
+                         <Label mouseTransparent="true" stylesheets="@../../css/symbol.css" text="⌨" GridPane.rowIndex="4">
                              <GridPane.margin>
                                  <Insets bottom="6.0" left="15.0" />
                              </GridPane.margin>
