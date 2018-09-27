@@ -144,7 +144,7 @@ public class AdminCliController implements Initializable {
      * @return boolean if it is an instruction
      */
     private boolean isInstruction(String response){
-        return response == "CLEAR";
+        return response.equals("CLEAR");
     }
 
     /**
