@@ -29,7 +29,7 @@ namespace mobileAppClient
 
         Boolean updatingAutoComplete;
         Boolean AutoCompleteitemTapped;
-
+        Color defaultCellBackgroundColor;
         public AttributesPage()
         {
             InitializeComponent();
@@ -52,9 +52,11 @@ namespace mobileAppClient
 
             FillFields();
 
-            StreetAutoCompeleteLayout.IsVisible = false;
+            defaultCellBackgroundColor = StreetAutoCompeleteTableCell.View.BackgroundColor;
 
-            DODCityAutoCompleteLayout.IsVisible = false;
+            StreetAutoCompeleteTableCell.IsEnabled = true;
+
+            DODCityAutoCompleteTableCell.IsEnabled = false;
 
             updatingAutoComplete = false;
         }
@@ -393,7 +395,8 @@ namespace mobileAppClient
                 DisplayAddress(StreetAutoCompleteStAddr.Text);
                 StreetAutoCompleteStAddr.Text = "";
                 StreetAutoCompleteLocation.Text = "";
-                StreetAutoCompeleteLayout.IsVisible = false;
+                StreetAutoCompeleteTableCell.IsEnabled = false;
+                StreetAutoCompeleteTableCell.View.BackgroundColor = defaultCellBackgroundColor;
             }
         }
 
@@ -429,13 +432,16 @@ namespace mobileAppClient
                 {
                     StreetAutoCompleteStAddr.Text = "";
                     StreetAutoCompleteLocation.Text = "";
-                    StreetAutoCompeleteLayout.IsVisible = false;
+                    StreetAutoCompeleteTableCell.IsEnabled = false;
+                    StreetAutoCompeleteTableCell.View.BackgroundColor = defaultCellBackgroundColor;
+
                 }
                 else
                 {
                     StreetAutoCompleteStAddr.Text = data[0].Item1;
                     StreetAutoCompleteLocation.Text = data[0].Item2;
-                    StreetAutoCompeleteLayout.IsVisible = true;
+                    StreetAutoCompeleteTableCell.IsEnabled = true;
+                    StreetAutoCompeleteTableCell.View.BackgroundColor = defaultCellBackgroundColor;
                 }
                 updatingAutoComplete = false;
             }
@@ -457,7 +463,9 @@ namespace mobileAppClient
                 DODCityInput.Text = DODCityAutoCompleteLabel.Text;
 
                 DODCityAutoCompleteLabel.Text = "";
-                DODCityAutoCompleteLayout.IsVisible = false;
+
+                DODCityAutoCompleteTableCell.IsEnabled = false;
+                DODCityAutoCompleteTableCell.View.BackgroundColor = defaultCellBackgroundColor;
             }
         }
 
@@ -466,11 +474,14 @@ namespace mobileAppClient
          */
         public void DisplayAddress(String address)
         {
-            List<String> tokens = address.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            String line1 = tokens.Count > 0 ? tokens[0] : "";
-            String line2 = tokens.Count > 0 ? String.Join(", ", tokens.GetRange(1, tokens.Count - 1)) : "";
-            AddressInput.Text = line1;
-            AddressLine2Input.Text = line2;
+            if (address != null)
+            {
+                List<String> tokens = address.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                String line1 = tokens.Count > 0 ? tokens[0] : "";
+                String line2 = tokens.Count > 0 ? String.Join(", ", tokens.GetRange(1, tokens.Count - 1)) : "";
+                AddressInput.Text = line1;
+                AddressLine2Input.Text = line2;
+            }
         }
 
         /*
@@ -502,13 +513,17 @@ namespace mobileAppClient
                 if (data.Count == 0)
                 {
                     DODCityAutoCompleteLabel.Text = "";
-                    DODCityAutoCompleteLayout.IsVisible = false;
+
+
+                    DODCityAutoCompleteTableCell.IsEnabled = false;
+                    DODCityAutoCompleteTableCell.View.BackgroundColor = defaultCellBackgroundColor;
                 }
                 else
                 {
                     DODCityAutoCompleteLabel.Text = data[0].Item1;
-                    DODCityAutoCompleteLayout.IsVisible = true;
 
+                    DODCityAutoCompleteTableCell.IsEnabled = true;
+                    DODCityAutoCompleteTableCell.View.BackgroundColor = defaultCellBackgroundColor;
                 }
                 updatingAutoComplete = false;
             }

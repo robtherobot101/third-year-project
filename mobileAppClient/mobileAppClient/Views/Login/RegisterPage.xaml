@@ -15,7 +15,7 @@
                     VerticalOptions="CenterAndExpand" 
                     />
 
-                <Entry x:Name="emailInput" Placeholder="Email"
+                <Entry x:Name="emailInput" Placeholder="Email" Keyboard="Email"
                     VerticalOptions="CenterAndExpand" 
                     />
 

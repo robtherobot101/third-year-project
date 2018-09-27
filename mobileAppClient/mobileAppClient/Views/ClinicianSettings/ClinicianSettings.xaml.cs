@@ -16,11 +16,18 @@ namespace mobileAppClient
             UsernameEntry.Text = ClinicianController.Instance.LoggedInClinician.username;
         }
 
+        /*
+         * Enables changing of password when the page appears
+         */
         protected override void OnAppearing()
         {
             ChangePasswordSwitch.On = false;
         }
 
+        /*
+         * Changes whether or not the password can be changed
+         * and changes the password inputs to match
+         */
         void PasswordSwitchChanged(object sender, ToggledEventArgs e)
         {
             Console.WriteLine(e.Value);
@@ -29,6 +36,9 @@ namespace mobileAppClient
             changingPassword = e.Value;
         }
 
+        /*
+         * Attempts to change the username And/Or password for the logged in clinician
+         */
         async void Handle_ConfirmButtonClicked(object sender, System.EventArgs e)
         {
             if (passwordInput.Text == "")

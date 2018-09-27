@@ -87,9 +87,9 @@
                     <EntryCell Label="" Placeholder="Line 2" x:Name="AddressLine2Input" PropertyChanged="Handle_StreetAutoCompleteValueChanged"/>
 
                     <ViewCell x:Name="StreetAutoCompeleteTableCell" Tapped="Handle_StreetAutoCompleteItemTapped">
-                        <StackLayout Orientation="Vertical" Padding="15,5,0,0" BackgroundColor="LightBlue" x:Name="StreetAutoCompeleteLayout">
-                            <Label  TextColor="DeepPink" FontAttributes="Bold" x:Name="StreetAutoCompleteStAddr"/>
-                            <Label TextColor="Pink" x:Name="StreetAutoCompleteLocation"/>
+                        <StackLayout Orientation="Vertical" Padding="15,15,0,15" x:Name="StreetAutoCompeleteLayout">
+                            <Label Text=" " TextColor="DeepPink" FontAttributes="Bold" x:Name="StreetAutoCompleteStAddr" IsVisible="true"/>
+                            <Label Text=" " TextColor="Pink" x:Name="StreetAutoCompleteLocation" IsVisible="true"/>
                         </StackLayout>
                     </ViewCell>
 
@@ -156,9 +156,11 @@
 
                     <EntryCell x:Name="DODCityInput" Label="City" PropertyChanged="Handle_DODCityAutoCompleteValueChanged" IsEnabled="False"/>
 
-                    <ViewCell x:Name="DODCityAutoCompeleteTableCell" Tapped="Handle_DODCityAutoCompleteItemTapped" >
-                        <StackLayout Orientation="Vertical" Padding="15,5,0,0" BackgroundColor="LightBlue" x:Name="DODCityAutoCompleteLayout">
-                            <Label  TextColor="DeepPink" FontAttributes="Bold" x:Name="DODCityAutoCompleteLabel"/>
+                    <ViewCell x:Name="DODCityAutoCompleteTableCell" Tapped="Handle_DODCityAutoCompleteItemTapped" >
+                        <StackLayout Orientation="Vertical" Padding="15,30,0,15" x:Name="DODCityAutoCompleteLayout">
+                            <Label Text=" " TextColor="DeepPink" FontAttributes="Bold" x:Name="DODCityAutoCompleteLabel" VerticalOptions="Center"/>
+                            <Label Text=" " TextColor="Pink" IsVisible="true"/>
+
                         </StackLayout>
                     </ViewCell>
 
@@ -166,7 +168,7 @@
                 <TableSection Title="Physical Attributes">
                     <EntryCell Keyboard="Numeric" Label="Height (cm)" x:Name="HeightInput"/>
                     <EntryCell Keyboard="Numeric" Label="Weight (kg)" x:Name="WeightInput"/>
-                    <EntryCell Label="Blood Pressure" x:Name="BloodPressureInput"/>
+                    <EntryCell Label="Blood Pressure" x:Name="BloodPressureInput" Placeholder="20/30"/>
                 </TableSection>
                 <TableSection Title="Other Attributes">
                     <ViewCell>

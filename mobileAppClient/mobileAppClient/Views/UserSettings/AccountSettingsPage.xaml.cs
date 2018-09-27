@@ -21,11 +21,14 @@ namespace mobileAppClient.Views.UserSettings
             passwordInput.IsEnabled = false;
             confirmPasswordInput.IsEnabled = false;
 
-            //ChangePasswordMenuItemViewCell.Height = dummyCell.Height;
             UsernameEntry.Text = UserController.Instance.LoggedInUser.username;
             EmailEntry.Text = UserController.Instance.LoggedInUser.email;
         }
 
+        /*
+         * Toggles the state of the password inputs and whether to post them
+         * to the change account endpoint when the confirm button is pressed
+         */
         void Handle_ChangePasswordTapped(object sender, System.EventArgs e)
         {
             passwordInput.IsEnabled = !passwordInput.IsEnabled;
@@ -33,6 +36,10 @@ namespace mobileAppClient.Views.UserSettings
             changingPassword = !changingPassword;
         }
 
+        /*
+         * Makes a call to the api which updates the logged in user with the 
+         * given atttributes. Password is only updated when changingPassword is true
+         */
         async void Handle_ConfirmButtonClicked(object sender, System.EventArgs e)
         {
             if (passwordInput.Text == "")

@@ -173,11 +173,11 @@ public class ClinicianAvailableOrgansController implements Initializable{
      * @param regionField The TextField for regions outside of New Zealand
      */
     public void setRegion(String value, ComboBox countryComboBox, ComboBox<String> regionComboBox, TextField regionField) {
-        String country = countryComboBox.getValue().toString();
-        boolean useCombo = false;
-        if (country != null) {
-            useCombo = country.equalsIgnoreCase("New Zealand");
+        String country = "";
+        if (countryComboBox.getValue() != null) {
+            country = countryComboBox.getValue().toString();
         }
+        boolean useCombo = country.equalsIgnoreCase("New Zealand");
         if(value == null) {
             if(useCombo){
                 regionComboBox.getSelectionModel().select("All Regions");
@@ -230,7 +230,11 @@ public class ClinicianAvailableOrgansController implements Initializable{
      */
     public void countryChanged() {
         String currentRegion = getRegion(countryComboBox, regionComboBox, regionTextField);
-        setRegionControls(currentRegion, countryComboBox.getValue().toString(), regionComboBox, regionTextField);
+        String country = "";
+        if (countryComboBox.getValue() != null) {
+            country = countryComboBox.getValue().toString();
+        }
+        setRegionControls(currentRegion, country, regionComboBox, regionTextField);
         filterChanged();
     }
 
