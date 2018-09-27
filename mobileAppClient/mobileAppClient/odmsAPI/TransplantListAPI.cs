@@ -9,6 +9,9 @@ using System.Threading.Tasks;
 
 namespace mobileAppClient.odmsAPI
 {
+    /*
+     * Class which handles waiting list item related API calls
+     */
     class TransplantListAPI
     {
         public async Task<List<WaitingListItem>> getItems(String query)

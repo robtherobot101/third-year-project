@@ -146,6 +146,13 @@ namespace mobileAppClient
 
         async void Handle_MoveToClicked(object sender, EventArgs e)
         {
+            if(!isClinicianAccessing) {
+                await DisplayAlert("Unauthorized",
+                    "Only a clinician can update a user's medications",
+                    "OK");
+                return;
+            }
+
             var mi = ((MenuItem)sender);
             Medication selectedMedication = mi.CommandParameter as Medication;
             String status = SegControl.SelectedSegment == 0 ? "historic" : "current";
@@ -212,6 +219,15 @@ namespace mobileAppClient
 
         async void Handle_DeleteClicked(object sender, EventArgs e)
         {
+            if (!isClinicianAccessing)
+            {
+                await DisplayAlert("Unauthorized",
+                    "Only a clinician can update a user's medications",
+                    "OK");
+                return;
+            }
+
+
             var mi = ((MenuItem)sender);
             Medication selectedMedication = mi.CommandParameter as Medication;
             bool answer = await DisplayAlert("Are you sure?", "Do you want to remove " + selectedMedication.name + " from " + UserController.Instance.LoggedInUser.FullName + "?", "Yes", "No");

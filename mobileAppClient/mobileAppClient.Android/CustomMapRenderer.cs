@@ -29,9 +29,11 @@ namespace CustomRenderer.Droid
 
     public class CustomMapRenderer : MapRenderer, GoogleMap.IInfoWindowAdapter
     {
+        BitmapFactory.Options bitmapOptions = new BitmapFactory.Options();
+
         private Dictionary<Position, CustomPin> customPins;
         private Dictionary<string, CustomPin> helicopterPins;
-        private Dictionary<Organ, int> helicopterIcons;
+        private Dictionary<Organ, Bitmap> helicopterIcons;
 
         private String selectedHeli;
         private Tuple<CustomPin, Polyline> highlightedFlightPath;
@@ -42,6 +44,7 @@ namespace CustomRenderer.Droid
 
         public CustomMapRenderer(Context context) : base(context)
         {
+            bitmapOptions.InSampleSize = 10;
         }
 
         protected override void OnElementChanged(Xamarin.Forms.Platform.Android.ElementChangedEventArgs<Map> e)
@@ -76,18 +79,31 @@ namespace CustomRenderer.Droid
         /// </summary>
         private void intialiseHelicopterIcons()
         {
-            helicopterIcons = new Dictionary<Organ, int>();
-            helicopterIcons.Add(Organ.LIVER, Resource.Drawable.helicopter_liver_icon);
-            helicopterIcons.Add(Organ.KIDNEY, Resource.Drawable.helicopter_kidney_icon);
-            helicopterIcons.Add(Organ.PANCREAS, Resource.Drawable.helicopter_pancreas_icon);
-            helicopterIcons.Add(Organ.HEART, Resource.Drawable.helicopter_heart_icon);
-            helicopterIcons.Add(Organ.LUNG, Resource.Drawable.helicopter_lung_icon);
-            helicopterIcons.Add(Organ.INTESTINE, Resource.Drawable.helicopter_intestine_icon);
-            helicopterIcons.Add(Organ.CORNEA, Resource.Drawable.helicopter_cornea_icon);
-            helicopterIcons.Add(Organ.EAR, Resource.Drawable.helicopter_ear_icon);
-            helicopterIcons.Add(Organ.SKIN, Resource.Drawable.helicopter_skin_icon);
-            helicopterIcons.Add(Organ.BONE, Resource.Drawable.helicopter_bone_icon);
-            helicopterIcons.Add(Organ.TISSUE, Resource.Drawable.helicopter_tissue_icon);
+            helicopterIcons = new Dictionary<Organ, Bitmap>();
+            // Create the image
+            Bitmap liverBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_liver_icon), 170, 170, false);
+            Bitmap kidneyBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_kidney_icon), 170, 170, false);
+            Bitmap pancreasBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_pancreas_icon), 170, 170, false);
+            Bitmap heartBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_heart_icon), 170, 170, false);
+            Bitmap lungBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_lung_icon), 170, 170, false);
+            Bitmap intestineBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_intestine_icon), 170, 170, false);
+            Bitmap earBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_ear_icon), 170, 170, false);
+            Bitmap skinBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_skin_icon), 170, 170, false);
+            Bitmap boneBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_bone_icon), 170, 170, false);
+            Bitmap tissueBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_tissue_icon), 170, 170, false);
+            Bitmap corneaBitmap = Bitmap.CreateScaledBitmap(BitmapFactory.DecodeResource(Resources, Resource.Drawable.helicopter_cornea_icon), 170, 170, false);
+
+            helicopterIcons.Add(Organ.LIVER, liverBitmap);
+            helicopterIcons.Add(Organ.KIDNEY, kidneyBitmap);
+            helicopterIcons.Add(Organ.PANCREAS, pancreasBitmap);
+            helicopterIcons.Add(Organ.HEART, heartBitmap);
+            helicopterIcons.Add(Organ.LUNG, lungBitmap);
+            helicopterIcons.Add(Organ.INTESTINE, intestineBitmap);
+            helicopterIcons.Add(Organ.CORNEA, corneaBitmap);
+            helicopterIcons.Add(Organ.EAR, earBitmap);
+            helicopterIcons.Add(Organ.SKIN, skinBitmap);
+            helicopterIcons.Add(Organ.BONE, boneBitmap);
+            helicopterIcons.Add(Organ.TISSUE, tissueBitmap);
         }
 
         protected override void OnMapReady(GoogleMap map)
@@ -114,85 +130,85 @@ namespace CustomRenderer.Droid
             switch (pin.genderIcon)
             {
                 case "man1.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man1);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man1, bitmapOptions);
                     break;
                 case "man2.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man2);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man2, bitmapOptions);
                     break;
                 case "man3.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man3);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man3, bitmapOptions);
                     break;
                 case "man4.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man4);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man4, bitmapOptions);
                     break;
                 case "man5.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man5);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man5, bitmapOptions);
                     break;
                 case "man6.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man6);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man6, bitmapOptions);
                     break;
                 case "man7.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man7);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man7, bitmapOptions);
                     break;
                 case "man8.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man8);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man8, bitmapOptions);
                     break;
                 case "man9.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man9);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man9, bitmapOptions);
                     break;
                 case "man10.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man10);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man10, bitmapOptions);
                     break;
                 case "man11.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man11);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man11, bitmapOptions);
                     break;
                 case "man12.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man12);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man12, bitmapOptions);
                     break;
                 case "man13.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man13);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man13, bitmapOptions);
                     break;
                 case "man14.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man14);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.man14, bitmapOptions);
                     break;
                 case "woman1.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman1);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman1, bitmapOptions);
                     break;
                 case "woman2.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman2);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman2, bitmapOptions);
                     break;
                 case "woman3.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman3);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman3, bitmapOptions);
                     break;
                 case "woman4.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman4);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman4, bitmapOptions);
                     break;
                 case "woman5.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman5);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman5, bitmapOptions);
                     break;
                 case "woman6.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman6);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman6, bitmapOptions);
                     break;
                 case "woman7.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman7);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman7, bitmapOptions);
                     break;
                 case "woman8.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman8);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman8, bitmapOptions);
                     break;
                 case "woman9.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman9);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman9, bitmapOptions);
                     break;
                 case "woman10.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman10);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman10, bitmapOptions);
                     break;
                 case "woman11.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman11);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.woman11, bitmapOptions);
                     break;
                 case "other.png":
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.other);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.other, bitmapOptions);
                     break;
                 default:
-                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.other);
+                    imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.other, bitmapOptions);
                     break;
 
             }
@@ -224,7 +240,7 @@ namespace CustomRenderer.Droid
             marker.SetSnippet(pin.Address);
 
             // Create the image
-            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.hospital_icon);
+            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, Resource.Drawable.hospital_icon, bitmapOptions);
 
             // Scale the image
             imageBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 110, 110, false);
@@ -251,13 +267,7 @@ namespace CustomRenderer.Droid
             // Snippet is set to store the unique heli identifier (dictionary key) so it can be recalled when searching for a customPin based on Marker
             marker.SetSnippet(pin.Address);
 
-            // Create the image
-            Bitmap imageBitmap = BitmapFactory.DecodeResource(Resources, helicopterIcons[pin.OrganToTransport]);
-
-            // Scale the image
-            imageBitmap = Bitmap.CreateScaledBitmap(imageBitmap, 170, 170, false);
-
-            marker.SetIcon(BitmapDescriptorFactory.FromBitmap(imageBitmap));
+            marker.SetIcon(BitmapDescriptorFactory.FromBitmap(helicopterIcons[pin.OrganToTransport]));
 
             return marker;
         }
@@ -464,7 +474,7 @@ namespace CustomRenderer.Droid
                     else
                     {
                         var imageBytes = Convert.FromBase64String(customPin.userPhoto);
-                        var imageData = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length);
+                        var imageData = BitmapFactory.DecodeByteArray(imageBytes, 0, imageBytes.Length, bitmapOptions);
                         imageFrame.SetImageBitmap(imageData);
                     }
                 }

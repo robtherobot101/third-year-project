@@ -20,6 +20,9 @@ namespace mobileAppClient
             this.year = Convert.ToInt32(dateToParse.ToString("yyyy"));
         }
 
+        /*
+         * Returns a string representation of the date
+         */
         public override string ToString()
         {
             return String.Format("{0}/{1}/{2}", this.day, this.month, this.year);

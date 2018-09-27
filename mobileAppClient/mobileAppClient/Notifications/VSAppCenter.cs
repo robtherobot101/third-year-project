@@ -13,6 +13,9 @@ using Xamarin.Forms;
 
 namespace mobileAppClient.Notifications
 {
+    /*
+     * Class for handling push notifications with the AppCenter
+     */
     public static class VSAppCenter
     {
         static MessageThreadsListPage messageThreadsListPageController;

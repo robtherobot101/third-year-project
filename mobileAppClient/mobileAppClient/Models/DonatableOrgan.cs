@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle information about an organ which can be donated
+     */
     public class DonatableOrgan
     {
         public CustomDateTime timeOfDeath { get; set; }
@@ -17,6 +20,10 @@ namespace mobileAppClient
         {
         }
 
+        /*
+         * Returns a tuple which defines the time remaining 
+         * in string and long format
+         */
         public Tuple<string, long> getTimeRemaining() {
             string timeString = "Time to expire: ";
             DateTime now = DateTime.Now;

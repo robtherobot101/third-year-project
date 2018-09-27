@@ -459,7 +459,7 @@ public class CommandLineInterface {
         if (nextCommand.length == 2) {
             try {
                 int id = Integer.parseInt(nextCommand[1]);
-                if (id != 0) {
+                if (id != 2) {
                     Clinician clinician = new GeneralClinician().getClinicianFromId(id);
                     if (clinician == null) {
                         return new CommandLineResponse(false, String.format("clinician with staff ID %d not found.", id));
@@ -579,14 +579,19 @@ public class CommandLineInterface {
             return new CommandLineResponse(false, String.format("user with ID %s not found.", nextCommand[1]));
         }
         try {
-            new UserWaitingList().removeWaitingListItem((int) toSet.getId(), Organ.parse(nextCommand[2]));
-            return new CommandLineResponse(true, "Waiting list item was de-registered.", toSet.getId());
+            int changed = new UserWaitingList().removeWaitingListItem((int) toSet.getId(), Organ.parse(nextCommand[2]));
+            if (changed > 0) {
+                return new CommandLineResponse(true, "Waiting list item was de-registered.", toSet.getId());
+            } else {
+                return new CommandLineResponse(true, "That waiting list item was not registered.", toSet.getId());
+            }
         } catch (IllegalArgumentException e) {
             return new CommandLineResponse(false, "Error in input! Available organs: liver, kidney, pancreas, heart, lung, intestine, cornea, middle-ear, skin, " +
                     "bone-marrow, connective-tissue");
         } catch (SQLException e) {
+            e.printStackTrace();
             return new CommandLineResponse(false, "Item could not be removed. An error occurred on the database.");
-        }
+    }
     }
 
     /**
@@ -953,7 +958,6 @@ public class CommandLineInterface {
         if (nextCommand.length == 1) {
             try {
                 if (new GeneralClinician().getAllClinicians().size() > 0) {
-                    outputString = (Clinician.tableHeader);
                     for (Clinician clinician : new GeneralClinician().getAllClinicians()) {
                         outputString = outputString + (clinician.getString(false)) + "\n";
                     }
