@@ -37,7 +37,6 @@
     <AndroidEnableMultiDex>true</AndroidEnableMultiDex>
     <Debugger>Xamarin</Debugger>
     <LangVersion>default</LangVersion>
-    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -51,8 +50,8 @@
     <DefineConstants>
     </DefineConstants>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
-    <AndroidSupportedAbis>armeabi-v7a;x86</AndroidSupportedAbis>
-    <EmbedAssembliesIntoApk>false</EmbedAssembliesIntoApk>
+    <AndroidSupportedAbis />
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
     <JavaMaximumHeapSize>1G</JavaMaximumHeapSize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -251,6 +250,7 @@
     <Folder Include="Resources\drawable-xhdpi\" />
     <Folder Include="Resources\drawable-xxhdpi\" />
     <Folder Include="Resources\drawable-xxxhdpi\" />
+    <Folder Include="res\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\mobileAppClient\mobileAppClient.csproj">
