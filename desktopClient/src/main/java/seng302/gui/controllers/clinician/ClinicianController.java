@@ -145,6 +145,7 @@ public class ClinicianController implements Initializable {
     private String clinicianString = "clinician";
     private String areYouSure = "Are you sure?";
 
+
     public ClinicianController() {
         this.titleBar = new TitleBar();
         titleBar.setStage(WindowManager.getStage());

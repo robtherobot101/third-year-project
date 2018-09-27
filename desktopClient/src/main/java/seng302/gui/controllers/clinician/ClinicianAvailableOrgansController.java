@@ -83,11 +83,18 @@ public class ClinicianAvailableOrgansController implements Initializable{
 
     private String organApplied, regionApplied, nameApplied = "";
 
-
+    /**
+     * method to set the token
+     * @param token String the access token
+     */
     public void setToken(String token) {
         this.token = token;
     }
 
+    /**
+     * method to check if a token has been set
+     * @return Boolean if a token has already been set
+     */
     public boolean hasToken() {
         return token != null;
     }
@@ -120,6 +127,9 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
     }
 
+    /**
+     * method to setup the clinician avalible organs controller
+     */
     public void setup() {
         try {
             List<String> validCountries = new ArrayList<>();
@@ -416,12 +426,18 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
     }
 
+    /**
+     * method to apply a filter to the current display
+     */
     private void filterApplied(){
         this.regionApplied = getRegion(countryComboBox, regionComboBox, regionTextField);
         this.organApplied = organFilter.getValue();
         this.nameApplied = receiverNameTextField.getText();
     }
 
+    /**
+     * method to update the current display when the filter is changed
+     */
     private void filterChanged(){
         String regionFilter =  getRegion(countryComboBox, regionComboBox, regionTextField);
         if(!this.receiverNameTextField.getText().equals(nameApplied) ||
@@ -432,6 +448,15 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
     }
 
+    /**
+     * method to check if an organ can reach a receiver in time
+     * @param organ DonatableOrgan the organ being donated
+     * @param receiver User the organ reciever
+     * @return boolean if the organ will make it in time
+     * @throws HttpResponseException catch connection errors
+     * @throws UnirestException catch this exception
+     * @throws NullPointerException catch a null pointer exception
+     */
     private boolean checkGetToReceiverInTime(DonatableOrgan organ, User receiver) throws HttpResponseException, UnirestException, NullPointerException{
 
         User donor = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
@@ -463,7 +488,10 @@ public class ClinicianAvailableOrgansController implements Initializable{
     /**
      *Opens a dialog and asks user who they wish to transfer the organ to
      * @param organ the organ to transfer
-     * @throws HttpResponseException Throws if cannot connect to server
+     * @param user the user who is getting the organ
+     * @throws HttpResponseException catch connection errors
+     * @throws UnirestException catch this exception
+     * @throws NullPointerException catch a null pointer exception
      */
     private void transferOrganDialog(DonatableOrgan organ, User user) throws HttpResponseException, UnirestException, NullPointerException{
         if (!checkGetToReceiverInTime(organ, user)) {
@@ -497,6 +525,14 @@ public class ClinicianAvailableOrgansController implements Initializable{
         }
     }
 
+    /**
+     * method to do the transfer operations
+     * @param organ the organ to transfer
+     * @param receiver the receiver of the organ
+     * @throws HttpResponseException catch connection errors
+     * @throws UnirestException catch this exception
+     * @throws NullPointerException catch a null pointer exception
+     */
     private void transferOrgan(DonatableOrgan organ, User receiver) throws HttpResponseException, UnirestException, NullPointerException{
 
         User donor = WindowManager.getDataManager().getUsers().getUser(organ.getDonorId(), token);
