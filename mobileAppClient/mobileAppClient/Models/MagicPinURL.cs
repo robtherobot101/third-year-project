@@ -19,11 +19,17 @@ namespace mobileAppClient.Models
         {
         }
 
+        /*
+         * Serializes the information
+         */
         public static string Pack(MagicPinURL magicPinUrlToPack)
         {
             return JsonConvert.SerializeObject(magicPinUrlToPack);
         }
 
+        /*
+         * De-serializes the information
+         */
         public static MagicPinURL Unpack(String magicPinUrlToUnpack)
         {
             return JsonConvert.DeserializeObject<MagicPinURL>(magicPinUrlToUnpack);

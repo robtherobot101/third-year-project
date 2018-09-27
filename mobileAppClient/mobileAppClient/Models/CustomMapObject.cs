@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace mobileAppClient
 {
+    /*
+     * Class to handle information about a donor on the map
+     */
     public class CustomMapObject
     {
         public string firstName { get; set; }

@@ -4,6 +4,9 @@ using System.Text;
 
 namespace mobileAppClient.Models
 {
+    /*
+     * Class which holds information about a helicopter on the map
+     */
     public class Hospital
     {
         public string name { get; set; }

@@ -4,6 +4,9 @@ using System.Text;
 
 namespace mobileAppClient.Models
 {
+   /*
+    * Class to hold clincian information
+    */
     public class Clinician
     {
         public string name { get; set; }
@@ -13,6 +16,5 @@ namespace mobileAppClient.Models
         public string password { get; set; }
         public int staffID { get; set; }
         public string accountType { get; set; }
-
     }
 }
