@@ -7,12 +7,21 @@ using Newtonsoft.Json;
 
 namespace mobileAppClient.odmsAPI
 {
+    /*
+     * Handles api calls for drug interactions
+     */
     public class DrugAutoFillActiveIngredientsAPI
     {
         public DrugAutoFillActiveIngredientsAPI()
         {
         }
 
+        /// <summary>
+        /// Fetches a medication response object with medication auto-fill suggestions
+        /// </summary>
+        /// <returns>
+        /// The MedicationResponseObject
+        /// </returns>
         public async Task<MedicationResponseObject> apiRequest(string url) 
         {
             if (!ServerConfig.Instance.IsConnectedToInternet())
@@ -60,6 +69,10 @@ namespace mobileAppClient.odmsAPI
         }
 
 
+        /*
+         * Top level call for the api request. 
+         * Removes spaces and percentages from the url
+         */
         public async Task<MedicationResponseObject> autocomplete(string query)
         {
             query = query.Replace(" ", "+");
@@ -68,6 +81,11 @@ namespace mobileAppClient.odmsAPI
             return medicationsReturned;
         }
 
+
+        /*
+         * Top level call for the api request. 
+         * Removes spaces and percentages from the url
+         */
         public async Task<MedicationResponseObject> activeIngredients(string medicine)
         {
             medicine = medicine.Replace(" ", "+");
@@ -75,7 +93,5 @@ namespace mobileAppClient.odmsAPI
             MedicationResponseObject medicationsReturned = await apiRequest("https://iterar-mapi-us.p.mashape.com/api/" + medicine + "/substances.json");
             return medicationsReturned;
         }
-
-
     }
 }

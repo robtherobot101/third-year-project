@@ -21,6 +21,9 @@ namespace mobileAppClient
         {
         }
 
+        /*
+         * Returns the de-registered reason as a string
+         */ 
         public String deregisterReason()
         {
             String output;

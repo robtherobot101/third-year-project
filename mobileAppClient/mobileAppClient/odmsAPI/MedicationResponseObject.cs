@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace mobileAppClient.odmsAPI
 {
+    /*
+     * Class which holds medication auto-fill siggestions and drug active ingredients
+     */
     public class MedicationResponseObject
     {
         public string query { get; set; }
