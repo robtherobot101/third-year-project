@@ -1,4 +1,4 @@
-﻿using mobileAppClient.Maps;
+using mobileAppClient.Maps;
 using mobileAppClient.odmsAPI;
 using mobileAppClient.Views;
 using mobileAppClient.Views.Clinician;
@@ -309,7 +309,8 @@ namespace mobileAppClient
             }
 
 
-            
+
+
         }
 
         private void updateClinicianProfileBar()
