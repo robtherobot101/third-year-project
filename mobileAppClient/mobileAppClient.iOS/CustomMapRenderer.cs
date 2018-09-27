@@ -19,6 +19,9 @@ using ObjCRuntime;
 [assembly: ExportRenderer(typeof(CustomMap), typeof(CustomMapRenderer))]
 namespace CustomRenderer.iOS
 {
+    /*
+     * Renderer for the custom map
+     */ 
     public class CustomMapRenderer : MapRenderer
     {
         UIView customPinView;
@@ -82,6 +85,9 @@ namespace CustomRenderer.iOS
 
         }
 
+        /*
+         * Gets the new overlay renderer for the lines and circles
+         */ 
         public MKOverlayRenderer GetOverlayRenderer(MKMapView mapView, IMKOverlay overlayWrapper)
         {
 
@@ -177,6 +183,9 @@ namespace CustomRenderer.iOS
             helicopterIcons.Add(Organ.TISSUE, "helicopter_tissue_icon.png");
         }
 
+        /*
+         * Creates a new helicopter pin
+         */ 
         private MKAnnotationView CreateHelicopterPin(MKAnnotationView annotationView, CustomPin customPin, IMKAnnotation annotation) {
 
             refreshFlightDetails(customPin);
@@ -189,6 +198,9 @@ namespace CustomRenderer.iOS
             return annotationView;
         }
 
+        /*
+         * Creates a new Hospital pin
+         */
         private MKAnnotationView CreateHospitalPin(MKAnnotationView annotationView, CustomPin customPin, IMKAnnotation annotation) {
             annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
             annotationView.Image = UIImage.FromFile("hospital_icon.png").Scale(new CGSize(45, 45));
@@ -198,6 +210,9 @@ namespace CustomRenderer.iOS
             return annotationView;
         }
 
+        /*
+         * Creates a donor pin
+         */ 
         private MKAnnotationView CreateDonorPin(MKAnnotationView annotationView, CustomPin customPin, IMKAnnotation annotation) {
             annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
             annotationView.Image = UIImage.FromFile(customPin.genderIcon).Scale(new CGSize(70, 70));
@@ -214,6 +229,9 @@ namespace CustomRenderer.iOS
             return annotationView;
         }
 
+        /*
+         * Creates a receiver pin
+         */ 
         private MKAnnotationView CreateReceiverPin(MKAnnotationView annotationView, CustomPin customPin, IMKAnnotation annotation)
         {
             annotationView = new CustomMKAnnotationView(annotation, customPin.Id.ToString());
@@ -231,6 +249,9 @@ namespace CustomRenderer.iOS
             return annotationView;
         }
 
+        /*
+         * Event when the callout is called
+         */ 
         async void OnCalloutAccessoryControlTapped(object sender, MKMapViewAccessoryTappedEventArgs e)
         {
 

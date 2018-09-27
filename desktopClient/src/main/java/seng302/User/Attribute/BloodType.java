@@ -8,6 +8,10 @@ public enum BloodType {
 
     private String type;
 
+    /**
+     * enum constructor for blood type
+     * @param type String the bloodtype of the new object
+     */
     BloodType(String type) {
         this.type = type;
     }

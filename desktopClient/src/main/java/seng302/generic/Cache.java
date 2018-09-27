@@ -10,6 +10,10 @@ public class Cache {
     private Map<String, CachedItem> cacheMap;
 
 
+    /**
+     * creates a new cache object
+     * @param filepath String the path to where the cache is stored
+     */
     public Cache(String filepath) {
         this.filepath = filepath;
         this.cacheMap = new HashMap<>();

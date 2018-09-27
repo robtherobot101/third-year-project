@@ -12,6 +12,9 @@ using Xamarin.Forms;
 
 namespace mobileAppClient.iOS
 {
+    /*
+     * Class to handle the bottom sheet of the Map View
+     */ 
     public partial class BottomSheetViewController : UIViewController
     {
 
@@ -34,6 +37,9 @@ namespace mobileAppClient.iOS
             this.customMapRenderer = customMapRenderer;
         }
 
+        /*
+         * Prepares all of the details of the bottom sheet
+         */ 
         public void prepareSheetDetails() {
 
             NameLabel.Text = pin.Label;
@@ -46,10 +52,16 @@ namespace mobileAppClient.iOS
             OrgansTableView.ScrollEnabled = true;
         }
 
+        /*
+         * Starts the organ time ticker
+         */ 
         public void StartTickingTimer(int interval) {
             OrganTimeTickingTimer = new Timer(RefreshCountdownsInTableView, null, 0, interval); 
         }
 
+        /*
+         * Refreshes all of the countdowns in the table view every second
+         */ 
         public void RefreshCountdownsInTableView(object o) {
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -90,6 +102,9 @@ namespace mobileAppClient.iOS
 
         }
 
+        /*
+         * Closes the bottom sheet to the bottom of the frame
+         */ 
         public async Task closeMenu() {
             await UIView.AnimateAsync(0.5, new Action(() => {
                 var frame = this.View.Frame;
@@ -98,6 +113,9 @@ namespace mobileAppClient.iOS
             }));
         }
 
+        /*
+         * Slides the bottom sheet to the right of the frame
+         */ 
         public async Task slideMenuToRight() {
             await UIView.AnimateAsync(0.3, new Action(() => {
                 var frame = this.View.Frame;
@@ -106,6 +124,9 @@ namespace mobileAppClient.iOS
             }));
         }
 
+        /*
+         * Slides the bottom sheet in from the right of the frame
+         */
         public async Task slideMenuBackInFromRight()
         {
             await UIView.AnimateAsync(0.3, new Action(() => {
@@ -114,6 +135,9 @@ namespace mobileAppClient.iOS
             }));
         }
 
+        /*
+         * Slides the bottom sheet to the left of the frame
+         */
         public async Task slideMenuToLeft() {
             await UIView.AnimateAsync(0.3, new Action(() => {
                 var frame = this.View.Frame;
@@ -122,13 +146,18 @@ namespace mobileAppClient.iOS
             }));
         }
 
+        /*
+         * Stops all timers
+         */ 
         public void StopTimers()
         {
             OrganTimeTickingTimer.Dispose();
             OrganTimeTickingTimer = null;
         }
 
-
+        /*
+         * Prepares all of the background of the views
+         */ 
         public void prepareBackgroundView() {
             var blurEffect = UIBlurEffect.FromStyle(UIBlurEffectStyle.Dark);
             var visualEffect = new UIVisualEffectView(blurEffect);
@@ -156,6 +185,9 @@ namespace mobileAppClient.iOS
           
         }
 
+        /*
+         * Opens the menu from the bottom of the screen
+         */ 
         public async Task OpenMenu() {
             await UIView.AnimateAsync(0.3, new Action(() => {
                 var frame = this.View.Frame;
@@ -186,6 +218,9 @@ namespace mobileAppClient.iOS
 
         }
 
+        /*
+         * Pan gesture used when a user interacts with the map
+         */ 
         public void panGesture(UIPanGestureRecognizer recognizer) {
             var translation = recognizer.TranslationInView(this.View);
             var velocity = recognizer.VelocityInView(this.View);
@@ -213,6 +248,9 @@ namespace mobileAppClient.iOS
 
         }
 
+        /*
+         * Rounds all of the views of the bottom sheet
+         */ 
         public void roundViews() {
             View.Layer.CornerRadius = 5;
             holdView.Layer.CornerRadius = 3;
