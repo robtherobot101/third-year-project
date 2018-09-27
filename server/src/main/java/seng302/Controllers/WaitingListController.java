@@ -238,6 +238,13 @@ public class WaitingListController {
         }
     }
 
+    /**
+     * Update a waiting list item to show that its transplant has been completed
+     *
+     * @param request HTTP request
+     * #param response HTTP response
+     * @return Whether the operation was successful
+     */
     public String transplantCompleted(Request request, Response response) {
         int waitingListId = Integer.parseInt(request.params(":waitingListItemId"));
         try {
@@ -279,7 +286,13 @@ public class WaitingListController {
         return queriedWaitingListItem;
     }
 
-
+    /**
+     * Gets a waiting list item by id.
+     *
+     * @param request HTTP request
+     * @param response HTTP response
+     * @return A valid WaitingListItem object if the WaitingListItem id exists otherwise return null
+     */
     public String getWaitingListId(Request request, Response response) {
         int userId = Integer.parseInt(request.params(":id"));
         Organ organType = Organ.parse(request.params(":organType"));

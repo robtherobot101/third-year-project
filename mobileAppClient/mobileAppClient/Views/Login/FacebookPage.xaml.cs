@@ -11,6 +11,9 @@ using Xamarin.Forms;
 
 namespace mobileAppClient
 {
+    /*
+     * Page which handles Facebook login and authentication
+     */
     public partial class FacebookPage : ContentPage
     {
         private LoginPage parentLoginPage;
@@ -33,6 +36,10 @@ namespace mobileAppClient
             Content = webView;
         }
 
+
+        /*
+         * Creates a new page for changing account login method
+         */
         public FacebookPage(int userId)
         {
             InitializeComponent();
@@ -48,6 +55,10 @@ namespace mobileAppClient
             Content = webView;
         }
 
+        /*
+         * Brings up the Facebook authentication page and 
+         * changes the login method for the user to Facebook login
+         */
         private async void ChangeLoginMethodOnNavigate(object sender, WebNavigatedEventArgs e)
         {
             //Console.WriteLine("User ID is: " + userId);
@@ -90,11 +101,19 @@ namespace mobileAppClient
             }
         }
 
+
+        /*
+         * Returns to the previous modal
+         */
         async void Handle_CancelClicked(object sender, System.EventArgs e)
         {
             await Navigation.PopModalAsync();
         }
 
+        /*
+         * Brings up lthe Facebook authentication page and either
+         * logs in or creates a new user depending on whether the Facebook ID is recognised
+         */
         private async void WebViewOnNavigated(object sender, WebNavigatedEventArgs e)
         {
             var accessToken = facebookServices.ExtractAccessTokenFromUrl(e.Url);

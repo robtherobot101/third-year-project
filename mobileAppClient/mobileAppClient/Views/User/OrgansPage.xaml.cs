@@ -133,6 +133,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Retrieves all organs for the user
+         */
         private async Task<List<DonatableOrgan>> GetOrgans()
         {
             TransplantListAPI transplantListAPI = new TransplantListAPI();
@@ -140,6 +143,9 @@ namespace mobileAppClient
             return donatableOrgans;
         }
 
+        /*
+         * When the page appears, the state of the controls are reset
+         */
         protected override async void OnAppearing()
         { 
             List<DonatableOrgan> donatableOrgans = await GetOrgans();

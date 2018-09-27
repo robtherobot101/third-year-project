@@ -75,6 +75,7 @@ public class SqlSanitation extends DatabaseMethods {
      * Executes a query and displays it in a table.
      * @param query The query to execute.
      * @return Returns a string table of the results.
+     * @throws SQLException If database interaction fails
      */
     public CommandLineResponse executeQuery(String query) throws SQLException {
         PreparedStatement statement = null;

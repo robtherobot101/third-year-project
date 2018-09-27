@@ -10,6 +10,9 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient.Views.Clinician
 {
+    /*
+     * Page which shows organs
+     */
     public partial class SlideUpMenuView : SlideMenuView
     {
         private BindingList<String> Organs;

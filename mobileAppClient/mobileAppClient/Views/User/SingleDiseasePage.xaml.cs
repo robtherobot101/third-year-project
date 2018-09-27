@@ -80,6 +80,9 @@ namespace mobileAppClient
             AddDiseaseButton.IsVisible = true;
         }
 
+        /*
+         * Sets the state of the cured switch
+         */
         private void ChronicCheck(object sender, ToggledEventArgs e)
         {
             if (ChronicEntry.IsToggled && CuredEntry.IsToggled)
@@ -88,6 +91,9 @@ namespace mobileAppClient
             } 
         }
 
+        /*
+         * Sets the state of the cured switch
+         */
         private void CuredCheck(object sender, ToggledEventArgs e)
         {
             if (ChronicEntry.IsToggled && CuredEntry.IsToggled)
@@ -95,7 +101,10 @@ namespace mobileAppClient
                 ChronicEntry.IsToggled = false;
             }
         }
-
+        
+        /*
+         * Adds the user defined disease
+         */
         private async void AddDiseaseButton_OnClicked(object sender, EventArgs e)
         {
             // Check inputs
@@ -129,6 +138,9 @@ namespace mobileAppClient
             await uploadUser();
         }
 
+        /*
+         * Enables editing of the disease
+         */
         private void EditDiseaseButton_OnClicked(object sender, EventArgs e)
         {
             Title = "Edit Disease";
@@ -142,6 +154,9 @@ namespace mobileAppClient
             SaveDiseaseButton.IsVisible = true;
         }
 
+        /*
+         * Saves the changes to the disease
+         */
         private async void SaveDiseaseButton_OnClicked(object sender, EventArgs e)
         {
             Console.WriteLine("Saving disease...");
@@ -185,6 +200,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Posts the user to the server
+         */
         private async Task uploadUser()
         {
             UserAPI userAPI = new UserAPI();

@@ -37,6 +37,11 @@ public class UserSettingsController implements Initializable {
     private UserController userController;
     private String oldUsername, oldEmail;
 
+    /**
+     * Sets the user to edit settings of.
+     *
+     * @param currentUser The user to edit
+     */
     public void setCurrentUser(User currentUser) {
         this.currentUser = currentUser;
         oldUsername = currentUser.getUsername();

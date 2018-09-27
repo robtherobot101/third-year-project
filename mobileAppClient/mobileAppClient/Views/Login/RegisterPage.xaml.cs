@@ -244,6 +244,9 @@ namespace mobileAppClient
             return new Tuple<bool, bool, bool, bool>(isUniqueUsernameResult.Item2, isUniqueEmailResult.Item2, isUniqueNhiResult.Item2, true);
         }
 
+        /*
+         * Brings up a DisplayAlert if the given credentials are invalid
+         */
         async void CheckCredentials(object sender, EventArgs e)
         {
             if (!ServerConfig.Instance.IsConnectedToInternet())
@@ -297,6 +300,9 @@ namespace mobileAppClient
             }
         }
 
+        /*
+         * Navigates to the previous page
+         */
         async void Handle_BackClicked(object sender, EventArgs e)
         {
             await Navigation.PopModalAsync();
