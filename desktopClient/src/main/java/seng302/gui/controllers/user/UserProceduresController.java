@@ -127,9 +127,11 @@ public class UserProceduresController extends UserTabController implements Initi
                     dateOfProcedureInput.getValue(), organsAffected);
             if (dateOfProcedureInput.getValue().isBefore(LocalDate.now())) {
                 previousProcedureItems.add(procedureToAdd);
+                previousProcedureItems.sort((a,b)-> a.getDate().isBefore(b.getDate()) ?  1 : a.getDate().isAfter(b.getDate()) ? -1 : 0);
                 userController.addHistoryEntry("Previous procedure added", "A previous procedure (" + procedureToAdd.getSummary() + ") was added.");
             } else {
                 pendingProcedureItems.add(procedureToAdd);
+                pendingProcedureItems.sort((a,b)-> a.getDate().isBefore(b.getDate()) ?  -1 : a.getDate().isAfter(b.getDate()) ? 1 : 0);
                 userController.addHistoryEntry("Pending procedure added", "A pending procedure (" + procedureToAdd.getSummary() + ") was added.");
             }
             saveToUndoStack();
@@ -626,6 +628,15 @@ public class UserProceduresController extends UserTabController implements Initi
         previousDateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         previousSummaryColumn.setCellValueFactory(new PropertyValueFactory<>("summary"));
         previousDescriptionColumn.setCellValueFactory(new PropertyValueFactory<>("description"));
+
+        previousProcedureTableView.setSortPolicy(t -> {
+            Comparator<Procedure> comparator1 = (r1,r2)
+            -> r1.getDate().isBefore(r2.getDate()) ? 1 : r1.getDate().isAfter(r2.getDate()) ? -1 : 0;
+            FXCollections.sort(previousProcedureTableView.getItems(), comparator1);
+            return true;
+        });
+
+
     }
 
     /**
@@ -682,10 +693,12 @@ public class UserProceduresController extends UserTabController implements Initi
 
         pendingProcedureItems = FXCollections.observableArrayList();
         pendingProcedureItems.addAll(currentUser.getPendingProcedures());
+        pendingProcedureItems.sort((a,b)-> a.getDate().isBefore(b.getDate()) ?  -1 : a.getDate().isAfter(b.getDate()) ? 1 : 0);
         pendingProcedureTableView.setItems(pendingProcedureItems);
 
         previousProcedureItems = FXCollections.observableArrayList();
         previousProcedureItems.addAll(currentUser.getPreviousProcedures());
+        previousProcedureItems.sort((a,b)-> a.getDate().isBefore(b.getDate()) ? 1 : a.getDate().isAfter(b.getDate()) ? -1 : 0);
         previousProcedureTableView.setItems(previousProcedureItems);
     }
 

@@ -17,6 +17,9 @@ namespace mobileAppClient.Google
         private static readonly string CLIENT_ID = "990254303378-hompkeqv6gthfgaut6j0bipdu6bf9ef0.apps.googleusercontent.com";
         private static readonly string CLIENT_SECRET = "yHw2OvqSYK4ocE0SH5-AHfJc";
 
+        /*
+         * Makes a call to the Google login page
+         */
         public static string GetLoginAddr() //login
         {
             return
@@ -25,6 +28,7 @@ namespace mobileAppClient.Google
                 $"&client_id={CLIENT_ID}";
         }
 
+        
         public static string ChangeToGoogleLoginAddr()
         {
             return
@@ -32,6 +36,7 @@ namespace mobileAppClient.Google
                 $"&redirect_uri={REDIRECT_URI_CHANGE_LOGIN}" +
                 $"&client_id={CLIENT_ID}";
         }
+
 
         private static string GetTokenAddr(string code, string redirect_uri) 
         {
@@ -48,6 +53,9 @@ namespace mobileAppClient.Google
                    $"?access_token={token}";
         }
 
+        /*
+         * Makes an api call and returns a user access token
+         */
         private static async Task<string> GetUserToken(string code, string redirect_uri)
         {
             client = ServerConfig.Instance.client;

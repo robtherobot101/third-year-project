@@ -31,7 +31,7 @@ public class ImportTest {
     public void testJSONUserImport() {
         ProfileReader<User> reader = new UserReaderJSON();
         List<User> users = reader.getProfiles(Paths.get("doc/examples/testUsers.json").toAbsolutePath().toString());
-        assertEquals(8, users.size());
+        assertEquals(5, users.size());
     }
 
     @Test

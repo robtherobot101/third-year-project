@@ -15,6 +15,9 @@ using Xamarin.Essentials;
 
 namespace mobileAppClient.Views.Clinician
 {
+    /*
+     * Class which defines a clinician map page
+     */
     public class ClinicianMapPage : ContentPage
 	{
 
@@ -26,13 +29,17 @@ namespace mobileAppClient.Views.Clinician
 
         public CustomMap customMap;
 
+        /*
+         * Constructs a blank page
+         */
         public ClinicianMapPage()
         {
 
         }
 
-
-
+        /*
+         * Displays the list of organs in the bottom sheet if on iOS
+         */
         public async Task displayUserDialog(string organString, string id)
         {
             //if Android, use the SlideOverKit stuff
@@ -96,9 +103,9 @@ namespace mobileAppClient.Views.Clinician
 
 
 
-        ///// <summary>
-        ///// Activated whenever focus is on this page
-        ///// </summary>
+        /// <summary>
+        /// Activated whenever focus is on this page
+        /// </summary>
         protected override async void OnAppearing()
         {
 
@@ -309,11 +316,17 @@ namespace mobileAppClient.Views.Clinician
             await Task.Delay(3000);
         }
 
+        /*
+         * When the page is hidden, the helicopter timers disposed
+         */
         protected override void OnDisappearing()
         {
             helicopterRefreshTimer?.Dispose();
         }
 
+        /*
+         * Places the hospitals from the database onto the map
+         */
         public async Task InitialiseHospitals()
         {
 
@@ -490,6 +503,9 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
+        /// <summary>
+        /// Fetches the transfers from the server and adds the helicopters to the map
+        /// </summary>
         public async Task StartTransfers()
         {
             TransplantListAPI transplantListAPI = new TransplantListAPI();
@@ -518,6 +534,9 @@ namespace mobileAppClient.Views.Clinician
             }
         }
 
+        /*
+         * Gets the position of the given transfer in terms of longitude and latitude
+         */
         private Position GetCurrentPoint(OrganTransfer transfer)
         {
             double degToRad = Math.PI / 180;
@@ -547,6 +566,10 @@ namespace mobileAppClient.Views.Clinician
             return new Position(currentLat / degToRad, currentLon / degToRad);
         }
 
+
+        /*
+         * Starts a transfer to the hospital closest to the given selectedRecipient and adds the helicopter to the map
+         */
         public async Task NewTransfer(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition) {
             OrganTransfer newOrganTransfer = new OrganTransfer();
             newOrganTransfer.id = currentOrgan.id;
@@ -611,6 +634,9 @@ namespace mobileAppClient.Views.Clinician
                           );
         }
 
+        /*
+         * Starts a new transfer to the hospital closest to the given selectedRecipient but does not add a helicopter to the map
+         */
         public async Task NewTransferWithoutAddingHelicpoter(DonatableOrgan currentOrgan, User selectedRecipient, Position donorPosition)
         {
             await InitialiseHospitalsWithoutAddingToMap();
@@ -649,6 +675,10 @@ namespace mobileAppClient.Views.Clinician
             await transplantListAPI.SetInTransfer(currentOrgan.id, 1);
         }
 
+
+        /*
+         * Initializes the hospitals but does not add them to the map
+         */
         public async Task InitialiseHospitalsWithoutAddingToMap()
         {
 
@@ -673,7 +703,11 @@ namespace mobileAppClient.Views.Clinician
                     break;
             }
         }
-
+        
+        /*
+         * Computes the distance between two co-ordinates with elevation
+         * and returns it in meters
+         */
         public double distance(double lat1, double lat2, double lon1,
                                   double lon2, double el1, double el2)
         {
@@ -695,15 +729,22 @@ namespace mobileAppClient.Views.Clinician
             return Math.Sqrt(interDistance);
         }
 
+        /*
+         * Called when a transfer is complete.
+         * The transfer and waiting list item are removed from the database.
+         */
         private async Task HelicopterFinished(int waitingListItemId, int organId)
         {
             TransplantListAPI transplantListAPI = new TransplantListAPI();
             await transplantListAPI.DeleteTransfer(organId);
             await transplantListAPI.DeleteWaitingListItem(waitingListItemId);
             await transplantListAPI.SetInTransfer(organId, 2);
-
         }
 
+        /*
+         * Returns true if the organ can reach the user in time,
+         * otherwise returns false
+         */
         public async Task<bool> CheckGetToReceiverInTime(DonatableOrgan organ, User receiver) {
 
             UserAPI userAPI = new UserAPI();

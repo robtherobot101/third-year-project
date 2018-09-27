@@ -70,10 +70,25 @@ namespace mobileAppClient
             }
         }
 
+        [JsonIgnore]
+        public string FullPreferedName
+        {
+            get
+            {
+                return String.Join(" ", preferredName);
+            }
+        }
+
+        /*
+         * Constructs a user and defines their email address
+         */
         public User(string email) {
             this.email = email;
         }
 
+        /*
+         * Constructs an empty user
+         */
         public User()
         {
         }

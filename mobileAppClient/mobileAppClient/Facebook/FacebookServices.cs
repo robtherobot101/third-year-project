@@ -17,6 +17,10 @@ namespace mobileAppClient
         {
         }
 
+        /*
+         * Returns the Facebook access token form the given Facebook
+         * authentication redirect url
+         */
         public string ExtractAccessTokenFromUrl(string url)
         {
             if (url.Contains("access_token") && url.Contains("&expires_in="))
@@ -31,6 +35,10 @@ namespace mobileAppClient
             return string.Empty;
         }
 
+        /*
+         * Makes an api call to Facebook withan access token
+         * and retrieves the relevant FacebookProfile
+         */
         public async Task<FacebookProfile> GetFacebookProfileAsync(string accessToken)
         {
             var requestUrl =

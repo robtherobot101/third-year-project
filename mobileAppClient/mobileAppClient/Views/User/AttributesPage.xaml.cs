@@ -197,6 +197,7 @@ namespace mobileAppClient
             string givenAddress = InputValidation.Trim(String.Join(", ", addressLines));
 
             string givenRegion = InputValidation.Trim(RegionInput.SelectedItem == null ? "" : RegionInput.SelectedItem.ToString());
+            string givenCountry = InputValidation.Trim(CountryInput.SelectedItem == null ? "" : CountryInput.SelectedItem.ToString());
 
             string givenNHINumber = InputValidation.Trim(NHIInput.Text);
 
@@ -296,6 +297,7 @@ namespace mobileAppClient
 
             loggedInUser.currentAddress = givenAddress;
             loggedInUser.region = givenRegion;
+            loggedInUser.country = givenCountry;
 
             loggedInUser.dateOfBirth = new CustomDate(dobInput.Date);
 

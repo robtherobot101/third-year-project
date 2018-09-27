@@ -128,7 +128,7 @@ public class UserController implements Initializable {
         } else {
             setWelcomeText("Welcome, " + currentUser.getName());
         }
-        titleBar.setTitle(currentUser.getPreferredName(), "user", "Home");
+        titleBar.setTitle(currentUser.getPreferredName(), "User", "Home");
 
         diseasesController.setCurrentUser(currentUser);
         proceduresController.setCurrentUser(currentUser);

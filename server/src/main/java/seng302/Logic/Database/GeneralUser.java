@@ -334,23 +334,6 @@ public class GeneralUser extends DatabaseMethods {
         ResultSet resultSet = null;
         PreparedStatement statement = null;
         try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-//            String insert = "INSERT INTO USER(first_name, middle_names, last_name, preferred_name, preferred_middle_names, preferred_last_name, creation_time, last_modified, username," +
-//                    " email, password, date_of_birth) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-//            PreparedStatement statement = connection.prepareStatement(insert);
-//            statement.setString(1, user.getNameArray()[0]);
-//            statement.setString(2, user.getNameArray().length > 2 ?
-//                    String.join(",", Arrays.copyOfRange(user.getNameArray(), 1, user.getNameArray().length - 1)) : null);
-//            statement.setString(3, user.getNameArray().length > 1 ? user.getNameArray()[user.getNameArray().length - 1] : null);
-//            statement.setString(4, user.getPreferredNameArray()[0]);
-//            statement.setString(5, user.getPreferredNameArray().length > 2 ?
-//                    String.join(",", Arrays.copyOfRange(user.getPreferredNameArray(), 1, user.getPreferredNameArray().length - 1)) : null);
-//            statement.setString(6, user.getPreferredNameArray().length > 1 ? user.getPreferredNameArray()[user.getPreferredNameArray().length - 1] : null);
-//            statement.setTimestamp(7, java.sql.Timestamp.valueOf(user.getCreationTime()));
-//            statement.setTimestamp(8, java.sql.Timestamp.valueOf(user.getCreationTime()));
-//            statement.setString(9, user.getUsername());
-//            statement.setString(10, user.getEmail());
-//            statement.setString(11, user.getPassword());
-//            statement.setDate(12, java.sql.Date.valueOf(user.getDateOfBirth()));
             String insertAccount = "INSERT INTO ACCOUNT(username, password) VALUES(?, ?)";
             statement = connection.prepareStatement(insertAccount);
             statement.setString(1, user.getUsername());
@@ -362,11 +345,6 @@ public class GeneralUser extends DatabaseMethods {
             statement.close();
             statement = connection.prepareStatement("SELECT id FROM ACCOUNT WHERE username = ?");
             statement.setString(1,user.getUsername());
-//            statement = connection.prepareStatement("SELECT * FROM USER JOIN ACCOUNT WHERE USER.id = ACCOUNT.id AND (username = ? OR email = ? OR nhi = ?) AND password = ?");
-//            statement.setString(1, user.getUsername());
-//            statement.setString(2, user.getEmail());
-//            statement.setString(3, user.getNhi());
-//            statement.setString(4, user.getPassword());
             resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
@@ -374,14 +352,9 @@ public class GeneralUser extends DatabaseMethods {
             } else {
                 throw new SQLException();
             }
-//                GeneralUser generalUser = new GeneralUser();
-//                fromDb = generalUser.getUserFromResultSet(resultSet);
-//            }
         } finally {
             close(resultSet, statement);
         }
-        //patchEntireUser(user, (int) fromDb.getId(), false);
-
     }
 
 
@@ -702,15 +675,12 @@ public class GeneralUser extends DatabaseMethods {
     }
 
     public void importUsers(List<User> users) throws SQLException {
-        Statement statement = null;
-        try (Connection connection = DatabaseConfiguration.getInstance().getConnection()) {
-            statement = connection.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-            for (User user : users) {
-                statement.addBatch(createUserStatement(user));
+        for (User user: users) {
+            try {
+                insertUser(user, SaltHash.createHash("drowssap"));
+            } catch (Exception e) {
+                System.out.println("Failed to add " + user.getName());
             }
-            statement.executeBatch();
-        } finally {
-            close(statement);
         }
     }
 }

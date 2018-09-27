@@ -3,9 +3,12 @@ using System;
 
 namespace mobileAppClient.Models
 {
+
+    /// <summary>
+    /// Holds information about an organ transfer
+    /// </summary>
     public class OrganTransfer
     {
-
         public int id { get; set; }
         public double startLat { get; set; }
         public double startLon { get; set; }

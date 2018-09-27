@@ -166,6 +166,12 @@ namespace mobileAppClient.odmsAPI
             return new Tuple<HttpStatusCode, Clinician>(HttpStatusCode.OK, resultUser);
         }
 
+        /// <summary>
+        /// Sets token and password for the given clinician 
+        /// </summary>
+        /// <returns>
+        /// An HttpStatusCode response
+        /// </returns>
         public async Task<HttpStatusCode> updateAccountSettings(Clinician clinician, string token, bool setPassword)
         {
             String url = ServerConfig.Instance.serverAddress;
