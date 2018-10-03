@@ -193,7 +193,6 @@ namespace mobileAppClient
                         dateOfBirth = new CustomDate(DateTime.Parse(facebookProfile.Birthday)),
                         creationTime = new CustomDateTime(DateTime.Now),
                         gender = facebookProfile.Gender.ToUpper(),
-                        region = facebookProfile.Location.Name,
                         organs = new List<Organ>(),
                         userHistory = new List<HistoryItem>(),
                         nhi = facebookProfile.NHI

@@ -22,8 +22,6 @@
 	</array>
 	<key>MinimumOSVersion</key>
 	<string>11.4</string>
-	<key>CFBundleVersion</key>
-	<string>1.0.12</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIStatusBarStyle</key>
@@ -44,13 +42,15 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.uc.uctd</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0.12</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>
 	</array>
 	<key>CFBundleDisplayName</key>
 	<string>Transcend Donation</string>
+	<key>CFBundleShortVersionString</key>
+	<string>2.1</string>
+	<key>CFBundleVersion</key>
+	<string>2.1</string>
 </dict>
 </plist>

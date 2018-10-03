@@ -69,7 +69,8 @@
     <ConsolePause>false</ConsolePause>
     <CodesignKey>iPhone Distribution: university of canterbury (RVU8675LNN)</CodesignKey>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
-    <CodesignProvision>iOS Wildcard Distribution</CodesignProvision>
+    <CodesignProvision>TranscendDonation</CodesignProvision>
+    <MtouchFloat32>true</MtouchFloat32>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Ad-Hoc|iPhone' ">
     <DebugType>none</DebugType>
