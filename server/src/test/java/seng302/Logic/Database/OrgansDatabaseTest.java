@@ -33,8 +33,7 @@ public class OrgansDatabaseTest {
         List<DonatableOrgan> organs = organsDatabase.getAllDonatableOrgans();
         assertEquals(organs.get(0).getDonorId(), donatableOrgan.getDonorId());
         assertEquals(organs.get(0).getOrganType(), donatableOrgan.getOrganType());
-        //Needs to be updated because of Daylight Savings - 3/10/2018
-        //assertEquals(organs.get(0).getTimeOfDeath(), donatableOrgan.getTimeOfDeath().minusNanos(donatableOrgan.getTimeOfDeath().getNano()));
+        assertEquals(organs.get(0).getTimeOfDeath(), donatableOrgan.getTimeOfDeath().minusNanos(donatableOrgan.getTimeOfDeath().getNano()));
     }
 
     @Test
@@ -48,8 +47,7 @@ public class OrgansDatabaseTest {
 
         assertEquals(organs.get(0).getDonorId(), donatableOrgan.getDonorId());
         assertEquals(organs.get(0).getOrganType(), donatableOrgan.getOrganType());
-        //Needs to be updated because of Daylight Savings - 3/10/2018
-        //assertEquals(organs.get(0).getTimeOfDeath(), donatableOrgan.getTimeOfDeath().minusNanos(donatableOrgan.getTimeOfDeath().getNano()));
+        assertEquals(organs.get(0).getTimeOfDeath(), donatableOrgan.getTimeOfDeath().minusNanos(donatableOrgan.getTimeOfDeath().getNano()));
     }
 
     @Test
@@ -60,8 +58,7 @@ public class OrgansDatabaseTest {
         List<DonatableOrgan> organs = organsDatabase.getAllDonatableOrgans();
         assertEquals(organs.get(0).getDonorId(), donatableOrgan.getDonorId());
         assertEquals(organs.get(0).getOrganType(), donatableOrgan.getOrganType());
-        //Needs to be updated because of Daylight Savings - 3/10/2018
-        //assertEquals(organs.get(0).getTimeOfDeath(), donatableOrgan.getTimeOfDeath().minusNanos(donatableOrgan.getTimeOfDeath().getNano()));
+        assertEquals(organs.get(0).getTimeOfDeath(), donatableOrgan.getTimeOfDeath().minusNanos(donatableOrgan.getTimeOfDeath().getNano()));
 
         organsDatabase.removeOrgan(organs.get(0));
         organs = organsDatabase.getAllDonatableOrgans();
