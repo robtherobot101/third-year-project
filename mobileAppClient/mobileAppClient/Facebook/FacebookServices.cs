@@ -11,7 +11,7 @@ namespace mobileAppClient
             "https://www.facebook.com/dialog/oauth?client_id="
             + "971327199740898"
             + "&display=popup&response_type=token&redirect_uri=https://www.facebook.com/connect/login_success.html"
-            + "&scope=email,user_birthday,user_gender,user_location";
+            + "&scope=email,user_birthday,user_gender";
 
         public FacebookServices()
         {
@@ -43,7 +43,7 @@ namespace mobileAppClient
         {
             var requestUrl =
                 "https://graph.facebook.com/v2.7/me/?fields=name,picture.width(1000).height(1000)," +
-                "location,birthday,email,first_name,last_name," +
+                "birthday,email,first_name,last_name," +
                 "gender&access_token="
                 + accessToken;
 

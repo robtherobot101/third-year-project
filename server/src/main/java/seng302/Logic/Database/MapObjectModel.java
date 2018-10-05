@@ -70,7 +70,7 @@ public class MapObjectModel extends DatabaseMethods {
                 }
 
                 DonatableOrgan organ = new DonatableOrgan(
-                        LocalDateTime.ofEpochSecond(organsResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+12)),
+                        LocalDateTime.ofEpochSecond(organsResultSet.getLong("timeOfDeath"),0, ZoneOffset.ofHours(+13)),
                         Organ.parse(organsResultSet.getString("name")),
                         mapObjectResultSet.getInt("id"),
                         expired,

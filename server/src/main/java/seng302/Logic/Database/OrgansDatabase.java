@@ -183,7 +183,7 @@ public class OrgansDatabase extends DatabaseMethods {
         }
         return new DonatableOrgan(
                 //organResultSet.getTimestamp("timeOfDeath") != null ? organResultSet.getTimestamp("timeOfDeath" ).toLocalDateTime() : null,
-                LocalDateTime.ofEpochSecond(organResultSet.getLong("timeOfDeath"), 0, ZoneOffset.ofHours(+12)),
+                LocalDateTime.ofEpochSecond(organResultSet.getLong("timeOfDeath"), 0, ZoneOffset.ofHours(+13)),
                 Organ.parse(organResultSet.getString("name")),
                 organResultSet.getLong("user_id"),
                 organResultSet.getInt("id"),
