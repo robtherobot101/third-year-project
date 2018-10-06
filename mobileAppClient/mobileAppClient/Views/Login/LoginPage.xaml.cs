@@ -391,6 +391,7 @@ namespace mobileAppClient
             }
 
             IsLoading = true;
+            UserController.Instance.loginPageController = this;
             Device.OpenUri(new Uri(GoogleServices.GetLoginAddr()));
         }
 
@@ -419,13 +420,13 @@ namespace mobileAppClient
             LoginAPI loginAPI = new LoginAPI();
 
             //Do a check to see if user is already in the database - if they are then skip the register and go to login if not just login
-            Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueApiId(id);
-            if (isUniqueEmailResult.Item1 != HttpStatusCode.OK)
+            Tuple<HttpStatusCode, bool> isUniqueApiIdResult = await userAPI.isUniqueApiId(id);
+            if (isUniqueApiIdResult.Item1 != HttpStatusCode.OK)
             {
                 Console.WriteLine("Failed to connect to server for checking of unique email");
             }
 
-            if (isUniqueEmailResult.Item2 == false)
+            if (isUniqueApiIdResult.Item2 == false)
             {
                 HttpStatusCode statusCode = await loginAPI.LoginUser(id);
                 switch (statusCode)
@@ -461,7 +462,30 @@ namespace mobileAppClient
             }
             else
             {
-                await Navigation.PushModalAsync(new GooglePage(this, googleUser, profileImageURL, id));
+                Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueUsernameEmail(googleUser.email);
+
+                switch (isUniqueEmailResult.Item1)
+                {
+                    case HttpStatusCode.OK:
+                        await DisplayAlert(
+                            "New sign In failed",
+                            "An account with this email address already exists",
+                            "OK");
+
+
+                        break;
+                    case HttpStatusCode.InternalServerError:
+                        await DisplayAlert(
+                            "Failed to verfiy email",
+                            "Server error",
+                            "OK");
+                        break;
+                    default:
+                        await Navigation.PushModalAsync(new GooglePage(this, googleUser, profileImageURL, id));
+
+                        break;
+
+                }
             }
 	        IsLoading = false;
         }

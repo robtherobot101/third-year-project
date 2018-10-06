@@ -30,10 +30,10 @@ namespace mobileAppClient
 
         protected async override void OnAppearing()
         {
-            updateButtons();
+            await updateButtons();
         }
 
-        public async void updateButtons()
+        public async Task updateButtons()
         {
             String result = await new LoginAPI().getAccountType(UserController.Instance.LoggedInUser.id);
             if (result.Equals("facebook"))
@@ -104,18 +104,18 @@ namespace mobileAppClient
         async void Handle_FacebookAccountTypeTapped(object sender, System.EventArgs e)
         {
             await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(UserController.Instance.LoggedInUser.id)));
-            //updateButtons();
+            await updateButtons();
         }
 
         /*
          * Launches Google authentication and attempts to switch the 
          * login method for the the logged in user.
          */
-        void Handle_GoogleAccountTypeTapped(object sender, System.EventArgs e)
+        async void Handle_GoogleAccountTypeTapped(object sender, System.EventArgs e)
         {
             // Opens the Google login
             Device.OpenUri(new Uri(GoogleServices.ChangeToGoogleLoginAddr()));
-            updateButtons();
+            await updateButtons();
         }
             
         /*
@@ -204,7 +204,6 @@ namespace mobileAppClient
             confirmPasswordInput.IsVisible = false;
             UsernameEntry.IsVisible = false;
             ConfirmTeam300LoginMethodChanged.IsVisible = false;
-            updateButtons();
         }
 
         /*
@@ -246,7 +245,7 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
-            updateButtons();
+            await updateButtons();
         }
     }
 }
