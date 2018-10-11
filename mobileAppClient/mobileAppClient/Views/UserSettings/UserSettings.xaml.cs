@@ -11,17 +11,18 @@ namespace mobileAppClient
 {
     public partial class UserSettings : ContentPage
     {
-        
+
         public UserSettings()
         {
             InitializeComponent();
             passwordInput.IsEnabled = false;
-            
+
             confirmPasswordInput.IsEnabled = false;
             UsernameEntry.IsEnabled = false;
             ConfirmTeam300LoginMethodChanged.IsEnabled = false;
 
-            if(Device.RuntimePlatform == Device.iOS) {
+            if (Device.RuntimePlatform == Device.iOS)
+            {
                 GoogleAccountType.IsEnabled = false;
             }
             //updateButtons();
@@ -30,10 +31,10 @@ namespace mobileAppClient
 
         protected async override void OnAppearing()
         {
-            await updateButtons();
+            updateButtons();
         }
 
-        public async Task updateButtons()
+        public async void updateButtons()
         {
             String result = await new LoginAPI().getAccountType(UserController.Instance.LoggedInUser.id);
             if (result.Equals("facebook"))
@@ -104,20 +105,20 @@ namespace mobileAppClient
         async void Handle_FacebookAccountTypeTapped(object sender, System.EventArgs e)
         {
             await Navigation.PushModalAsync(new NavigationPage(new FacebookPage(UserController.Instance.LoggedInUser.id)));
-            await updateButtons();
+            //updateButtons();
         }
 
         /*
          * Launches Google authentication and attempts to switch the 
          * login method for the the logged in user.
          */
-        async void Handle_GoogleAccountTypeTapped(object sender, System.EventArgs e)
+        void Handle_GoogleAccountTypeTapped(object sender, System.EventArgs e)
         {
             // Opens the Google login
             Device.OpenUri(new Uri(GoogleServices.ChangeToGoogleLoginAddr()));
-            await updateButtons();
+            updateButtons();
         }
-            
+
         /*
          * Navigates to a new page which allows the user to change
          * thier username, email, and password.
@@ -138,7 +139,7 @@ namespace mobileAppClient
             confirmPasswordInput.IsEnabled = true;
             UsernameEntry.IsEnabled = true;
             ConfirmTeam300LoginMethodChanged.IsEnabled = true;
-            
+
         }
 
         /*
@@ -161,7 +162,7 @@ namespace mobileAppClient
                     "OK");
                 return;
             }
-            else if(UsernameEntry.Text == "")
+            else if (UsernameEntry.Text == "")
             {
                 await DisplayAlert("",
                                     "Username must not be empty",
@@ -204,6 +205,7 @@ namespace mobileAppClient
             confirmPasswordInput.IsVisible = false;
             UsernameEntry.IsVisible = false;
             ConfirmTeam300LoginMethodChanged.IsVisible = false;
+            updateButtons();
         }
 
         /*
@@ -245,7 +247,7 @@ namespace mobileAppClient
                         "OK");
                     break;
             }
-            await updateButtons();
+            updateButtons();
         }
     }
 }

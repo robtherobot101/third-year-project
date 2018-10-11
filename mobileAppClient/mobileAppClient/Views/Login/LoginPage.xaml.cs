@@ -15,117 +15,118 @@ using Xamarin.Forms.Xaml;
 
 namespace mobileAppClient
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
     /*
      * Class to handle all functionality regarding the login page for 
      * logging in as an existing user or wishing to register.
-     */ 
-	public partial class LoginPage : ContentPage
-	{
-	    private bool _IsLoading;
-	    public bool IsLoading
-	    {
-	        get { return _IsLoading; }
-	        set
-	        {
-	            _IsLoading = value;
-	            if (_IsLoading == true)
-	            {
-	                usernameEmailInput.IsEnabled = false;
-	                passwordInput.IsEnabled = false;
-	                LoginButton.IsEnabled = false;
-	                SignUpButton.IsEnabled = false;
-	                RememberMeSwitch.IsEnabled = false;
+     */
+    public partial class LoginPage : ContentPage
+    {
+        private bool _IsLoading;
+        public bool IsLoading
+        {
+            get { return _IsLoading; }
+            set
+            {
+                _IsLoading = value;
+                if (_IsLoading == true)
+                {
+                    usernameEmailInput.IsEnabled = false;
+                    passwordInput.IsEnabled = false;
+                    LoginButton.IsEnabled = false;
+                    SignUpButton.IsEnabled = false;
+                    RememberMeSwitch.IsEnabled = false;
                     FacebookButton.IsEnabled = false;
                     GoogleButton.IsEnabled = false;
 
                     LoadingIndicator.IsVisible = true;
-	                LoadingIndicator.IsRunning = true;
-	            }
-	            else
-	            {
-	                usernameEmailInput.IsEnabled = true;
-	                passwordInput.IsEnabled = true;
-	                LoginButton.IsEnabled = true;
-	                SignUpButton.IsEnabled = true;
-	                RememberMeSwitch.IsEnabled = true;
+                    LoadingIndicator.IsRunning = true;
+                }
+                else
+                {
+                    usernameEmailInput.IsEnabled = true;
+                    passwordInput.IsEnabled = true;
+                    LoginButton.IsEnabled = true;
+                    SignUpButton.IsEnabled = true;
+                    RememberMeSwitch.IsEnabled = true;
                     FacebookButton.IsEnabled = true;
                     GoogleButton.IsEnabled = true;
 
                     LoadingIndicator.IsVisible = false;
-	                LoadingIndicator.IsRunning = false;
-	            }
-	        }
-	    }
+                    LoadingIndicator.IsRunning = false;
+                }
+            }
+        }
 
-	    public bool rememberLogin;
+        public bool rememberLogin;
 
-	    public bool secureStorageSupported;
+        public bool secureStorageSupported;
 
-	    private MainPage baseMainPage;
+        private MainPage baseMainPage;
 
         /*
          * Constructs the page
          */
         public LoginPage()
-		{
-			InitializeComponent ();
-		    baseMainPage = new MainPage(false);
+        {
+            InitializeComponent();
+            baseMainPage = new MainPage(false);
 
             IsLoading = false;
-		    UserController.Instance.loginPageController = this;
+            UserController.Instance.loginPageController = this;
 
             // Temporary fix for the Google login not working on iOS
-            if (Device.RuntimePlatform == Device.iOS) {
+            if (Device.RuntimePlatform == Device.iOS)
+            {
                 GoogleButton.IsVisible = false;
 
             }
 
             // Hide the poorly sized Facebook logo on Android
-		    if (Device.RuntimePlatform == Device.Android)
-		    {
-		        FacebookButton.Image = null;
-		    }
-		}
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                FacebookButton.Image = null;
+            }
+        }
 
-	    /// <summary>
-	    /// Activated whenever focus is on this page
-	    /// </summary>
-	    protected override async void OnAppearing()
-	    {
-	        RememberMeSwitch.IsToggled = false;
-	        secureStorageSupported = await testSecureStorage();
+        /// <summary>
+        /// Activated whenever focus is on this page
+        /// </summary>
+        protected override async void OnAppearing()
+        {
+            RememberMeSwitch.IsToggled = false;
+            secureStorageSupported = await testSecureStorage();
 
             // Check support for storage, if not supported hide all buttons regarding remember me
-	        if (secureStorageSupported)
-	        {
-	            await checkForStoredLoginDetails();
-	        }
-	        else
-	        {
-	            RememberMeLabel.IsVisible = false;
-	            RememberMeSwitch.IsToggled = false;
-	            RememberMeSwitch.IsVisible = false;
-	        }
-	    }
+            if (secureStorageSupported)
+            {
+                await checkForStoredLoginDetails();
+            }
+            else
+            {
+                RememberMeLabel.IsVisible = false;
+                RememberMeSwitch.IsToggled = false;
+                RememberMeSwitch.IsVisible = false;
+            }
+        }
 
         /// <summary>
         /// Checks for a previously stored log on, then logs them in
         /// </summary>
         /// <returns></returns>
 	    private async Task checkForStoredLoginDetails()
-	    {
-	        var usernameEmail = await SecureStorage.GetAsync("usernameEmail");
-	        var password = await SecureStorage.GetAsync("password");
+        {
+            var usernameEmail = await SecureStorage.GetAsync("usernameEmail");
+            var password = await SecureStorage.GetAsync("password");
 
-	        if (usernameEmail != null && password != null)
-	        {
-	            RememberMeSwitch.IsToggled = true;
-	            usernameEmailInput.Text = usernameEmail;
-	            passwordInput.Text = password;
+            if (usernameEmail != null && password != null)
+            {
+                RememberMeSwitch.IsToggled = true;
+                usernameEmailInput.Text = usernameEmail;
+                passwordInput.Text = password;
 
-	            LoginStoredUser(usernameEmail, password);
-	        }
+                LoginStoredUser(usernameEmail, password);
+            }
         }
 
         /// <summary>
@@ -133,19 +134,19 @@ namespace mobileAppClient
         /// </summary>
         /// <returns></returns>
 	    private async Task<bool> testSecureStorage()
-	    {
-	        try
-	        {
-	            await SecureStorage.SetAsync("test", "test");
-	        }
-	        catch (NotSupportedException)
-	        {
-	            return false;
-	        }
+        {
+            try
+            {
+                await SecureStorage.SetAsync("test", "test");
+            }
+            catch (NotSupportedException)
+            {
+                return false;
+            }
 
-	        SecureStorage.Remove("test");
-	        return true;
-	    }
+            SecureStorage.Remove("test");
+            return true;
+        }
 
         /*
          * Called when the Sign Up button is pressed
@@ -159,10 +160,10 @@ namespace mobileAppClient
         /*
          * Process a successful sign up
          */
-	    public async Task OpenMainPageFromSignUp()
-	    {
-	        baseMainPage.userLoggedIn();
-	        await Navigation.PushModalAsync(baseMainPage);
+        public async Task OpenMainPageFromSignUp()
+        {
+            baseMainPage.userLoggedIn();
+            await Navigation.PushModalAsync(baseMainPage);
         }
 
         /// <summary>
@@ -172,14 +173,14 @@ namespace mobileAppClient
         /// <param name="password"></param>
         /// <returns></returns>
 	    private async Task<bool> storeLoginDetails(string usernameEmail, string password)
-	    {
+        {
 
-	        await SecureStorage.SetAsync("usernameEmail", usernameEmail);
-	        await SecureStorage.SetAsync("password", password);
-	        
+            await SecureStorage.SetAsync("usernameEmail", usernameEmail);
+            await SecureStorage.SetAsync("password", password);
+
             return false;
-	    }
- 
+        }
+
         /*
          * Called when the Login button is pressed
          */
@@ -204,7 +205,7 @@ namespace mobileAppClient
 
             HttpStatusCode statusCode = await loginAPI.LoginUser(givenUsernameEmail, givenPassword);
 
-            switch(statusCode)
+            switch (statusCode)
             {
                 case HttpStatusCode.OK:
                     // Fetch photo only on user login
@@ -391,42 +392,41 @@ namespace mobileAppClient
             }
 
             IsLoading = true;
-            UserController.Instance.loginPageController = this;
             Device.OpenUri(new Uri(GoogleServices.GetLoginAddr()));
         }
 
         /*
          * Handles the Google login re-direct
          */
-	    public async Task Handle_RedirectUriCaught(string code)
-	    {
-	        Tuple<User, string, string> parsedUser = await GoogleServices.GetUserProfile(code);
+        public async Task Handle_RedirectUriCaught(string code)
+        {
+            Tuple<User, string, string> parsedUser = await GoogleServices.GetUserProfile(code);
 
-	        await LoginAsGoogleUser(parsedUser);
-	    }
+            await LoginAsGoogleUser(parsedUser);
+        }
 
         /*
          * Attempts to login via Google
          * If the Google account is not recognised, a new accout is created
          */
-	    private async Task LoginAsGoogleUser(Tuple<User, string, string> parsedUser)
-	    {
-	        User googleUser = parsedUser.Item1;
-	        string profileImageURL = parsedUser.Item2;
-	        string id = parsedUser.Item3;
-	        string password = "password";
+        private async Task LoginAsGoogleUser(Tuple<User, string, string> parsedUser)
+        {
+            User googleUser = parsedUser.Item1;
+            string profileImageURL = parsedUser.Item2;
+            string id = parsedUser.Item3;
+            string password = "password";
 
             UserAPI userAPI = new UserAPI();
             LoginAPI loginAPI = new LoginAPI();
 
             //Do a check to see if user is already in the database - if they are then skip the register and go to login if not just login
-            Tuple<HttpStatusCode, bool> isUniqueApiIdResult = await userAPI.isUniqueApiId(id);
-            if (isUniqueApiIdResult.Item1 != HttpStatusCode.OK)
+            Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueApiId(id);
+            if (isUniqueEmailResult.Item1 != HttpStatusCode.OK)
             {
                 Console.WriteLine("Failed to connect to server for checking of unique email");
             }
 
-            if (isUniqueApiIdResult.Item2 == false)
+            if (isUniqueEmailResult.Item2 == false)
             {
                 HttpStatusCode statusCode = await loginAPI.LoginUser(id);
                 switch (statusCode)
@@ -435,7 +435,7 @@ namespace mobileAppClient
                         // Pop away login screen on successful login
                         HttpStatusCode httpStatusCode = await userAPI.GetUserPhoto();
                         UserController.Instance.mainPageController.updateMenuPhoto();
-                       
+
                         baseMainPage.userLoggedIn();
                         await Navigation.PushModalAsync(baseMainPage);
 
@@ -462,32 +462,9 @@ namespace mobileAppClient
             }
             else
             {
-                Tuple<HttpStatusCode, bool> isUniqueEmailResult = await userAPI.isUniqueUsernameEmail(googleUser.email);
-
-                switch (isUniqueEmailResult.Item1)
-                {
-                    case HttpStatusCode.OK:
-                        await DisplayAlert(
-                            "New sign In failed",
-                            "An account with this email address already exists",
-                            "OK");
-
-
-                        break;
-                    case HttpStatusCode.InternalServerError:
-                        await DisplayAlert(
-                            "Failed to verfiy email",
-                            "Server error",
-                            "OK");
-                        break;
-                    default:
-                        await Navigation.PushModalAsync(new GooglePage(this, googleUser, profileImageURL, id));
-
-                        break;
-
-                }
+                await Navigation.PushModalAsync(new GooglePage(this, googleUser, profileImageURL, id));
             }
-	        IsLoading = false;
+            IsLoading = false;
         }
     }
 }
