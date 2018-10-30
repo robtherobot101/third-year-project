@@ -27,7 +27,7 @@ namespace mobileAppClient
                 "http://www.adhb.health.nz/about-us/news-and-publications/latest-stories/atom",
                 "http://www.tdh.org.nz/news-and-media/news/rss",
                 "https://waikatodhbnewsroom.co.nz/feed/",
-                "http://www.cdhb.health.nz/News/Media-Releases/_layouts/15/listfeed.aspx?List=%7B55500942%2D4963%2D4321%2DA595%2DB13F9CE967BC%7D&Source=http%3A%2F%2Fwww%2Ecdhb%2Ehealth%2Enz%2FNews%2FMedia%2DReleases%2FPages%2FForms%2FAllItems%2Easpx",
+                //"http://www.cdhb.health.nz/News/Media-Releases/_layouts/15/listfeed.aspx?List=%7B55500942%2D4963%2D4321%2DA595%2DB13F9CE967BC%7D&Source=http%3A%2F%2Fwww%2Ecdhb%2Ehealth%2Enz%2FNews%2FMedia%2DReleases%2FPages%2FForms%2FAllItems%2Easpx",
                 "https://www.nmdhb.govt.nz/nmdhb-news-and-notices/rss"
             );
         }
